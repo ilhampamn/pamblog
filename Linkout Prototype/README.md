@@ -36,8 +36,8 @@ The builder and the production checkout use **the same renderer** (`packages/che
 
 ```bash
 # 1. Clone this repo
-git clone https://github.com/codapamn/secretlink.git
-cd secretlink
+git clone https://github.com/codapamn/pamsworld.git
+cd pamsworld
 
 # 2. Install dependencies (monorepo — one command installs everything)
 pnpm install
