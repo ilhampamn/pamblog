@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { LocaleSwitcher } from './LocaleSwitcher'
+import { ThemeToggle } from './ThemeToggle'
 import type { Locale } from '@/lib/i18n'
 
 interface NavProps {
@@ -59,6 +60,7 @@ export function Nav({ locale, ui }: NavProps) {
           {ui.uses}
         </Link>
         <LocaleSwitcher locale={locale} />
+        <ThemeToggle />
       </div>
     </nav>
   )

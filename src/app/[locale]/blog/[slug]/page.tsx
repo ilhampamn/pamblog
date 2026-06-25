@@ -25,6 +25,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const post = getPostBySlug(params.locale as Locale, params.slug)
   if (!post) return {}
+
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
+  const ogUrl = `${BASE_URL}/og?title=${encodeURIComponent(post.title)}&tag=${encodeURIComponent(post.tag)}&rt=${post.readingTime}`
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -33,6 +37,13 @@ export async function generateMetadata({
       description: post.excerpt,
       type: 'article',
       publishedTime: post.publishedAt,
+      images: [{ url: ogUrl, width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [ogUrl],
     },
   }
 }
@@ -158,12 +169,13 @@ export default function PostPage({
         <header className="px-8 mb-16">
           <div className="max-w-[var(--prose-width)] mx-auto">
             <div className="flex items-center gap-4 mb-6">
-              <span
-                className="label-stamped"
+              <Link
+                href={`/${locale}/blog/tag/${post.tag}`}
+                className="label-stamped hover:opacity-70 transition-opacity"
                 style={{ color: 'var(--color-blush)' }}
               >
                 {post.tag}
-              </span>
+              </Link>
               <span style={{ color: 'var(--color-torn)' }} aria-hidden="true">·</span>
               <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
                 {formatDate(post.publishedAt, locale)}

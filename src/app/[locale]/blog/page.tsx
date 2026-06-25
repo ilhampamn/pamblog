@@ -134,12 +134,14 @@ export default function BlogIndexPage({
                           className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-5 transition-colors"
                         >
                           {/* Tag */}
-                          <span
-                            className="label-stamped shrink-0 w-20"
+                          <Link
+                            href={`/${locale}/blog/tag/${post.tag}`}
+                            className="label-stamped shrink-0 w-20 hover:text-[var(--color-ink)] transition-colors"
                             style={{ color: 'var(--color-smudge)' }}
+                            onClick={(e) => e.stopPropagation()}
                           >
                             {post.tag}
-                          </span>
+                          </Link>
 
                           {/* Title */}
                           <span

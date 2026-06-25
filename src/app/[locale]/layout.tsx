@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Inter, Playfair_Display, Lora, JetBrains_Mono } from 'next/font/google'
 import type { Locale } from '@/lib/i18n'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
 
 const LOCALES = ['en', 'id'] as const
@@ -51,7 +52,9 @@ export default function LocaleLayout({
       lang={locale}
       className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   )
 }
