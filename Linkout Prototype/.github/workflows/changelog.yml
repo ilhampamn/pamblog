@@ -1,0 +1,55 @@
+name: Update Changelog
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  changelog:
+    # Skip if this push was made by the changelog bot itself
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepend changelog entry
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'Linkout Prototype/CHANGELOG.md';
+
+            const date  = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+            const sha   = context.sha.substring(0, 7);
+            const author  = context.payload.head_commit.author.name;
+            const message = context.payload.head_commit.message.trim();
+
+            const entry = [
+              `## ${date} · \`${sha}\``,
+              `**${author}**`,
+              '',
+              message,
+              '',
+              '---',
+              '',
+              ''
+            ].join('\n');
+
+            const existing = fs.readFileSync(path, 'utf8');
+            // Insert after the header block (first blank line after title)
+            const insertAt = existing.indexOf('\n\n') + 2;
+            const updated  = existing.slice(0, insertAt) + entry + existing.slice(insertAt);
+            fs.writeFileSync(path, updated);
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "Linkout Prototype/CHANGELOG.md"
+          git diff --staged --quiet || git commit -m "docs: update changelog [skip ci]"
+          git push
