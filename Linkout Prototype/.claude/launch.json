@@ -24,6 +24,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-p", "5182", "/Users/pam/side-projects/luna-world"],
       "port": 5182
+    },
+    {
+      "name": "hub",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5183", "/Users/pam/Linkout Prototype"],
+      "port": 5183
     }
   ]
 }

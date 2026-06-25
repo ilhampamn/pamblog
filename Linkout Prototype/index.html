@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pampam world</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background-color: #ECEAE4;
+      background-image: radial-gradient(circle, #C4BEB4 1px, transparent 1px);
+      background-size: 24px 24px;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      cursor: default;
+      user-select: none;
+    }
+
+    /* ── Canvas ───────────────────────────────────────── */
+    #canvas {
+      position: fixed; inset: 0;
+      width: 100vw; height: 100vh;
+    }
+
+    /* ── Center tagline ───────────────────────────────── */
+    #tagline {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .tagline-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #B8A99A;
+      margin-bottom: 12px;
+    }
+
+    .tagline-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.25;
+      color: #2C2720;
+      white-space: nowrap;
+    }
+
+    .tagline-hint {
+      margin-top: 16px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #C4BAB0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tagline-hint svg { opacity: .6; }
+
+    /* ── Cards ────────────────────────────────────────── */
+    .card {
+      position: absolute;
+      width: 260px;
+      background: #FFFFFF;
+      border-radius: 3px;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,.06),
+        0 8px 24px rgba(0,0,0,.10),
+        0 1px 0 rgba(255,255,255,.8) inset;
+      cursor: grab;
+      transition: box-shadow .2s, transform .15s;
+      will-change: transform;
+    }
+
+    .card:active { cursor: grabbing; }
+
+    .card:hover {
+      box-shadow:
+        0 4px 8px rgba(0,0,0,.08),
+        0 16px 40px rgba(0,0,0,.14),
+        0 1px 0 rgba(255,255,255,.8) inset;
+    }
+
+    .card--soon { cursor: default; }
+    .card--soon:active { cursor: default; }
+
+    /* polaroid image area */
+    .card__art {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-radius: 2px 2px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* polaroid caption area */
+    .card__caption {
+      padding: 14px 16px 18px;
+    }
+
+    .card__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2C2720;
+      margin-bottom: 3px;
+    }
+
+    .card__sub {
+      font-size: 11px;
+      color: #A09080;
+      line-height: 1.4;
+    }
+
+    .card__badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .badge--live {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .badge--soon {
+      background: #F3F0EB;
+      color: #B0A090;
+    }
+
+    /* ── Card 1: Checkout Builder ────────────────────── */
+    .card--checkout .card__art {
+      background: linear-gradient(145deg, #1E1040, #2E1760);
+    }
+
+    /* ── Card 2: Web Builder ─────────────────────────── */
+    .card--webbuilder .card__art {
+      background: #F7F5F0;
+    }
+
+    /* ── Card 3: Future ──────────────────────────────── */
+    .card--future .card__art {
+      background: #F0EDE8;
+    }
+
+    /* ── Doodle ornaments ─────────────────────────────── */
+    .doodle {
+      position: absolute;
+      pointer-events: none;
+      opacity: .55;
+      color: #C8A898;
+      font-size: 22px;
+      line-height: 1;
+      z-index: 2;
+    }
+
+    /* ── Phone illustration (card art) ───────────────── */
+    .phone {
+      width: 64px;
+      height: 114px;
+      border-radius: 12px;
+      background: #13103A;
+      border: 2px solid rgba(255,255,255,.18);
+      box-shadow: 0 8px 28px rgba(0,0,0,.5);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 7px; left: 50%;
+      transform: translateX(-50%);
+      width: 18px; height: 2.5px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.18);
+    }
+
+    .phone-inner {
+      margin-top: 16px;
+      flex: 1;
+      background: linear-gradient(180deg, #221348, #1A0F33);
+      padding: 5px 4px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ph-bar { height: 6px; border-radius: 2px; background: rgba(255,255,255,.1); }
+    .ph-bar--accent { background: linear-gradient(90deg, #E01B6E, #7B5CF0); width: 58%; }
+    .ph-row { height: 14px; border-radius: 3px; background: rgba(123,92,240,.22); border: 1px solid rgba(123,92,240,.3); margin-top: 2px; }
+    .ph-btn { height: 11px; border-radius: 6px; background: linear-gradient(135deg, #FF5BA8, #E01B6E); margin-top: auto; box-shadow: 0 3px 8px rgba(224,27,110,.55); }
+
+    /* ── Web wireframe illustration ──────────────────── */
+    .wireframe {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .wireframe svg {
+      width: 100%;
+      opacity: .4;
+    }
+
+    /* ── Future ──────────────────────────────────────── */
+    .future-art {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%; height: 100%;
+      font-size: 36px;
+      opacity: .22;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Center tagline (fixed, not draggable) -->
+<div id="tagline">
+  <div class="tagline-eyebrow">pampam world</div>
+  <div class="tagline-text">Keep building,<br/>keep playing</div>
+  <div class="tagline-hint">
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+      <path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M3 3l5 5M8 3L3 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+    </svg>
+    Drag to move
+  </div>
+</div>
+
+<!-- Canvas for draggable cards + doodles -->
+<div id="canvas">
+
+  <!-- ─── Card 1: Checkout Builder ─────────────────── -->
+  <div class="card card--checkout" id="card-checkout"
+       style="left: calc(50% - 400px); top: calc(50% - 230px); transform: rotate(-4.5deg);">
+    <div class="card__art">
+      <div class="phone">
+        <div class="phone-inner">
+          <div class="ph-bar ph-bar--accent"></div>
+          <div class="ph-bar" style="width:75%;margin-top:3px"></div>
+          <div class="ph-row"></div>
+          <div class="ph-row" style="opacity:.65"></div>
+          <div class="ph-row" style="opacity:.4"></div>
+          <div class="ph-btn"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card__caption">
+      <div class="card__label">Checkout Builder</div>
+      <div class="card__sub">Theme the Codapay payment UI visually.</div>
+      <div class="card__badge badge--live">Live</div>
+    </div>
+  </div>
+
+  <!-- ─── Card 2: Web Store Builder ────────────────── -->
+  <div class="card card--webbuilder card--soon" id="card-webbuilder"
+       style="left: calc(50% + 160px); top: calc(50% - 200px); transform: rotate(3.5deg);">
+    <div class="card__art">
+      <div class="wireframe">
+        <svg viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="158" height="118" rx="4" stroke="#8A7A6A" stroke-width="1.5"/>
+          <rect x="8" y="8" width="144" height="20" rx="2" fill="#C8B8A8"/>
+          <rect x="8" y="34" width="68" height="80" rx="2" fill="#D8CCC0"/>
+          <rect x="82" y="34" width="70" height="37" rx="2" fill="#D8CCC0"/>
+          <rect x="82" y="77" width="70" height="37" rx="2" fill="#D8CCC0"/>
+          <rect x="14" y="42" width="44" height="4" rx="2" fill="#A89888"/>
+          <rect x="14" y="52" width="56" height="3" rx="1.5" fill="#B8A898"/>
+          <rect x="14" y="60" width="48" height="3" rx="1.5" fill="#B8A898"/>
+          <rect x="88" y="42" width="40" height="4" rx="2" fill="#A89888"/>
+          <rect x="88" y="52" width="52" height="3" rx="1.5" fill="#B8A898"/>
+        </svg>
+      </div>
+    </div>
+    <div class="card__caption">
+      <div class="card__label">Web Store Builder</div>
+      <div class="card__sub">Drag-and-drop storefront editor.</div>
+      <div class="card__badge badge--soon">Coming soon</div>
+    </div>
+  </div>
+
+  <!-- ─── Card 3: Future ───────────────────────────── -->
+  <div class="card card--future card--soon" id="card-future"
+       style="left: calc(50% - 110px); top: calc(50% + 130px); transform: rotate(1deg);">
+    <div class="card__art">
+      <div class="future-art">✦</div>
+    </div>
+    <div class="card__caption">
+      <div class="card__label">More to come</div>
+      <div class="card__sub">Ideas still brewing.</div>
+      <div class="card__badge badge--soon">Future</div>
+    </div>
+  </div>
+
+  <!-- ─── Doodles ────────────────────────────────────── -->
+  <!-- top-left cluster -->
+  <div class="doodle" style="left:7%; top:12%; font-size:16px; transform:rotate(-8deg)">ꕤ</div>
+  <div class="doodle" style="left:11%; top:20%; font-size:11px; transform:rotate(5deg)">✦</div>
+  <div class="doodle" style="left:5%; top:34%; font-size:19px; transform:rotate(-3deg)">◌</div>
+  <div class="doodle" style="left:14%; top:62%; font-size:13px; transform:rotate(12deg)">⊹</div>
+  <div class="doodle" style="left:8%; top:75%; font-size:16px; transform:rotate(-6deg)">ꕤ</div>
+
+  <!-- top-right cluster -->
+  <div class="doodle" style="right:8%; top:9%; font-size:14px; transform:rotate(10deg)">✦</div>
+  <div class="doodle" style="right:13%; top:22%; font-size:18px; transform:rotate(-5deg)">◌</div>
+  <div class="doodle" style="right:6%; top:40%; font-size:12px; transform:rotate(7deg)">⊹</div>
+  <div class="doodle" style="right:11%; top:58%; font-size:15px; transform:rotate(-10deg)">ꕤ</div>
+  <div class="doodle" style="right:7%; top:74%; font-size:11px; transform:rotate(4deg)">✦</div>
+
+  <!-- bottom scatter -->
+  <div class="doodle" style="left:22%; bottom:10%; font-size:17px; transform:rotate(-7deg)">⊹</div>
+  <div class="doodle" style="left:38%; bottom:7%; font-size:12px; transform:rotate(9deg)">◌</div>
+  <div class="doodle" style="right:28%; bottom:9%; font-size:14px; transform:rotate(-4deg)">ꕤ</div>
+  <div class="doodle" style="right:18%; bottom:14%; font-size:10px; transform:rotate(6deg)">✦</div>
+
+  <!-- top center -->
+  <div class="doodle" style="left:42%; top:6%; font-size:13px; transform:rotate(-3deg)">⊹</div>
+  <div class="doodle" style="left:56%; top:10%; font-size:11px; transform:rotate(8deg)">◌</div>
+
+</div>
+
+<!-- Paper airplane canvas — sits above background, below cards -->
+<canvas id="plane-canvas" style="position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:3;"></canvas>
+
+<script>
+  // ── Paper airplane (ported from github.com/sdjg113/Rive_Experiment) ─────────
+  (function() {
+    const canvas = document.getElementById('plane-canvas');
+    const ctx = canvas.getContext('2d');
+
+    const DEG = Math.PI / 180;
+
+    const VERTICES = [
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+      { x: -0.8621, y:  0.1361, z: -0.1671 },
+      { x: -0.7744, y:  0.1361, z: -0.7532 },
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+      { x: -1.0000, y:  0.1361, z:  0.7532 },
+      { x: -0.9122, y:  0.1361, z:  0.1671 },
+      { x: -0.8872, y: -0.1361, z:  0.0000 },
+      { x: -0.8621, y:  0.1361, z: -0.1671 },
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+      { x: -0.9122, y:  0.1361, z:  0.1671 },
+      { x: -0.8872, y: -0.1361, z:  0.0000 },
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+      { x:  1.0000, y:  0.1361, z:  0.2827 },
+    ];
+
+    // 1-indexed to match original; we'll subtract 1 when accessing projected[]
+    const FACES = [
+      { a: 2,  b: 3,  c: 1,  shade: 0.95 },
+      { a: 5,  b: 6,  c: 4,  shade: 1.00 },
+      { a: 8,  b: 9,  c: 7,  shade: 0.77 },
+      { a: 12, b: 13, c: 11, shade: 0.82 },
+    ];
+
+    const FOLLOW_SPEED   = 8;
+    const TURN_SPEED     = 10;
+    const PITCH_DEG      = -8;
+    const YAW_DEG        = 0;
+    const BANK_DEG       = 18;
+    const SHADOW_SCALE   = 0.72;
+    const SHADOW_SQUASH  = 0.5;
+    const SHADOW_OFFSET  = 0.58;
+    const NOSE_OFFSET    = 0;
+
+    let W = window.innerWidth, H = window.innerHeight;
+    let planeScale = Math.min(W, H) * 0.075;
+
+    let targetX = W / 2, targetY = H / 2;
+    let px = W / 2, py = H / 2;
+    let lastPx = px, lastPy = py;
+    let heading = 0, bank = 0;
+    let lastTs = null;
+
+    const projected = VERTICES.map(() => ({ x: 0, y: 0, depth: 0 }));
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function shortestAngleDelta(from, to) {
+      return ((to - from + Math.PI) % (Math.PI * 2)) - Math.PI;
+    }
+
+    function projectVertex(vi, cx, cy, scale, hdg, vPitch, vYaw, bnk, out) {
+      const v = VERTICES[vi];
+      const vx = v.x * scale, vy = v.y * scale, vz = v.z * scale;
+
+      const cosB = Math.cos(bnk), sinB = Math.sin(bnk);
+      const rolledY = vy * cosB - vz * sinB;
+      const rolledZ = vy * sinB + vz * cosB;
+
+      const cosH = Math.cos(hdg), sinH = Math.sin(hdg);
+      const headedX = vx * cosH - rolledZ * sinH;
+      const headedZ = vx * sinH + rolledZ * cosH;
+
+      const cosYaw = Math.cos(vYaw), sinYaw = Math.sin(vYaw);
+      const yawedX = headedX * cosYaw - headedZ * sinYaw;
+      const yawedZ = headedX * sinYaw + headedZ * cosYaw;
+
+      const cosPitch = Math.cos(vPitch), sinPitch = Math.sin(vPitch);
+      const pitchedY = rolledY * cosPitch - yawedZ * sinPitch;
+      const pitchedZ = rolledY * sinPitch + yawedZ * cosPitch;
+
+      out.x = cx + yawedX;
+      out.y = cy + pitchedZ * 0.56 - pitchedY * 0.95;
+      out.depth = pitchedZ * 0.75 + pitchedY * 0.25;
+    }
+
+    function projectedCenter() {
+      let minX = projected[0].x, maxX = projected[0].x;
+      let minY = projected[0].y, maxY = projected[0].y;
+      for (let i = 1; i < projected.length; i++) {
+        minX = Math.min(minX, projected[i].x);
+        maxX = Math.max(maxX, projected[i].x);
+        minY = Math.min(minY, projected[i].y);
+        maxY = Math.max(maxY, projected[i].y);
+      }
+      return [(minX + maxX) / 2, (minY + maxY) / 2];
+    }
+
+    function advance(ts) {
+      if (lastTs === null) lastTs = ts;
+      const dt = Math.min((ts - lastTs) / 1000, 0.05);
+      lastTs = ts;
+
+      const followT = 1 - Math.exp(-dt * FOLLOW_SPEED);
+      lastPx = px; lastPy = py;
+      px += (targetX - px) * followT;
+      py += (targetY - py) * followT;
+
+      const moveX = px - lastPx, moveY = py - lastPy;
+      const speed = Math.sqrt(moveX * moveX + moveY * moveY);
+      const maxBank = BANK_DEG * DEG;
+
+      if (speed > 0.01) {
+        const desiredHeading = Math.atan2(moveY / 0.56, moveX) + NOSE_OFFSET * DEG;
+        const hDelta = shortestAngleDelta(heading, desiredHeading);
+        const turnT = 1 - Math.exp(-dt * TURN_SPEED);
+        heading += hDelta * turnT;
+        const desiredBank = clamp(-hDelta * 1.15, -maxBank, maxBank);
+        bank += (desiredBank - bank) * turnT;
+      } else {
+        const bankT = 1 - Math.exp(-dt * TURN_SPEED);
+        bank += (0 - bank) * bankT;
+      }
+
+      const vPitch = PITCH_DEG * DEG, vYaw = YAW_DEG * DEG;
+      for (let i = 0; i < VERTICES.length; i++) {
+        projectVertex(i, px, py, planeScale, heading, vPitch, vYaw, bank, projected[i]);
+      }
+    }
+
+    function draw(ts) {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      planeScale = Math.min(W, H) * 0.075;
+
+      ctx.clearRect(0, 0, W, H);
+      advance(ts);
+
+      const [scx, scy] = projectedCenter();
+      const shadowOffY = planeScale * SHADOW_OFFSET;
+
+      // Sort faces by depth (painter's algorithm)
+      const sorted = FACES.map((face, fi) => {
+        const a = projected[face.a - 1];
+        const b = projected[face.b - 1];
+        const c = projected[face.c - 1];
+        return { face, a, b, c, depth: (a.depth + b.depth + c.depth) / 3 };
+      }).sort((l, r) => l.depth - r.depth);
+
+      // 1. Shadows
+      for (const { face, a, b, c } of sorted) {
+        const sc = Math.round(188 * (0.95 + face.shade * 0.05));
+        ctx.beginPath();
+        ctx.moveTo(scx + (a.x - scx) * SHADOW_SCALE, scy + (a.y - scy) * SHADOW_SCALE * SHADOW_SQUASH + shadowOffY);
+        ctx.lineTo(scx + (b.x - scx) * SHADOW_SCALE, scy + (b.y - scy) * SHADOW_SCALE * SHADOW_SQUASH + shadowOffY);
+        ctx.lineTo(scx + (c.x - scx) * SHADOW_SCALE, scy + (c.y - scy) * SHADOW_SCALE * SHADOW_SQUASH + shadowOffY);
+        ctx.closePath();
+        ctx.globalAlpha = 0.45;
+        ctx.fillStyle = `rgb(${sc},${sc},${sc})`;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // 2. Face fills
+      for (const { face, a, b, c } of sorted) {
+        const fc = Math.round(246 * face.shade);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y);
+        ctx.closePath();
+        ctx.fillStyle = `rgb(${fc},${fc},${fc})`;
+        ctx.fill();
+      }
+
+      // 3. Strokes
+      ctx.strokeStyle = 'rgb(42,42,42)';
+      ctx.lineWidth = 1.55;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      for (const { a, b, c } of sorted) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    document.addEventListener('mousemove', e => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    });
+
+    requestAnimationFrame(draw);
+  })();
+
+  // ── Draggable cards + GSAP micro-animations ─────────────────────────────────
+  (function() {
+    const draggableCards = ['card-checkout'];
+
+    draggableCards.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      // Parse the resting rotation from the initial inline style
+      const rotMatch = el.style.transform.match(/rotate\(([-\d.]+)deg\)/);
+      const restingRot = rotMatch ? parseFloat(rotMatch[1]) : 0;
+
+      // Let GSAP own the transform from the start so there's no conflict
+      gsap.set(el, { rotate: restingRot, scale: 1 });
+
+      let dragging = false;
+      let startX = 0, startY = 0;
+      let origLeft = 0, origTop = 0;
+
+      el.addEventListener('mousedown', e => {
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = el.getBoundingClientRect();
+        origLeft = rect.left;
+        origTop  = rect.top;
+
+        el.style.left   = origLeft + 'px';
+        el.style.top    = origTop  + 'px';
+        el.style.zIndex = 100;
+
+        // Pickup: lift up, very slight random tilt
+        const tiltDir = restingRot >= 0 ? 1 : -1;
+        gsap.to(el, {
+          scale: 1.06,
+          rotate: restingRot + tiltDir * 1.5,
+          boxShadow: '0 28px 64px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.8) inset',
+          duration: 0.18,
+          ease: 'power2.out',
+        });
+
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        el.style.left = (origLeft + e.clientX - startX) + 'px';
+        el.style.top  = (origTop  + e.clientY - startY) + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        el.style.zIndex = '';
+
+        // Drop: spring back to resting rotation + scale — elastic overshoot = wobble
+        gsap.to(el, {
+          scale: 1,
+          rotate: restingRot,
+          boxShadow: '0 2px 4px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.10), 0 1px 0 rgba(255,255,255,.8) inset',
+          duration: 0.75,
+          ease: 'elastic.out(1, 0.38)',
+        });
+      });
+
+      // Click to open (only if mouse barely moved)
+      el.addEventListener('click', e => {
+        if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
+          window.location.href = 'apps/builder/dist/';
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
