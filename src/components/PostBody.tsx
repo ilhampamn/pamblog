@@ -1,7 +1,7 @@
 'use client'
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
-import { gsap } from '@/lib/gsap'
+import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import 'gsap/ScrollTrigger'
 
 export function PostBody({ children }: { children: React.ReactNode }) {
@@ -12,6 +12,11 @@ export function PostBody({ children }: { children: React.ReactNode }) {
       'p, h2, h3, blockquote, pre, figure',
       bodyRef.current
     )
+    // Reduced motion: keep the article fully visible, skip scroll reveals.
+    if (prefersReducedMotion()) {
+      gsap.set(els, { opacity: 1, y: 0 })
+      return
+    }
     els.forEach((el) => {
       gsap.fromTo(
         el,

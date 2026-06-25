@@ -2,7 +2,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { useGSAP } from '@gsap/react'
-import { gsap, Draggable } from '@/lib/gsap'
+import { gsap, Draggable, prefersReducedMotion } from '@/lib/gsap'
 import { NewsletterWidget } from './NewsletterWidget'
 import type { Post } from '@/lib/posts'
 import type { Locale } from '@/lib/i18n'
@@ -51,10 +51,16 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
   useGSAP(() => {
     const items = gsap.utils.toArray<HTMLElement>('.canvas-card')
     const isDesktop = window.innerWidth >= 768
+    const reduced = prefersReducedMotion()
 
     // ── Mobile: cards live in normal document flow (vertical stack).
     // Just gently fade them in — never scatter them off the narrow viewport.
     if (!isDesktop) {
+      if (reduced) {
+        // No motion: show everything immediately in place.
+        gsap.set(items, { opacity: 1, y: 0 })
+        return
+      }
       gsap.set(items, { opacity: 0, y: 12 })
       gsap.to(items, {
         opacity: 1,
@@ -70,7 +76,8 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     items.forEach((el) => {
       const isIntro = el.id === 'intro'
       if (isIntro) {
-        gsap.set(el, { x: 0, y: 0, rotation: -1, opacity: 0, zIndex: 5 })
+        // Final state when reduced; start state (opacity 0) when animating.
+        gsap.set(el, { x: 0, y: 0, rotation: -1, opacity: reduced ? 1 : 0, zIndex: 5 })
         return
       }
 
@@ -86,19 +93,22 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         x: Math.cos(angle) * distance + jitterX,
         y: Math.sin(angle) * distance * 0.65 + jitterY,  // flatten vertically — feels like a desk
         rotation: (rng() - 0.5) * 10,          // −5° to +5°
-        opacity: 0,
+        opacity: reduced ? 1 : 0,
         zIndex: 1,
       })
     })
 
-    // Staggered entrance — cards settle like papers on a desk
-    gsap.to(items, {
-      opacity: 1,
-      y: '+=10',
-      duration: 0.6,
-      ease: 'power2.out',
-      stagger: { amount: 0.8, from: 'center' },
-    })
+    // Staggered entrance — cards settle like papers on a desk.
+    // Skip the tween for reduced-motion users (cards are already visible above).
+    if (!reduced) {
+      gsap.to(items, {
+        opacity: 1,
+        y: '+=10',
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: { amount: 0.8, from: 'center' },
+      })
+    }
 
     // Make each card individually draggable on desktop
     items.forEach((el) => {
