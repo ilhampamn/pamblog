@@ -1,0 +1,99 @@
+/* Codapay Whitelabel Tokens — Candy Crush */
+/* Generated from: Candy Crush brand — deep purple, hot pink CTA, gradient-first style */
+/* Skin flag: config.theme.skin = "glossy" (activates shine/gloss pseudo-element layer) */
+
+.checkout-scope {
+  /* ── Brand Primary (hot pink — WCAG AA on dark surfaces) ── */
+  --bg-action-primary: #E01B6E;
+  --border-action-default: #E01B6E;
+  --text-hyperlink-inverse: #FF5BA8;
+  --text-hyperlink-default: #FF5BA8;
+  --bg-card-selected: #48246B;
+  --border-input-focused: #FF2E88;
+
+  /* ── Surfaces (deep purple dark) ── */
+  --bg-page: #1A0F33;
+  --bg-navbar: #22134A;
+  --bg-input-default: #2A1545;
+  --bg-card-default: #221348;
+  --bg-section-subtle: rgba(72,36,107,.4);
+  --bg-sheet: #221348;
+  --bg-card-subtle: #2A1545;
+  --bg-card-inverse: #EEE8FF;
+  --bg-overlay: #000000;
+
+  /* ── Actions ── */
+  --bg-action-secondary: #2A1545;
+  --bg-action-destructive: #CC0705;
+  --text-action-on-primary: #FFFFFF;
+
+  /* ── Text (inverted for dark surfaces) ── */
+  --text-header-default: #F5F0FF;
+  --text-body-default: #E8E0F5;
+  --text-body-soft: #B09DC8;
+  --text-body-subtle: #7A6A92;
+  --text-placeholder: #5A4A72;
+  --text-body-inverse: #1A0F33;
+  --text-error-default: #FF6B6B;
+
+  /* ── Borders ── */
+  --border-navbar: rgba(255,255,255,.08);
+  --border-card-default: rgba(255,255,255,.08);
+  --border-input-default: rgba(255,255,255,.15);
+  --border-action-destructive: #CC0705;
+  --border-divider: rgba(255,255,255,.08);
+  --border-weight-default: 1px;
+  --border-weight-action: 2px;
+  --border-weight-selected: 2px;
+
+  /* ── Radii (rounded consumer brand) ── */
+  --radius-control-full: 999px;
+  --radius-input-m: 8px;
+  --radius-container-s: 8px;
+  --radius-container-m: 12px;
+  --border-radius-full: 9999px;
+
+  /* ── Spacing (FROZEN) ── */
+  --pad-surface-xs: 4px;
+  --pad-surface-s: 8px;
+  --pad-surface-m: 12px;
+  --pad-surface-l: 16px;
+  --pad-surface-xl: 24px;
+  --gap-content-narrow: 4px;
+  --gap-content-default: 8px;
+  --gap-content-loose: 12px;
+  --gap-content-separation: 16px;
+  --gap-section-separation: 24px;
+
+  /* ── Icon Sizes (FROZEN) ── */
+  --size-icon-s: 16px;
+  --size-icon-l: 24px;
+
+  /* ── Loading overlay ── */
+  --bg-loading-card: #2A1545;
+  --loader-accent: #FF5BA8;
+
+  /* ── Status accents ── */
+  --status-success: #00C853;
+  --status-error: #FF6B6B;
+
+  /* ── Typography ── */
+  --font-primary: 'Baloo 2', 'Nunito', system-ui, sans-serif;
+
+  /* ── Effects ─────────────────────────────────────────────────────────────── */
+
+  /* Page background — deep purple radial glow */
+  --bg-page-gradient: radial-gradient(120% 80% at 50% -10%, #3A1E6E 0%, #1A0F33 60%);
+
+  /* Navbar — translucent purple with glass blur */
+  --bg-navbar-blend: rgba(34,19,74,.7);
+  --backdrop-blur-navbar: blur(8px);
+
+  /* CTA button — hot pink gradient */
+  --bg-action-primary-gradient: linear-gradient(135deg, #FF5BA8, #FF2E88 45%, #E01B6E);
+  --shadow-action-primary: 0 6px 24px rgba(255,46,136,.5), inset 0 2px 0 rgba(255,255,255,.45), inset 0 -3px 6px rgba(180,0,80,.4);
+
+  /* Selected payment card — semi-transparent pink-purple overlay on dark base */
+  --bg-card-selected-gradient: linear-gradient(135deg, rgba(255,46,136,.22), rgba(157,91,255,.18)) #48246B;
+  --shadow-card-selected: 0 6px 24px rgba(255,46,136,.5);
+}

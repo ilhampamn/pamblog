@@ -1,0 +1,94 @@
+/* Codapay Whitelabel Tokens — Rift Racing */
+/* Generated from: screenshot analysis — dark navy theme, teal/cyan brand, steel-blue CTA */
+
+.checkout-scope {
+  /* ── Brand Primary ── */
+  /* The pay button and interactive selection use a steel blue derived from the
+     Rift Racing product palette. Teal (#00CFDD) is the logo accent but is too
+     low-contrast as a button; the CTA is shifted to WCAG-passing steel blue. */
+  --bg-action-primary: #1B7EC5;
+  --border-action-default: #1B7EC5;
+  --text-hyperlink-inverse: #1B7EC5;
+  --text-hyperlink-default: #4FB8F0;
+  --bg-card-selected: #0E2340;
+  --border-input-focused: #1B7EC5;
+
+  /* ── Surfaces (dark theme) ── */
+  --bg-navbar: #080814;
+  --bg-input-default: #111128;
+  --bg-card-default: #121226;
+  --bg-section-subtle: #1A1A32;
+  --bg-sheet: #121226;
+  --bg-card-subtle: #1A1A32;
+  --bg-card-inverse: #E8E8F0;
+  --bg-overlay: #000000;
+
+  /* ── Actions ── */
+  --bg-action-secondary: #1E1E38;
+  --bg-action-destructive: #CC0705;
+
+  /* ── Text (inverted for dark surfaces) ── */
+  --text-header-default: #F0F0FA;
+  --text-body-default: #E0E0F0;
+  --text-body-soft: #9090B0;
+  --text-body-subtle: #5A5A78;
+  --text-placeholder: #4A4A6A;
+  --text-body-inverse: #F5F5F5;
+  --text-error-default: #FF6B6B;
+
+  /* ── Borders (dark) ── */
+  --border-navbar: #1A1A32;
+  --border-card-default: #1E1E38;
+  --border-input-default: #2A2A48;
+  --border-action-destructive: #CC0705;
+  --border-divider: #1A1A32;
+  --border-weight-default: 1px;
+  --border-weight-action: 2px;
+  --border-weight-selected: 2px;
+
+  /* ── Radii (rounded / consumer brand) ── */
+  --radius-control-full: 999px;
+  --radius-input-m: 8px;
+  --radius-container-s: 8px;
+  --radius-container-m: 12px;
+  --border-radius-full: 9999px;
+
+  /* ── Spacing (FROZEN — product constraint) ── */
+  --pad-surface-xs: 4px;
+  --pad-surface-s: 8px;
+  --pad-surface-m: 12px;
+  --pad-surface-l: 16px;
+  --pad-surface-xl: 24px;
+  --gap-content-narrow: 4px;
+  --gap-content-default: 8px;
+  --gap-content-loose: 12px;
+  --gap-content-separation: 16px;
+  --gap-section-separation: 24px;
+
+  /* ── Icon Sizes (FROZEN) ── */
+  --size-icon-s: 16px;
+  --size-icon-l: 24px;
+
+  /* ── Loading overlay ── */
+  --bg-loading-card: #1A1A38;
+  --loader-accent: #4FB8F0;
+
+  /* ── Status accents (result screen) ── */
+  --status-success: #00C853;
+  --status-error: #FF6B6B;
+
+  /* ── Typography ── */
+  --font-primary: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+
+  /* ── Effects (flat dark theme — no gradients or shadows needed) ── */
+  /* These tokens are intentionally absent; component CSS falls back to flat tokens.
+     Format reference (set in glossy/gradient themes):
+       --bg-page-gradient: radial-gradient(...);
+       --bg-navbar-blend: rgba(...);
+       --backdrop-blur-navbar: blur(8px);
+       --bg-action-primary-gradient: linear-gradient(...);
+       --shadow-action-primary: 0 6px 24px rgba(...);
+       --bg-card-selected-gradient: linear-gradient(...) #hexfallback;
+       --shadow-card-selected: 0 6px 24px rgba(...);
+  */
+}
