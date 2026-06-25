@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "blog": "Tulisan",
+    "about": "Tentang",
+    "uses": "Perkakas"
+  },
+  "home": {
+    "tagline": "Menulis tentang hal-hal yang saya anggap menarik.",
+    "currently": "Sedang",
+    "currentlyReading": "Thinking in Systems — Donella Meadows",
+    "currentlyWorking": "Blog ini",
+    "aboutSnippet": "Tinggal di Indonesia. Fotografer, penulis, pembangun sesekali.",
+    "aboutLink": "Lebih tentang saya →"
+  },
+  "newsletter": {
+    "cta": "Terima tulisan baru langsung ke inbox kamu",
+    "placeholder": "email@kamu.com",
+    "button": "Langganan"
+  },
+  "post": {
+    "readingTime": "menit baca",
+    "relatedPosts": "Tulisan terkait"
+  },
+  "canvas": {
+    "intro": "Saya menulis tentang fotografi, membangun hal-hal, dan ruang di antaranya.",
+    "aboutSnippet": "Tinggal di Indonesia. Fotografer, penulis, pembangun sesekali.",
+    "aboutLink": "Lebih tentang saya →"
+  }
+}

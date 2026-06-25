@@ -1,0 +1,29 @@
+{
+  "nav": {
+    "blog": "Writing",
+    "about": "About",
+    "uses": "Uses"
+  },
+  "home": {
+    "tagline": "Writing about things I find interesting.",
+    "currently": "Currently",
+    "currentlyReading": "Thinking in Systems — Donella Meadows",
+    "currentlyWorking": "This blog",
+    "aboutSnippet": "Based in Indonesia. Photographer, writer, occasional builder.",
+    "aboutLink": "More about me →"
+  },
+  "newsletter": {
+    "cta": "Get new posts in your inbox",
+    "placeholder": "your@email.com",
+    "button": "Subscribe"
+  },
+  "post": {
+    "readingTime": "min read",
+    "relatedPosts": "Related posts"
+  },
+  "canvas": {
+    "intro": "I write about photography, building things, and the space between.",
+    "aboutSnippet": "Based in Indonesia. Photographer, writer, occasional builder.",
+    "aboutLink": "More about me →"
+  }
+}

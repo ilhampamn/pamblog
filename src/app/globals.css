@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Color */
+  --color-paper: #F2EDE4;
+  --color-ink: #1C1917;
+  --color-smudge: #8B7355;
+  --color-torn: #D4C5B0;
+  --color-blush: #C4785A;
+  --color-ghost: #E8E2D9;
+  --color-night: #0F0E0C;
+  --color-night-paper: #1A1915;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-ui: 'Inter', system-ui, sans-serif;
+
+  /* Scale */
+  --text-body: 18px;
+  --leading-body: 1.75;
+  --prose-width: 660px;
+  --layout-width: 1100px;
+
+  /* Spacing */
+  --space-unit: 8px;
+
+  /* Motion */
+  --duration-fast: 140ms;
+  --duration-default: 220ms;
+  --duration-slow: 380ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* Radius */
+  --radius-card: 4px;
+  --radius-input: 2px;
+}
+
+/* ─── Dark Mode ──────────────────────────────────────────────── */
+.dark {
+  --color-paper: #1A1915;
+  --color-ink: #EDE8DF;
+  --color-smudge: #A09070;
+  --color-torn: #302E29;
+  --color-ghost: #221F1A;
+  /* --color-blush stays identical in dark mode */
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Canvas Cards ───────────────────────────────────────────── */
+.canvas-card {
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.canvas-card:hover {
+  transform: scale(1.025) rotate(0.5deg);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas-card {
+    transition: none;
+  }
+  .canvas-card:hover {
+    transform: none;
+  }
+}
+
+/* ─── Reading Progress Bar ───────────────────────────────────── */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-blush);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 100;
+  width: 100%;
+}
+
+/* ─── Typography ─────────────────────────────────────────────── */
+.prose-body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  max-width: var(--prose-width);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-ui {
+  font-family: var(--font-ui);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.label-stamped {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-smudge);
+}
+
+/* ─── Code Blocks ────────────────────────────────────────────── */
+pre {
+  background: #1E1C18 !important;
+  border-left: 3px solid var(--color-blush);
+  font-family: var(--font-mono);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+}
+
+/* ─── Blockquotes ────────────────────────────────────────────── */
+blockquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--color-smudge);
+  border: none;
+  margin: 2rem 0;
+  padding: 0;
+}
+
+/* ─── Link hover ─────────────────────────────────────────────── */
+a {
+  transition: color var(--duration-fast) linear;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
