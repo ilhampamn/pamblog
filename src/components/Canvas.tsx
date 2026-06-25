@@ -50,8 +50,23 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
   useGSAP(() => {
     const items = gsap.utils.toArray<HTMLElement>('.canvas-card')
+    const isDesktop = window.innerWidth >= 768
 
-    // Set positions — intro card stays centered, others scatter around it
+    // ── Mobile: cards live in normal document flow (vertical stack).
+    // Just gently fade them in — never scatter them off the narrow viewport.
+    if (!isDesktop) {
+      gsap.set(items, { opacity: 0, y: 12 })
+      gsap.to(items, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        stagger: 0.08,
+      })
+      return
+    }
+
+    // ── Desktop: scatter the cards like papers on a desk.
     items.forEach((el) => {
       const isIntro = el.id === 'intro'
       if (isIntro) {
@@ -86,29 +101,27 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     })
 
     // Make each card individually draggable on desktop
-    if (window.innerWidth >= 768) {
-      items.forEach((el) => {
-        Draggable.create(el, {
-          type: 'x,y',
-          inertia: true,
-          cursor: 'grab',
-          activeCursor: 'grabbing',
-          onPress() {
-            // Bring clicked card to front
-            gsap.set(el, { zIndex: 10 })
-          },
-          onRelease() {
-            gsap.set(el, { zIndex: 1 })
-          },
-        })
+    items.forEach((el) => {
+      Draggable.create(el, {
+        type: 'x,y',
+        inertia: true,
+        cursor: 'grab',
+        activeCursor: 'grabbing',
+        onPress() {
+          // Bring clicked card to front
+          gsap.set(el, { zIndex: 10 })
+        },
+        onRelease() {
+          gsap.set(el, { zIndex: 1 })
+        },
       })
-    }
+    })
   }, { scope: canvasRef })
 
   return (
     <div
       ref={canvasRef}
-      className="relative w-full overflow-hidden"
+      className="relative w-full md:overflow-hidden"
       style={{
         minHeight: '100svh',
         backgroundColor: 'var(--color-paper)',
@@ -123,11 +136,11 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         <rect width="100%" height="100%" filter="url(#noise)" />
       </svg>
 
-      {/* Cards container */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* Cards container — vertical stack on mobile, scattered canvas on desktop */}
+      <div className="relative flex flex-col items-center gap-6 px-6 pt-28 pb-20 md:absolute md:inset-0 md:flex-row md:flex-wrap md:items-center md:justify-center md:gap-0 md:p-0">
         {/* ── Intro card ── */}
         <div
-          className="canvas-card absolute w-72 p-6"
+          className="canvas-card relative md:absolute w-72 max-w-full p-6"
           id="intro"
           style={{
             backgroundColor: 'var(--color-paper)',
@@ -151,7 +164,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           <Link
             key={post.slug}
             href={`/${locale}/blog/${post.slug}`}
-            className="canvas-card absolute w-56 p-5 block group"
+            className="canvas-card relative md:absolute w-56 max-w-full p-5 block group"
             data-slug={post.slug}
             style={{
               backgroundColor: 'var(--color-ghost)',
@@ -180,7 +193,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
         {/* ── Newsletter card ── */}
         <div
-          className="canvas-card absolute w-64 p-5"
+          className="canvas-card relative md:absolute w-64 max-w-full p-5"
           id="newsletter"
           style={{
             backgroundColor: 'var(--color-ghost)',
@@ -198,7 +211,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
         {/* ── Currently card ── */}
         <div
-          className="canvas-card absolute w-52 p-5"
+          className="canvas-card relative md:absolute w-52 max-w-full p-5"
           id="currently"
           style={{
             backgroundColor: 'var(--color-paper)',
@@ -217,7 +230,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
         {/* ── About snippet card ── */}
         <div
-          className="canvas-card absolute w-56 p-5"
+          className="canvas-card relative md:absolute w-56 max-w-full p-5"
           id="about"
           style={{
             backgroundColor: 'var(--color-ghost)',
