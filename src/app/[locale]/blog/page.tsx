@@ -128,24 +128,20 @@ export default function BlogIndexPage({
                   {/* Post list */}
                   <ul className="divide-y" style={{ borderColor: 'var(--color-torn)' }}>
                     {byYear[year].map((post) => (
-                      <li key={post.slug}>
-                        <Link
-                          href={`/${locale}/blog/${post.slug}`}
-                          className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-5 transition-colors"
-                        >
-                          {/* Tag */}
+                      <li key={post.slug} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-5">
+                          {/* Tag — separate link, not nested */}
                           <Link
                             href={`/${locale}/blog/tag/${post.tag}`}
                             className="label-stamped shrink-0 w-20 hover:text-[var(--color-ink)] transition-colors"
                             style={{ color: 'var(--color-smudge)' }}
-                            onClick={(e) => e.stopPropagation()}
                           >
                             {post.tag}
                           </Link>
 
                           {/* Title */}
-                          <span
-                            className="flex-1 text-base font-bold leading-snug group-hover:underline"
+                          <Link
+                            href={`/${locale}/blog/${post.slug}`}
+                            className="flex-1 text-base font-bold leading-snug hover:underline"
                             style={{
                               fontFamily: 'var(--font-display)',
                               color: 'var(--color-ink)',
@@ -153,18 +149,17 @@ export default function BlogIndexPage({
                             }}
                           >
                             {post.title}
-                          </span>
+                          </Link>
 
                           {/* Meta */}
                           <span
-                            className="label-stamped shrink-0 text-right"
+                            className="label-stamped shrink-0 sm:text-right"
                             style={{ color: 'var(--color-smudge)' }}
                           >
                             {formatDate(post.publishedAt, locale)}
                             <span className="mx-2" aria-hidden="true">·</span>
                             {post.readingTime} {ui.post.readingTime}
                           </span>
-                        </Link>
                       </li>
                     ))}
                   </ul>

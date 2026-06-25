@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Writing about photography, building things, and the space between.',
 }
 
-// Inline script runs before React hydration — prevents flash of wrong theme
+// Runs before React hydration — prevents flash of wrong theme
 const themeScript = `
 (function() {
   try {
@@ -23,9 +23,11 @@ const themeScript = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      {children}
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>{children}</body>
+    </html>
   )
 }

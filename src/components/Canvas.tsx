@@ -47,19 +47,32 @@ const TAG_COLORS: Record<string, string> = {
 
 export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
   const canvasRef = useRef<HTMLDivElement>(null)
-  const wrapRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
     const items = gsap.utils.toArray<HTMLElement>('.canvas-card')
 
-    // Set positions deterministically per card
+    // Set positions — intro card stays centered, others scatter around it
     items.forEach((el) => {
+      const isIntro = el.id === 'intro'
+      if (isIntro) {
+        gsap.set(el, { x: 0, y: 0, rotation: -1, opacity: 0, zIndex: 5 })
+        return
+      }
+
       const rng = seedRandom(el.dataset.slug ?? el.id ?? Math.random().toString())
+
+      // Push cards outward from center — min distance so they don't pile on the intro
+      const angle = rng() * Math.PI * 2
+      const distance = 220 + rng() * 280       // 220–500px from center
+      const jitterX = (rng() - 0.5) * 80       // extra horizontal noise
+      const jitterY = (rng() - 0.5) * 60       // extra vertical noise
+
       gsap.set(el, {
-        x: (rng() - 0.5) * 560,
-        y: (rng() - 0.5) * 340,
-        rotation: (rng() - 0.5) * 6,
+        x: Math.cos(angle) * distance + jitterX,
+        y: Math.sin(angle) * distance * 0.65 + jitterY,  // flatten vertically — feels like a desk
+        rotation: (rng() - 0.5) * 10,          // −5° to +5°
         opacity: 0,
+        zIndex: 1,
       })
     })
 
@@ -72,15 +85,22 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       stagger: { amount: 0.8, from: 'center' },
     })
 
-    // Make canvas draggable on desktop
-    if (window.innerWidth >= 768 && wrapRef.current) {
-      Draggable.create(wrapRef.current, {
-        type: 'x,y',
-        edgeResistance: 0.65,
-        inertia: true,
-        allowEventDefault: true,
-        cursor: 'grab',
-        activeCursor: 'grabbing',
+    // Make each card individually draggable on desktop
+    if (window.innerWidth >= 768) {
+      items.forEach((el) => {
+        Draggable.create(el, {
+          type: 'x,y',
+          inertia: true,
+          cursor: 'grab',
+          activeCursor: 'grabbing',
+          onPress() {
+            // Bring clicked card to front
+            gsap.set(el, { zIndex: 10 })
+          },
+          onRelease() {
+            gsap.set(el, { zIndex: 1 })
+          },
+        })
       })
     }
   }, { scope: canvasRef })
@@ -103,11 +123,8 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         <rect width="100%" height="100%" filter="url(#noise)" />
       </svg>
 
-      {/* Draggable canvas wrap */}
-      <div
-        ref={wrapRef}
-        className="absolute inset-0 flex items-center justify-center md:cursor-grab active:cursor-grabbing"
-      >
+      {/* Cards container */}
+      <div className="absolute inset-0 flex items-center justify-center">
         {/* ── Intro card ── */}
         <div
           className="canvas-card absolute w-72 p-6"

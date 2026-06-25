@@ -48,13 +48,8 @@ export default function LocaleLayout({
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   return (
-    <html
-      lang={locale}
-      className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable}`}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
-    </html>
+    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable}`}>
+      <ThemeProvider>{children}</ThemeProvider>
+    </div>
   )
 }
