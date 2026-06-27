@@ -32,13 +32,20 @@ interface TvStickerProps extends Pick<TvStickerConfig, 'id' | 'videoId'> {
   standalone?: boolean
 }
 
+// Whitespace in tv.png: ~7% transparent margin on each horizontal side.
+// In standalone mode we scale the inner container to 114% and offset by -7%
+// so the actual TV art fills the full container width. overflow:hidden clips
+// the extra. The iframe is inside the scaled container so calibration stays correct.
+const STANDALONE_SCALE  = '114%'   // 1 / (1 - 0.07*2) ≈ 1.136
+const STANDALONE_OFFSET = '-7%'    // centres the scaled-up image
+
 export function TvSticker({ id, videoId, width = 300, standalone = false }: TvStickerProps) {
   return (
     <div
       id={id}
       className={standalone ? '' : 'canvas-tv'}
       style={standalone
-        ? { width, userSelect: 'none', WebkitUserSelect: 'none' }
+        ? { width, userSelect: 'none', WebkitUserSelect: 'none', overflow: 'hidden' }
         : {
             position: 'absolute',
             left: -9999,
@@ -50,7 +57,12 @@ export function TvSticker({ id, videoId, width = 300, standalone = false }: TvSt
           }
       }
     >
-      <div style={{ position: 'relative', width: '100%' }}>
+      {/* In standalone mode: scale inner container up to eat the transparent margins */}
+      <div style={{
+        position: 'relative',
+        width: standalone ? STANDALONE_SCALE : '100%',
+        marginLeft: standalone ? STANDALONE_OFFSET : 0,
+      }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/tv.png"
