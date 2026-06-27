@@ -55,7 +55,7 @@ export default function LocaleLayout({
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   return (
-    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable} flex flex-col min-h-screen`}>
+    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable}`}>
       <ThemeProvider>{children}</ThemeProvider>
     </div>
   )
