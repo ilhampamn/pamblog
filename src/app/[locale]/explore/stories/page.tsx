@@ -26,7 +26,7 @@ export default async function StoriesPage({ params }: { params: { locale: string
   const stories = await getStories(locale)
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
       <main className="pt-32 pb-0 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
         <div className="max-w-[var(--prose-width)] mx-auto">
@@ -78,6 +78,6 @@ export default async function StoriesPage({ params }: { params: { locale: string
         </div>
       </main>
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

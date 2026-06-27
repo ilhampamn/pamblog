@@ -51,7 +51,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
   const contactBody = isId ? about.contactBodyId : about.contactBody
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
 
       <main
@@ -138,6 +138,6 @@ export default async function AboutPage({ params }: { params: { locale: string }
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

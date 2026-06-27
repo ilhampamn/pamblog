@@ -56,7 +56,7 @@ export default async function TagPage({
   const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a))
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
 
       <main
@@ -150,6 +150,6 @@ export default async function TagPage({
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

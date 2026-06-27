@@ -57,7 +57,7 @@ export default async function DestinationPage({
   const body = node ? renderArticleBody(node, locale) : null
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
       <main className="pt-32 pb-0 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
         <div className="max-w-[var(--prose-width)] mx-auto">
@@ -135,6 +135,6 @@ export default async function DestinationPage({
         )}
       </main>
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

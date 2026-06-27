@@ -60,7 +60,7 @@ export default async function BlogIndexPage({
   const allTags = Array.from(new Set(allPosts.map((p) => p.tag))).sort()
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
 
       <main
@@ -171,6 +171,6 @@ export default async function BlogIndexPage({
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

@@ -22,7 +22,7 @@ export default function GalleryPage({ params }: { params: { locale: string } }) 
   const ui = t(locale)
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
       <main className="pt-32 pb-16 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
         <div className="max-w-[var(--layout-width)] mx-auto">
@@ -59,6 +59,6 @@ export default function GalleryPage({ params }: { params: { locale: string } }) 
         </div>
       </main>
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

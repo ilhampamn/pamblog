@@ -78,7 +78,7 @@ export default async function PostPage({
   const isLongPost = post.readingTime > 8 // placeholder for word-count gate
 
   return (
-    <>
+    <div className="page-shell">
       <ProgressBar />
       <Nav locale={locale} ui={ui.nav} />
 
@@ -243,6 +243,6 @@ export default async function PostPage({
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

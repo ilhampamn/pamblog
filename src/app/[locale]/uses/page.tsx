@@ -247,7 +247,7 @@ export default function UsesPage({ params }: { params: { locale: string } }) {
   const isId = locale === 'id'
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
 
       <main
@@ -328,6 +328,6 @@ export default function UsesPage({ params }: { params: { locale: string } }) {
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

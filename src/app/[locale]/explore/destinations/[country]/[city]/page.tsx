@@ -37,7 +37,7 @@ export default async function CityPage({
   const { country, city } = chain
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
       <main className="pt-32 pb-0 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
         <div className="max-w-[var(--layout-width)] mx-auto">
@@ -91,6 +91,6 @@ export default async function CityPage({
         </div>
       </main>
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }

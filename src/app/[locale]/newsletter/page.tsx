@@ -66,7 +66,7 @@ export default function NewsletterPage({ params }: { params: { locale: string } 
   const c = content[locale]
 
   return (
-    <>
+    <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
 
       <main
@@ -139,6 +139,6 @@ export default function NewsletterPage({ params }: { params: { locale: string } 
       </main>
 
       <Footer locale={locale} />
-    </>
+    </div>
   )
 }
