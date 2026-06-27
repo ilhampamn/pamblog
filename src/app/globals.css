@@ -68,14 +68,15 @@ body {
 }
 
 /* ─── Sticky footer ──────────────────────────────────────────── */
-/* Pages that have a footer use a .page-shell wrapper. The shell fills
-   the viewport as a flex column; <main> inside it grows to push the
-   footer to the bottom. The canvas home page is excluded — it manages
-   its own full-viewport height. */
+/* layout.tsx gives the root div min-h-screen + flex-col.
+   .page-shell fills that root div (flex:1), then pushes its own
+   footer to the bottom via another flex-col + main{flex:1}.
+   The canvas home page has no .page-shell — its 100svh canvas
+   fills the screen on its own. */
 .page-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1;
 }
 
 .page-shell main {
