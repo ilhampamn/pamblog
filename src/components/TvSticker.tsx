@@ -25,7 +25,9 @@ const SCREEN_TOP    = '39%'
 const SCREEN_WIDTH  = '37%'
 const SCREEN_HEIGHT = '26%'
 
-interface TvStickerProps extends Pick<TvStickerConfig, 'id' | 'videoId' | 'width'> {
+interface TvStickerProps extends Pick<TvStickerConfig, 'id' | 'videoId'> {
+  /** Width: px number for canvas mode, CSS string (e.g. '100%') for standalone. */
+  width?: number | string
   /** When true, renders as a static block (mobile / standalone). Default: false. */
   standalone?: boolean
 }

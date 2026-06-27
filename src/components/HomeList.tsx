@@ -43,7 +43,7 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
       <div className="mx-auto flex max-w-md flex-col gap-10">
         {/* ── TV ── */}
         <div className="flex justify-center">
-          <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width={320} standalone />
+          <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width="100%" standalone />
         </div>
 
         {/* ── Header ── */}
