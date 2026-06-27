@@ -1,5 +1,11 @@
+import type { Node } from '@markdoc/markdoc'
+import { reader, resolveContent, type ContentValue } from '@/lib/reader'
 import type { Locale } from '@/lib/i18n'
 
+/**
+ * A single article projected into one language. Both locales of an article
+ * share the same `slug`; only title/excerpt/body/readingTime change per locale.
+ */
 export interface Post {
   slug: string
   locale: Locale
@@ -11,141 +17,120 @@ export interface Post {
   readingTime: number
 }
 
-// Placeholder until Velite is wired up — returns typed dummy data
-export function getPostsByLocale(locale: Locale): Post[] {
-  return DUMMY_POSTS.filter((p) => p.locale === locale).sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+// ── helpers ────────────────────────────────────────────────────────────────
+
+type ArticleEntry = NonNullable<
+  Awaited<ReturnType<typeof reader.collections.articles.read>>
+>
+
+function pickTitle(entry: ArticleEntry, locale: Locale): string {
+  if (locale === 'id') return entry.titleId?.trim() || entry.title
+  return entry.title
+}
+
+function pickExcerpt(entry: ArticleEntry, locale: Locale): string | undefined {
+  const value = locale === 'id' ? entry.excerptId : entry.excerpt
+  return value?.trim() ? value : undefined
+}
+
+function pickReadingTime(entry: ArticleEntry, locale: Locale): number {
+  // Level 1: read from frontmatter — no body parse needed on list pages.
+  const value = locale === 'id' ? entry.readingTimeId : entry.readingTimeEn
+  return value ?? 1
+}
+
+function bodyFor(entry: ArticleEntry, locale: Locale): ContentValue {
+  return locale === 'id' ? entry.contentId : entry.content
+}
+
+/**
+ * Build a Post (metadata only) from an entry.
+ * Does NOT read the body — all data comes from frontmatter.
+ */
+function toPost(slug: string, entry: ArticleEntry, locale: Locale): Post {
+  return {
+    slug,
+    locale,
+    title: pickTitle(entry, locale),
+    publishedAt: entry.publishedAt ?? '',
+    tag: entry.tag,
+    excerpt: pickExcerpt(entry, locale),
+    coverImage: entry.coverImage ?? undefined,
+    readingTime: pickReadingTime(entry, locale),
+  }
+}
+
+// ── public API ─────────────────────────────────────────────────────────────
+
+/**
+ * All articles for one locale, sorted newest-first.
+ * Fast: only reads frontmatter (no body files opened).
+ */
+export async function getPostsByLocale(locale: Locale): Promise<Post[]> {
+  const slugs = await reader.collections.articles.list()
+  const posts = await Promise.all(
+    slugs.map(async (slug) => {
+      const entry = await reader.collections.articles.read(slug)
+      return entry ? toPost(slug, entry, locale) : null
+    })
   )
+  return posts
+    .filter((p): p is Post => p !== null)
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    )
 }
 
-export function getPostBySlug(locale: Locale, slug: string): Post | undefined {
-  return DUMMY_POSTS.find((p) => p.locale === locale && p.slug === slug)
+/**
+ * Metadata for one article in one locale.
+ * Fast: only reads frontmatter.
+ */
+export async function getPostBySlug(
+  locale: Locale,
+  slug: string
+): Promise<Post | undefined> {
+  const entry = await reader.collections.articles.read(slug)
+  if (!entry) return undefined
+  return toPost(slug, entry, locale)
 }
 
-export function getAlternatePost(locale: Locale, slug: string): Post | null {
-  const otherLocale: Locale = locale === 'en' ? 'id' : 'en'
-  return DUMMY_POSTS.find((p) => p.locale === otherLocale && p.slug === slug) ?? null
+/** Both locales share a slug, so the alternate is the same article in the other language. */
+export async function getAlternatePost(
+  locale: Locale,
+  slug: string
+): Promise<Post | null> {
+  const other: Locale = locale === 'en' ? 'id' : 'en'
+  const entry = await reader.collections.articles.read(slug)
+  if (!entry) return null
+  return toPost(slug, entry, other)
 }
 
-// Dummy data — replace with Velite import once content is wired
-const DUMMY_POSTS: Post[] = [
-  // ── English ──
-  {
-    slug: 'light-and-shadow',
-    locale: 'en',
-    title: 'Light and Shadow: What Photography Taught Me About Seeing',
-    publishedAt: '2026-06-01',
-    tag: 'essay',
-    excerpt: 'Photography is not about capturing what is there. It is about choosing what to notice.',
-    readingTime: 6,
-  },
-  {
-    slug: 'building-in-public',
-    locale: 'en',
-    title: 'Building in Public, Quietly',
-    publishedAt: '2026-05-14',
-    tag: 'note',
-    excerpt: 'A record of making things without waiting to be ready.',
-    readingTime: 4,
-  },
-  {
-    slug: 'tools-i-use',
-    locale: 'en',
-    title: 'The Tools I Actually Use',
-    publishedAt: '2026-04-22',
-    tag: 'review',
-    excerpt: 'A honest account of what stays open on my desk.',
-    readingTime: 8,
-  },
-  {
-    slug: 'on-slow-travel',
-    locale: 'en',
-    title: 'On Slow Travel and the Art of Arriving',
-    publishedAt: '2026-03-10',
-    tag: 'essay',
-    excerpt: 'Speed is not a virtue when the point is to see.',
-    readingTime: 5,
-  },
-  {
-    slug: 'shooting-film-in-2026',
-    locale: 'en',
-    title: 'Shooting Film in 2026',
-    publishedAt: '2026-02-18',
-    tag: 'review',
-    excerpt: 'Why I went back to film and what it cost me — literally.',
-    readingTime: 7,
-  },
-  {
-    slug: 'gsap-for-designers',
-    locale: 'en',
-    title: 'GSAP for Designers Who Are Afraid of JavaScript',
-    publishedAt: '2025-11-04',
-    tag: 'tutorial',
-    excerpt: 'You do not need to understand closures to make things move beautifully.',
-    readingTime: 12,
-  },
-  {
-    slug: 'the-value-of-constraints',
-    locale: 'en',
-    title: 'The Value of Constraints',
-    publishedAt: '2025-09-22',
-    tag: 'essay',
-    excerpt: 'Every creative decision is made in a room. The smaller the room, the sharper the thinking.',
-    readingTime: 5,
-  },
-  {
-    slug: 'how-i-take-notes',
-    locale: 'en',
-    title: 'How I Take Notes (And Why It Keeps Changing)',
-    publishedAt: '2025-07-15',
-    tag: 'note',
-    excerpt: 'A system is only good until you outgrow it.',
-    readingTime: 6,
-  },
-  // ── Indonesian ──
-  {
-    slug: 'cahaya-dan-bayangan',
-    locale: 'id',
-    title: 'Cahaya dan Bayangan: Apa yang Fotografi Ajarkan Tentang Melihat',
-    publishedAt: '2026-06-01',
-    tag: 'essay',
-    excerpt: 'Fotografi bukan tentang menangkap apa yang ada. Ini tentang memilih apa yang ingin diperhatikan.',
-    readingTime: 6,
-  },
-  {
-    slug: 'membangun-di-depan-umum',
-    locale: 'id',
-    title: 'Membangun di Depan Umum, dengan Tenang',
-    publishedAt: '2026-05-14',
-    tag: 'catatan',
-    excerpt: 'Catatan tentang membuat sesuatu tanpa menunggu siap.',
-    readingTime: 4,
-  },
-  {
-    slug: 'perjalanan-lambat',
-    locale: 'id',
-    title: 'Tentang Perjalanan Lambat dan Seni Tiba',
-    publishedAt: '2026-03-10',
-    tag: 'essay',
-    excerpt: 'Kecepatan bukan kebajikan ketika tujuannya adalah melihat.',
-    readingTime: 5,
-  },
-  {
-    slug: 'memotret-dengan-film',
-    locale: 'id',
-    title: 'Memotret dengan Film di 2026',
-    publishedAt: '2026-02-18',
-    tag: 'ulasan',
-    excerpt: 'Kenapa saya kembali ke film dan apa yang harus dibayar — secara harfiah.',
-    readingTime: 7,
-  },
-  {
-    slug: 'nilai-keterbatasan',
-    locale: 'id',
-    title: 'Nilai dari Keterbatasan',
-    publishedAt: '2025-11-04',
-    tag: 'essay',
-    excerpt: 'Setiap keputusan kreatif dibuat dalam sebuah ruangan. Semakin kecil ruangannya, semakin tajam pemikirannya.',
-    readingTime: 5,
-  },
-]
+/**
+ * The parsed Markdoc body node for one locale.
+ * Only called on the post detail page (not list pages).
+ */
+export async function getArticleNode(
+  locale: Locale,
+  slug: string
+): Promise<Node | null> {
+  const entry = await reader.collections.articles.read(slug)
+  if (!entry) return null
+  const { node } = await resolveContent(bodyFor(entry, locale))
+  return node
+}
+
+/** Lightweight preview used by the inline <LinkedPost> hover card. */
+export async function getArticlePreview(
+  slug: string,
+  locale: Locale
+): Promise<Pick<Post, 'title' | 'excerpt' | 'tag' | 'coverImage'> | null> {
+  const entry = await reader.collections.articles.read(slug)
+  if (!entry) return null
+  return {
+    title: pickTitle(entry, locale),
+    excerpt: pickExcerpt(entry, locale),
+    tag: entry.tag,
+    coverImage: entry.coverImage ?? undefined,
+  }
+}

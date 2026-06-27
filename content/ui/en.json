@@ -1,8 +1,28 @@
 {
   "nav": {
     "blog": "Writing",
+    "explore": "Explore",
     "about": "About",
     "uses": "Uses"
+  },
+  "explore": {
+    "title": "Explore",
+    "intro": "Places I've been, trips I've planned, and stories from the road.",
+    "destinations": "Destinations",
+    "destinationsDesc": "Browse by region, country, and city.",
+    "itineraries": "Itineraries",
+    "itinerariesDesc": "Trip plans you can follow.",
+    "stories": "Stories",
+    "storiesDesc": "Journals from longer journeys.",
+    "all": "All",
+    "inThisCity": "Destinations",
+    "citiesIn": "Cities",
+    "appearsIn": "Appears in",
+    "relatedItineraries": "Itineraries that include this",
+    "relatedStories": "Stories that mention this",
+    "stops": "Stops",
+    "noContent": "Nothing here yet.",
+    "back": "Back"
   },
   "home": {
     "tagline": "Writing about things I find interesting.",

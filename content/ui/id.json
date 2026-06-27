@@ -1,8 +1,28 @@
 {
   "nav": {
     "blog": "Tulisan",
+    "explore": "Jelajah",
     "about": "Tentang",
     "uses": "Perkakas"
+  },
+  "explore": {
+    "title": "Jelajah",
+    "intro": "Tempat yang pernah saya kunjungi, rencana perjalanan, dan cerita di jalan.",
+    "destinations": "Destinasi",
+    "destinationsDesc": "Telusuri berdasarkan kawasan, negara, dan kota.",
+    "itineraries": "Itinerary",
+    "itinerariesDesc": "Rencana perjalanan yang bisa kamu ikuti.",
+    "stories": "Cerita",
+    "storiesDesc": "Catatan dari perjalanan panjang.",
+    "all": "Semua",
+    "inThisCity": "Destinasi",
+    "citiesIn": "Kota",
+    "appearsIn": "Muncul di",
+    "relatedItineraries": "Itinerary yang memuat tempat ini",
+    "relatedStories": "Cerita yang menyebut tempat ini",
+    "stops": "Perhentian",
+    "noContent": "Belum ada apa-apa di sini.",
+    "back": "Kembali"
   },
   "home": {
     "tagline": "Menulis tentang hal-hal yang saya anggap menarik.",

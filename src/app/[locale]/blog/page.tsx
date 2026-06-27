@@ -28,7 +28,7 @@ export async function generateMetadata({
   }
 }
 
-export default function BlogIndexPage({
+export default async function BlogIndexPage({
   params,
   searchParams,
 }: {
@@ -41,7 +41,7 @@ export default function BlogIndexPage({
   const ui = t(locale)
   const activeTag = searchParams.tag ?? null
 
-  const allPosts = getPostsByLocale(locale)
+  const allPosts = await getPostsByLocale(locale)
   const posts = activeTag
     ? allPosts.filter((p) => p.tag === activeTag)
     : allPosts

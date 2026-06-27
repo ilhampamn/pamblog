@@ -12,8 +12,10 @@ function escapeXml(str: string) {
 }
 
 export async function GET() {
-  const enPosts = getPostsByLocale('en')
-  const idPosts = getPostsByLocale('id')
+  const [enPosts, idPosts] = await Promise.all([
+    getPostsByLocale('en'),
+    getPostsByLocale('id'),
+  ])
   const allPosts = [...enPosts, ...idPosts].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   )

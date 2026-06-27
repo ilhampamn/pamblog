@@ -6,16 +6,21 @@ import { Footer } from '@/components/Footer'
 import { ProgressBar } from '@/components/ProgressBar'
 import { PostBody } from '@/components/PostBody'
 import { NewsletterWidget } from '@/components/NewsletterWidget'
-import { getPostBySlug, getPostsByLocale } from '@/lib/posts'
+import { getPostBySlug, getPostsByLocale, getArticleNode } from '@/lib/posts'
+import { renderArticleBody } from '@/lib/markdoc'
 import { t, type Locale } from '@/lib/i18n'
 import { formatDate } from '@/lib/date'
 
 const LOCALES = ['en', 'id'] as const
 
-export function generateStaticParams() {
-  return LOCALES.flatMap((locale) =>
-    getPostsByLocale(locale).map((post) => ({ locale, slug: post.slug }))
+export async function generateStaticParams() {
+  const results = await Promise.all(
+    LOCALES.map(async (locale) => {
+      const posts = await getPostsByLocale(locale)
+      return posts.map((post) => ({ locale, slug: post.slug }))
+    })
   )
+  return results.flat()
 }
 
 export async function generateMetadata({
@@ -23,7 +28,7 @@ export async function generateMetadata({
 }: {
   params: { locale: string; slug: string }
 }): Promise<Metadata> {
-  const post = getPostBySlug(params.locale as Locale, params.slug)
+  const post = await getPostBySlug(params.locale as Locale, params.slug)
   if (!post) return {}
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
@@ -48,94 +53,7 @@ export async function generateMetadata({
   }
 }
 
-// Placeholder prose — replaced when Velite + MDX is wired
-function DummyPostContent({ locale }: { locale: Locale }) {
-  if (locale === 'id') {
-    return (
-      <>
-        <p>
-          Foto pertama yang pernah saya ambil dan benar-benar saya banggakan ternyata overexposed.
-          Subjeknya — sebuah jendela, sore hari, cahaya yang mengubah debu menjadi emas —
-          hampir seluruhnya blown out. Tidak ada detail di langit.
-        </p>
-        <p>
-          Guru fotografi saya waktu itu melingkarinya dengan pulpen merah dan menulis:{' '}
-          <em>terlalu banyak.</em> Secara teknis, beliau benar. Tapi saya terus memandanginya.
-        </p>
-        <h2>Eksposur adalah sebuah keputusan</h2>
-        <p>
-          Inilah yang kini saya percayai: fotografi bukan teknologi perekam. Ini adalah teknologi
-          penyunting. Kamera tidak menunjukkan apa yang ada — ia menunjukkan apa yang Anda putuskan
-          untuk dibiarkan masuk.
-        </p>
-        <blockquote>
-          Memotret adalah mengambil alih objek yang dipotret. — Susan Sontag
-        </blockquote>
-        <h2>Apa yang sebenarnya saya pelajari</h2>
-        <p>
-          Pelajaran praktis itu butuh bertahun-tahun untuk menjadi berguna: belajarlah membaca
-          cahaya sebelum mengangkat kamera. Sebelum mengambil foto sekarang, saya meluangkan waktu
-          sejenak untuk hanya melihat.
-        </p>
-        <p>
-          Kamera naik terakhir. Melihat terjadi lebih dulu. Saya pikir ini juga berlaku untuk
-          menulis. Dan untuk sebagian besar hal yang layak dilakukan.
-        </p>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <p>
-        The first photograph I ever took that I was genuinely proud of was overexposed. The
-        subject — a window, late afternoon, the kind of light that turns dust into gold — was
-        almost entirely blown out. There was no detail in the sky.
-      </p>
-      <p>
-        My photography teacher at the time circled it in red pen and wrote: <em>too much.</em>{' '}
-        He was technically right. But I kept looking at it.
-      </p>
-      <h2>Exposure is a decision</h2>
-      <p>
-        Here is what I have come to believe: photography is not a recording technology. It is an
-        editing technology. The camera does not show you what is there — it shows you what you
-        decided to let in.
-      </p>
-      <p>
-        Every time you raise a camera, you are making a series of small choices that the viewer
-        will never see: what to include in the frame, how much light to allow, what to hold in
-        focus, and when, exactly, to press the shutter. None of these are neutral decisions.
-        They are all acts of interpretation.
-      </p>
-      <h2>Shadow is not the absence of light</h2>
-      <p>
-        I spent my first two years as a photographer trying to eliminate shadow. I wanted clean,
-        evenly lit images. The photographs were accurate. They were also lifeless.
-      </p>
-      <blockquote>
-        To photograph is to appropriate the thing photographed. — Susan Sontag
-      </blockquote>
-      <p>
-        Shadow is not the absence of light. It is the presence of depth. It is what tells your
-        eye that something exists in three dimensions, that there is a side of this object you
-        cannot see, that the world continues past the edge of the frame.
-      </p>
-      <h2>What I actually learned</h2>
-      <p>
-        The practical lesson took years to become useful: learn to read light before you raise the
-        camera. Before I take a photograph now, I spend a moment just looking. Where is the light
-        coming from? What is it hitting first? What is it skipping?
-      </p>
-      <p>
-        The camera comes up last. The seeing happens first. This is, I think, also true of
-        writing. And of most things worth doing.
-      </p>
-    </>
-  )
-}
-
-export default function PostPage({
+export default async function PostPage({
   params,
 }: {
   params: { locale: string; slug: string }
@@ -143,11 +61,14 @@ export default function PostPage({
   const locale = params.locale as Locale
   if (!LOCALES.includes(locale as Locale)) notFound()
 
-  const post = getPostBySlug(locale, params.slug)
+  const post = await getPostBySlug(locale, params.slug)
   if (!post) notFound()
 
+  const node = await getArticleNode(locale, params.slug)
+  const body = node ? renderArticleBody(node, locale) : null
+
   const ui = t(locale)
-  const allPosts = getPostsByLocale(locale)
+  const allPosts = await getPostsByLocale(locale)
 
   // Related posts: same tag, exclude current
   const related = allPosts
@@ -259,7 +180,7 @@ export default function PostPage({
               />
             </div>
 
-            <DummyPostContent locale={locale} />
+            {body}
 
             {/* CTA 3: end of post — full newsletter card */}
             <div className="mt-16">

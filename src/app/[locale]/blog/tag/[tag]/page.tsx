@@ -9,12 +9,15 @@ import { formatDate } from '@/lib/date'
 
 const LOCALES = ['en', 'id'] as const
 
-export function generateStaticParams() {
-  return LOCALES.flatMap((locale) => {
-    const posts = getPostsByLocale(locale)
-    const tags = Array.from(new Set(posts.map((p) => p.tag)))
-    return tags.map((tag) => ({ locale, tag }))
-  })
+export async function generateStaticParams() {
+  const results = await Promise.all(
+    LOCALES.map(async (locale) => {
+      const posts = await getPostsByLocale(locale)
+      const tags = Array.from(new Set(posts.map((p) => p.tag)))
+      return tags.map((tag) => ({ locale, tag }))
+    })
+  )
+  return results.flat()
 }
 
 export async function generateMetadata({
@@ -28,7 +31,7 @@ export async function generateMetadata({
   }
 }
 
-export default function TagPage({
+export default async function TagPage({
   params,
 }: {
   params: { locale: string; tag: string }
@@ -38,7 +41,7 @@ export default function TagPage({
 
   const ui = t(locale)
   const tag = decodeURIComponent(params.tag)
-  const allPosts = getPostsByLocale(locale)
+  const allPosts = await getPostsByLocale(locale)
   const posts = allPosts.filter((p) => p.tag === tag)
 
   if (posts.length === 0) notFound()

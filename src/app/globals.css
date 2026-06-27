@@ -5,20 +5,21 @@
 /* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Color */
-  --color-paper: #F2EDE4;
-  --color-ink: #1C1917;
-  --color-smudge: #8B7355;
-  --color-torn: #D4C5B0;
-  --color-blush: #C4785A;
-  --color-ghost: #E8E2D9;
-  --color-night: #0F0E0C;
-  --color-night-paper: #1A1915;
+  --color-paper: #FFFFFF;
+  --color-ink: #171717;
+  --color-smudge: #737373;
+  --color-torn: #E5E5E5;
+  --color-blush: #EC4899;
+  --color-ghost: #F5F5F5;
+  --color-night: #0F0F0F;
+  --color-night-paper: #1A1A1A;
 
   /* Typography */
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Lora', Georgia, serif;
+  --font-display: 'Open Sans Jakarta', system-ui, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   --font-ui: 'Inter', system-ui, sans-serif;
+  --font-handwriting: 'Reenie Beanie', cursive;
 
   /* Scale */
   --text-body: 18px;
@@ -66,26 +67,115 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Canvas Cards ───────────────────────────────────────────── */
-.canvas-card {
-  transition:
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+/* ─── Canvas: pannable / zoomable world ──────────────────────── */
+.canvas-viewport {
+  /* The drag surface — disable native gestures so pan/zoom is ours. */
+  overscroll-behavior: none;
+}
+
+.canvas-world {
+  /* GPU-promote the transformed plane for smooth pan/zoom. */
   will-change: transform;
 }
 
+/* ── Canvas element interaction system ──────────────────────────
+   Three states, same language for every element on the board:
+   default  → slight shadow, element feels pinned / has dimension
+   :hover   → shadow lifts a little — it's peeling off the surface
+   dragging → deep floating shadow + gentle scale-up — it's airborne
+
+   CSS `scale` is a standalone transform property that composes on
+   top of the inline `transform` set by applyTransform, so it scales
+   around the element's own centre without disturbing its position. */
+
+.canvas-card {
+  user-select: none;
+  -webkit-user-select: none;
+  /* Default: pinned to board */
+  box-shadow:
+    0 1px 2px rgba(28, 25, 23, 0.06),
+    0 2px 6px rgba(28, 25, 23, 0.06);
+  transition:
+    box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    scale       220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover: shadow deepens — element peels off the corkboard */
 .canvas-card:hover {
-  transform: scale(1.025) rotate(0.5deg);
-  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+  box-shadow:
+    0 4px 12px rgba(28, 25, 23, 0.10),
+    0 1px 4px  rgba(28, 25, 23, 0.06);
+}
+
+/* Drag: floating in mid-air + grow slightly */
+.canvas-card.is-dragging {
+  box-shadow:
+    0 14px 36px rgba(28, 25, 23, 0.18),
+    0 4px  10px rgba(28, 25, 23, 0.10);
+  scale: 1.03;
+  transition:
+    box-shadow 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    scale       120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Stickers & Polaroids use drop-shadow (respects transparency + frame shape).
+   Same three-state system as cards. */
+.canvas-sticker {
+  /* Default: pinned */
+  filter:
+    drop-shadow(0 1px 2px rgba(28, 25, 23, 0.08))
+    drop-shadow(0 2px 6px rgba(28, 25, 23, 0.06));
+  transition:
+    filter 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    scale  220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover: lift */
+.canvas-sticker:hover {
+  filter:
+    drop-shadow(0 4px 10px rgba(28, 25, 23, 0.12))
+    drop-shadow(0 1px 4px  rgba(28, 25, 23, 0.07));
+}
+
+/* Drag: floating */
+.canvas-sticker.is-dragging {
+  filter:
+    drop-shadow(0 14px 28px rgba(28, 25, 23, 0.22))
+    drop-shadow(0 4px  10px rgba(28, 25, 23, 0.12));
+  scale: 1.04;
+  transition:
+    filter 120ms cubic-bezier(0.16, 1, 0.3, 1),
+    scale  120ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .canvas-card {
-    transition: none;
-  }
-  .canvas-card:hover {
-    transform: none;
-  }
+  .canvas-card,
+  .canvas-sticker { transition: none; scale: 1 !important; }
+}
+
+/* Floating zoom controls. */
+.canvas-control {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-torn);
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 8px rgba(28, 25, 23, 0.08);
+  transition:
+    background-color var(--duration-fast) linear,
+    border-color var(--duration-fast) linear;
+}
+
+.canvas-control:hover {
+  background-color: var(--color-ghost);
+  border-color: var(--color-smudge);
 }
 
 /* ─── Reading Progress Bar ───────────────────────────────────── */
@@ -160,5 +250,97 @@ a {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* ─── Linked Post (inline reference + hover preview card) ────── */
+.linked-post {
+  position: relative;
+  display: inline;
+}
+
+.linked-post__anchor {
+  color: var(--color-blush);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.linked-post__card {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  z-index: 50;
+  width: 18rem;
+  max-width: 80vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-torn);
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.16);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition:
+    opacity var(--duration-default) var(--ease-out),
+    transform var(--duration-default) var(--ease-out);
+}
+
+/* Reveal on hover or keyboard focus of the link. */
+.linked-post:hover .linked-post__card,
+.linked-post:focus-within .linked-post__card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.linked-post__cover {
+  width: 100%;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: var(--radius-input);
+}
+
+.linked-post__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.linked-post__tag {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-blush);
+}
+
+.linked-post__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.linked-post__excerpt {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-smudge);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linked-post__card {
+    transition: none;
+    transform: none;
   }
 }

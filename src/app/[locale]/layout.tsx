@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { Inter, Playfair_Display, Lora, JetBrains_Mono } from 'next/font/google'
+import { Inter, Playfair_Display, Lora, JetBrains_Mono, Reenie_Beanie } from 'next/font/google'
 import type { Locale } from '@/lib/i18n'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
@@ -33,6 +33,13 @@ const jetbrains = JetBrains_Mono({
   weight: ['400', '500'],
 })
 
+const reenieBeanie = Reenie_Beanie({
+  subsets: ['latin'],
+  variable: '--font-reenie',
+  display: 'swap',
+  weight: '400',
+})
+
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
@@ -48,7 +55,7 @@ export default function LocaleLayout({
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   return (
-    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable}`}>
+    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable}`}>
       <ThemeProvider>{children}</ThemeProvider>
     </div>
   )
