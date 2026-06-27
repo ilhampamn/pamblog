@@ -12,6 +12,7 @@ interface NavProps {
   ui: {
     blog: string
     explore: string
+    gallery: string
     about: string
     uses: string
   }
@@ -92,6 +93,7 @@ export function Nav({ locale, ui }: NavProps) {
   const links = [
     { href: `/${locale}/blog`, label: ui.blog },
     { href: `/${locale}/explore`, label: ui.explore },
+    { href: `/${locale}/gallery`, label: ui.gallery },
     { href: `/${locale}/about`, label: ui.about },
     { href: `/${locale}/uses`, label: ui.uses },
   ]
