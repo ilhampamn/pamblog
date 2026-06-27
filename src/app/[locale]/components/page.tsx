@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useTheme } from '@/components/ThemeToggle'
 import type { Locale } from '@/lib/i18n'
 import { useTheme as useThemeProvider } from '@/components/ThemeProvider'
 

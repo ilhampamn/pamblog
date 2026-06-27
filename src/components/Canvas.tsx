@@ -209,7 +209,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     // Polaroids: fixed CSS width + scale() in transform — identical to how
     // cards work. This scales the image AND the padding proportionally without
     // the percentage-padding-from-viewport bug.
-    POLAROIDS.forEach(({ id, width = 200, rotation = 0 }) => {
+    POLAROIDS.forEach(({ id, rotation = 0 }) => {
       const el = document.getElementById(id)
       if (!el) return
       const pos = stickerPos.current.get(id)!
@@ -241,6 +241,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       el.style.top       = `${ty.current + pos.y * scale.current}px`
       el.style.transform = `translate(-50%, -50%) rotate(${pos.rotation}deg) scale(${scale.current})`
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Keep the viewport within the world (with a soft overscroll margin).
