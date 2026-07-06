@@ -3,7 +3,7 @@ import { NewsletterWidget } from './NewsletterWidget'
 import { TvSticker } from './TvSticker'
 import { StickyNote } from './StickyNote'
 import { Polaroid } from './Polaroid'
-import type { Post } from '@/lib/posts'
+import type { Post } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
 // Gentle, alternating tilts (10–15°) so the stacked notes feel hand-placed.

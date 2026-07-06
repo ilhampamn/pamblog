@@ -33,7 +33,7 @@ const componentConfig = {
 
 export default function ComponentsPage({ params }: ComponentShowcaseProps) {
   const { locale } = params
-  const config = componentConfig[locale] || componentConfig.en
+  const config = componentConfig[locale as keyof typeof componentConfig] || componentConfig.en
   const { resolvedTheme } = useThemeProvider()
 
   return (

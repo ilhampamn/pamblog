@@ -8,7 +8,7 @@ import { Polaroid, type PolaroidConfig } from './Polaroid'
 import { TvSticker, type TvStickerConfig } from './TvSticker'
 // import { PaperPlane3D } from './PaperPlane3D'
 import { StickyNote } from './StickyNote'
-import type { Post } from '@/lib/posts'
+import type { Post } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
 interface CanvasProps {

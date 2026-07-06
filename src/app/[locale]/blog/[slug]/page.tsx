@@ -6,12 +6,12 @@ import { Footer } from '@/components/Footer'
 import { ProgressBar } from '@/components/ProgressBar'
 import { PostBody } from '@/components/PostBody'
 import { NewsletterWidget } from '@/components/NewsletterWidget'
-import { getPostBySlug, getPostsByLocale, getArticleNode } from '@/lib/posts'
-import { renderArticleBody } from '@/lib/markdoc'
+import { getPostBySlug, getPostsByLocale, getArticleBody } from '@/lib/posts.sanity'
+import { renderPortableText } from '@/lib/portableText'
 import { t, type Locale } from '@/lib/i18n'
 import { formatDate } from '@/lib/date'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const results = await Promise.all(
@@ -64,8 +64,8 @@ export default async function PostPage({
   const post = await getPostBySlug(locale, params.slug)
   if (!post) notFound()
 
-  const node = await getArticleNode(locale, params.slug)
-  const body = node ? renderArticleBody(node, locale) : null
+  const blocks = await getArticleBody(locale, params.slug)
+  const body = renderPortableText(blocks, locale)
 
   const ui = t(locale)
   const allPosts = await getPostsByLocale(locale)

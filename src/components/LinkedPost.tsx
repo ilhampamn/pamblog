@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getArticlePreview } from '@/lib/posts'
+import { getArticlePreview } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
 /**

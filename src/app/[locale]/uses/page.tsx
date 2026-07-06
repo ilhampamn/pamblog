@@ -4,7 +4,7 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
@@ -35,7 +35,9 @@ interface UsesCategory {
   items: UsesItem[]
 }
 
-const usesData: Record<Locale, UsesCategory[]> = {
+// en/id authored here; zh (and any future locale) falls back to en until this
+// content moves into the CMS.
+const usesData: Partial<Record<Locale, UsesCategory[]>> = {
   en: [
     {
       label: 'Camera & Photography',
@@ -243,7 +245,7 @@ export default function UsesPage({ params }: { params: { locale: string } }) {
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   const ui = t(locale)
-  const categories = usesData[locale]
+  const categories = usesData[locale] ?? usesData.en ?? []
   const isId = locale === 'id'
 
   return (

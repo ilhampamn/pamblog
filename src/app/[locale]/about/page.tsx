@@ -5,10 +5,10 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { PostBody } from '@/components/PostBody'
 import { t, type Locale } from '@/lib/i18n'
-import { reader, resolveContent } from '@/lib/reader'
-import { renderArticleBody } from '@/lib/markdoc'
+import { getAbout } from '@/lib/about.sanity'
+import { renderPortableText } from '@/lib/portableText'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
@@ -33,22 +33,20 @@ export default async function AboutPage({ params }: { params: { locale: string }
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   const ui = t(locale)
-  const about = await reader.singletons.about.read()
+  const about = await getAbout(locale)
 
   // Fallback if CMS content isn't available yet
   if (!about) notFound()
 
   const isId = locale === 'id'
 
-  // Resolve the correct language body node
-  const bodyField = isId ? about.bodyId : about.body
-  const { node } = await resolveContent(bodyField)
-  const body = renderArticleBody(node, locale)
+  // Body comes back as Portable Text (localized + English fallback in GROQ).
+  const body = renderPortableText(about.body, locale)
 
-  const intro = isId ? about.introId : about.intro
-  const currentlyLabel = isId ? about.currentlyLabelId : about.currentlyLabel
-  const contactLabel = isId ? about.contactLabelId : about.contactLabel
-  const contactBody = isId ? about.contactBodyId : about.contactBody
+  const intro = about.intro
+  const currentlyLabel = about.currentlyLabel
+  const contactLabel = about.contactLabel
+  const contactBody = about.contactBody
 
   return (
     <div className="page-shell">
@@ -87,18 +85,18 @@ export default async function AboutPage({ params }: { params: { locale: string }
             <section className="mb-16">
               <p className="label-stamped mb-6">{currentlyLabel}</p>
               <dl className="space-y-3">
-                {about.currently.map((item) => (
-                  <div key={item.labelEn} className="flex gap-6">
+                {about.currently.map((item, i) => (
+                  <div key={item.label || i} className="flex gap-6">
                     <dt
                       className="w-28 shrink-0 label-stamped"
                       style={{ color: 'var(--color-smudge)' }}
                     >
-                      {isId ? item.labelId : item.labelEn}
+                      {item.label}
                     </dt>
                     <dd
                       style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}
                     >
-                      {isId ? item.valueId : item.valueEn}
+                      {item.value}
                     </dd>
                   </div>
                 ))}

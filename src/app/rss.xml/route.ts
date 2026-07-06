@@ -1,4 +1,5 @@
-import { getPostsByLocale } from '@/lib/posts'
+import { getPostsByLocale } from '@/lib/posts.sanity'
+import { LOCALES } from '@/lib/i18n'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
 
@@ -12,11 +13,10 @@ function escapeXml(str: string) {
 }
 
 export async function GET() {
-  const [enPosts, idPosts] = await Promise.all([
-    getPostsByLocale('en'),
-    getPostsByLocale('id'),
-  ])
-  const allPosts = [...enPosts, ...idPosts].sort(
+  const postsByLocale = await Promise.all(
+    LOCALES.map((locale) => getPostsByLocale(locale))
+  )
+  const allPosts = postsByLocale.flat().sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   )
 

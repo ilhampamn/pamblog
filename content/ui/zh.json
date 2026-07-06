@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "blog": "文章",
+    "explore": "探索",
+    "gallery": "相册",
+    "about": "关于",
+    "uses": "工具"
+  },
+  "explore": {
+    "title": "探索",
+    "intro": "我去过的地方、规划过的旅程，以及路上的故事。",
+    "destinations": "目的地",
+    "destinationsDesc": "按地区、国家和城市浏览。",
+    "itineraries": "行程",
+    "itinerariesDesc": "可以照着走的旅行计划。",
+    "stories": "故事",
+    "storiesDesc": "长途旅行中的记录。",
+    "all": "全部",
+    "inThisCity": "目的地",
+    "citiesIn": "城市",
+    "appearsIn": "出现于",
+    "relatedItineraries": "包含此地的行程",
+    "relatedStories": "提到此地的故事",
+    "stops": "途经",
+    "noContent": "这里还什么都没有。",
+    "back": "返回"
+  },
+  "home": {
+    "tagline": "写一些我觉得有趣的事情。",
+    "currently": "近况",
+    "currentlyReading": "《系统之美》— 德内拉·梅多斯",
+    "currentlyWorking": "这个博客",
+    "aboutSnippet": "常驻印度尼西亚。摄影师、写作者，偶尔做点东西。",
+    "aboutLink": "更多关于我 →"
+  },
+  "newsletter": {
+    "cta": "把新文章发到你的邮箱",
+    "placeholder": "your@email.com",
+    "button": "订阅"
+  },
+  "post": {
+    "readingTime": "分钟阅读",
+    "relatedPosts": "相关文章"
+  },
+  "canvas": {
+    "intro": "我写摄影、动手做东西，以及两者之间的空间。",
+    "aboutSnippet": "常驻印度尼西亚。摄影师、写作者，偶尔做点东西。",
+    "aboutLink": "更多关于我 →"
+  }
+}

@@ -10,10 +10,10 @@ import {
   getCountry,
   getItinerariesForCountry,
   getStoriesForCountry,
-} from '@/lib/places'
+} from '@/lib/places.sanity'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const tree = await getRegionTree('en')

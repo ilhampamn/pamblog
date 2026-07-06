@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation'
 import { Inter, Playfair_Display, Lora, JetBrains_Mono, Reenie_Beanie } from 'next/font/google'
-import type { Locale } from '@/lib/i18n'
+import { LOCALES, isLocale } from '@/lib/i18n'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
-
-const LOCALES = ['en', 'id'] as const
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,7 +50,7 @@ export default function LocaleLayout({
   params: { locale: string }
 }) {
   const { locale } = params
-  if (!LOCALES.includes(locale as Locale)) notFound()
+  if (!isLocale(locale)) notFound()
 
   return (
     <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable}`}>

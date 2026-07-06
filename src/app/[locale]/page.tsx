@@ -2,10 +2,10 @@ import { notFound } from 'next/navigation'
 import { Canvas } from '@/components/Canvas'
 import { HomeList } from '@/components/HomeList'
 import { Nav } from '@/components/Nav'
-import { getPostsByLocale } from '@/lib/posts'
+import { getPostsByLocale } from '@/lib/posts.sanity'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))

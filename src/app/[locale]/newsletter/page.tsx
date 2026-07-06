@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer'
 import { NewsletterWidget } from '@/components/NewsletterWidget'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
@@ -63,7 +63,7 @@ export default function NewsletterPage({ params }: { params: { locale: string } 
   if (!LOCALES.includes(locale as Locale)) notFound()
 
   const ui = t(locale)
-  const c = content[locale]
+  const c = content[locale as keyof typeof content] ?? content.en
 
   return (
     <div className="page-shell">

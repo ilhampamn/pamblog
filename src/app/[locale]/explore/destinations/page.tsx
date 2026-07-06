@@ -4,10 +4,10 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
-import { getRegionTree } from '@/lib/places'
+import { getRegionTree } from '@/lib/places.sanity'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))

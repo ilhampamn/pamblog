@@ -5,11 +5,11 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { PostBody } from '@/components/PostBody'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
-import { getItineraries, getItinerary, getItineraryNode, resolveStops } from '@/lib/places'
-import { renderArticleBody } from '@/lib/markdoc'
+import { getItineraries, getItinerary, getItineraryBody, resolveStops } from '@/lib/places.sanity'
+import { renderPortableText } from '@/lib/portableText'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const results = await Promise.all(
@@ -42,11 +42,11 @@ export default async function ItineraryPage({
   const itinerary = await getItinerary(locale, params.slug)
   if (!itinerary) notFound()
 
-  const [node, stops] = await Promise.all([
-    getItineraryNode(locale, itinerary.slug),
+  const [blocks, stops] = await Promise.all([
+    getItineraryBody(locale, itinerary.slug),
     resolveStops(locale, itinerary.stops),
   ])
-  const body = node ? renderArticleBody(node, locale) : null
+  const body = renderPortableText(blocks, locale)
 
   return (
     <div className="page-shell">

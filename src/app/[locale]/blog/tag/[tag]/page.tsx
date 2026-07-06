@@ -3,11 +3,11 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
-import { getPostsByLocale } from '@/lib/posts'
+import { getPostsByLocale } from '@/lib/posts.sanity'
 import { t, type Locale } from '@/lib/i18n'
 import { formatDate } from '@/lib/date'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const results = await Promise.all(

@@ -5,12 +5,12 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { PostBody } from '@/components/PostBody'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
-import { getStories, getStory, getStoryNode, resolveStops, getCountry } from '@/lib/places'
-import { renderArticleBody } from '@/lib/markdoc'
+import { getStories, getStory, getStoryBody, resolveStops, getCountry } from '@/lib/places.sanity'
+import { renderPortableText } from '@/lib/portableText'
 import { t, type Locale } from '@/lib/i18n'
 import { formatDate } from '@/lib/date'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const results = await Promise.all(
@@ -43,12 +43,12 @@ export default async function StoryPage({
   const story = await getStory(locale, params.slug)
   if (!story) notFound()
 
-  const [node, destChains, countries] = await Promise.all([
-    getStoryNode(locale, story.slug),
+  const [blocks, destChains, countries] = await Promise.all([
+    getStoryBody(locale, story.slug),
     resolveStops(locale, story.relatedDestinations),
     Promise.all(story.relatedCountries.map((slug) => getCountry(locale, slug))),
   ])
-  const body = node ? renderArticleBody(node, locale) : null
+  const body = renderPortableText(blocks, locale)
   const relatedCountries = countries.filter((c): c is NonNullable<typeof c> => Boolean(c))
 
   return (

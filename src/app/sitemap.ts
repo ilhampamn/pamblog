@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next'
-import { getPostsByLocale } from '@/lib/posts'
+import { getPostsByLocale } from '@/lib/posts.sanity'
+import { LOCALES } from '@/lib/i18n'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
-const LOCALES = ['en', 'id'] as const
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ['', '/blog', '/about', '/uses', '/newsletter']

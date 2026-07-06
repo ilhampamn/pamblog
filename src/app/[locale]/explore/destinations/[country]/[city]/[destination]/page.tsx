@@ -8,14 +8,14 @@ import { Breadcrumbs } from '@/components/Breadcrumbs'
 import {
   allDestinationPaths,
   resolveDestinationChain,
-  getDestinationNode,
+  getDestinationBody,
   getItinerariesForDestination,
   getStoriesForDestination,
-} from '@/lib/places'
-import { renderArticleBody } from '@/lib/markdoc'
+} from '@/lib/places.sanity'
+import { renderPortableText } from '@/lib/portableText'
 import { t, type Locale } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id'] as const
+const LOCALES = ['en', 'id', 'zh'] as const
 
 export async function generateStaticParams() {
   const paths = await allDestinationPaths()
@@ -49,12 +49,12 @@ export default async function DestinationPage({
   if (!chain) notFound()
   const { country, city, destination } = chain
 
-  const [node, itineraries, stories] = await Promise.all([
-    getDestinationNode(locale, destination.slug),
+  const [blocks, itineraries, stories] = await Promise.all([
+    getDestinationBody(locale, destination.slug),
     getItinerariesForDestination(locale, destination.slug),
     getStoriesForDestination(locale, destination.slug, country.slug),
   ])
-  const body = node ? renderArticleBody(node, locale) : null
+  const body = renderPortableText(blocks, locale)
 
   return (
     <div className="page-shell">
