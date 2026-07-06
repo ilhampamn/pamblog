@@ -6,7 +6,7 @@ import { NewsletterWidget } from './NewsletterWidget'
 import { Sticker, type StickerConfig } from './Sticker'
 import { Polaroid, type PolaroidConfig } from './Polaroid'
 import { TvSticker, type TvStickerConfig } from './TvSticker'
-import { PaperPlane3D } from './PaperPlane3D'
+// import { PaperPlane3D } from './PaperPlane3D'
 import { StickyNote } from './StickyNote'
 import type { Post } from '@/lib/posts'
 import type { Locale } from '@/lib/i18n'
@@ -54,13 +54,8 @@ function seedRandom(seed: string) {
   }
 }
 
-const TAG_COLORS: Record<string, string> = {
-  essay: 'var(--color-blush)',
-  tutorial: 'var(--color-smudge)',
-  note: 'var(--color-smudge)',
-  catatan: 'var(--color-smudge)',
-  review: 'var(--color-smudge)',
-}
+// TAG_COLORS kept for future use (HomeList still uses it)
+// const TAG_COLORS: Record<string, string> = { ... }
 
 // A card's centre position in world coordinates.
 interface Placed {

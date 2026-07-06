@@ -90,7 +90,7 @@ export function PaperPlane3D() {
       ctx.beginPath()
       SILO.forEach((i, n) => {
         const [x, y] = V[i]
-        n === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        if (n === 0) { ctx.moveTo(x, y) } else { ctx.lineTo(x, y) }
       })
       ctx.closePath()
       ctx.strokeStyle = color
