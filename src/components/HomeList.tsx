@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { NewsletterWidget } from './NewsletterWidget'
 import { TvSticker } from './TvSticker'
 import { StickyNote } from './StickyNote'
+import { Polaroid } from './Polaroid'
 import type { Post } from '@/lib/posts'
 import type { Locale } from '@/lib/i18n'
 
@@ -40,25 +41,9 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
         <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width="100%" standalone />
       </div>
 
-      <div className="mx-auto flex max-w-md flex-col gap-5 px-6">
-        {/* ── Header ── */}
-        <header>
-          <h1
-            className="text-4xl font-bold leading-tight mb-2"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-          >
-            Pam Travels
-          </h1>
-          <p
-            className="text-base"
-            style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}
-          >
-            Living to the fullest as part-time digital nomad
-          </p>
-        </header>
-
-        {/* ── Posts (sticky notes) ── */}
-        <section className="flex flex-col gap-5">
+      <div className="mx-auto flex max-w-md flex-col px-6">
+        {/* ── Posts (sticky notes — stacked, overlapping) ── */}
+        <section className="flex flex-col">
           {posts.slice(0, 8).map((post, i) => (
             <StickyNote
               key={post.slug}
@@ -66,6 +51,7 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
               rotation={3}
               style={{
                 width: '100%',
+                marginTop: i === 0 ? 0 : -28,
                 transform: `rotate(${POST_TILTS[i % POST_TILTS.length]}deg)`,
               }}
             >
@@ -83,8 +69,35 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           ))}
         </section>
 
-        {/* ── Currently (sticky note) ── */}
-        <StickyNote rotation={3} style={{ width: '100%', transform: 'rotate(11deg)' }}>
+        {/* ── Rainbow sticker — tucked into the gap on the right ── */}
+        <img
+          src="/stickers/rainbow.webp"
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="pointer-events-none select-none"
+          style={{
+            width: 208,
+            height: 'auto',
+            alignSelf: 'flex-end',
+            marginRight: 4,
+            marginTop: -70,
+            marginBottom: -70,
+            transform: 'rotate(9deg)',
+            position: 'relative',
+            zIndex: 30,
+            filter: 'drop-shadow(0 3px 6px rgba(28,25,23,0.18))',
+          }}
+        />
+
+        {/* ── Currently (sticky note — pink: base hue shifted to 330°) ── */}
+        <StickyNote
+          rotation={3}
+          noteColor="hsl(330, 83%, 63%)"
+          foldColor="hsl(330, 89%, 75%)"
+          foldTip="hsl(330, 90%, 88%)"
+          style={{ width: '100%', transform: 'rotate(11deg)' }}
+        >
           <p style={{ fontSize: 16, opacity: 0.55, marginBottom: 10, letterSpacing: '0.04em' }}>
             {ui.currently}
           </p>
@@ -96,8 +109,35 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           </p>
         </StickyNote>
 
-        {/* ── About (sticky note) ── */}
-        <StickyNote rotation={3} style={{ width: '100%', transform: 'rotate(-12deg)' }}>
+        {/* ── Paper-crane sticker — tucked into the gap on the left ── */}
+        <img
+          src="/stickers/paperplane.png"
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="pointer-events-none select-none"
+          style={{
+            width: 192,
+            height: 'auto',
+            alignSelf: 'flex-start',
+            marginLeft: 6,
+            marginTop: -64,
+            marginBottom: -64,
+            transform: 'rotate(-11deg)',
+            position: 'relative',
+            zIndex: 30,
+            filter: 'drop-shadow(0 3px 6px rgba(28,25,23,0.18))',
+          }}
+        />
+
+        {/* ── About (sticky note — white) ── */}
+        <StickyNote
+          rotation={3}
+          noteColor="hsl(0, 0%, 100%)"
+          foldColor="hsl(0, 0%, 92%)"
+          foldTip="hsl(0, 0%, 97%)"
+          style={{ width: '100%', transform: 'rotate(-12deg)' }}
+        >
           <p style={{ fontSize: 20, lineHeight: 1.35, marginBottom: 12 }}>
             {ui.aboutSnippet}
           </p>
@@ -111,7 +151,7 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
 
         {/* ── Newsletter ── */}
         <section
-          className="p-5"
+          className="p-5 mt-10"
           style={{
             backgroundColor: 'var(--color-ghost)',
             border: '1px solid var(--color-torn)',
@@ -124,6 +164,24 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
             button={newsletter.button}
           />
         </section>
+
+        {/* ── Polaroid — tap to reveal links, sits at the very bottom of the page.
+            Width matches the sticky notes above (100% of the shared container). ── */}
+        <div className="mt-10">
+          <Polaroid
+            id="polaroid-alaarcha-mobile"
+            src="/stickers/alaarcha.webp"
+            alt="Ala-Archa"
+            caption={'Ala Archa\n2024'}
+            width="100%"
+            rotation={-6}
+            standalone
+            links={[
+              { label: 'Destination', href: `/${locale}/explore/destinations/kyrgyzstan/bishkek/ala-archa-national-park` },
+              { label: 'Itinerary', href: `/${locale}/explore/itineraries/3-days-in-hanoi` },
+            ]}
+          />
+        </div>
       </div>
     </div>
   )

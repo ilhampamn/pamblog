@@ -127,16 +127,14 @@ export function Nav({ locale, ui }: NavProps) {
         <Link
           href={`/${locale}`}
           onClick={handleLinkClick}
-          className="relative z-50"
-          style={{
-            color: 'var(--color-ink)',
-            fontFamily: 'var(--font-playfair)',
-            fontSize: '1.25rem',
-            fontWeight: 700,
-            letterSpacing: '0.05em',
-          }}
+          className="relative z-50 flex items-center"
         >
-          PAMN
+          <img
+            src="/P-logo.png"
+            alt="Pam Travels"
+            className="brand-logo"
+            style={{ height: 28, width: 'auto', display: 'block' }}
+          />
         </Link>
 
         {/* Desktop nav */}

@@ -19,6 +19,9 @@ import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
+// Default note is a yellow-green. In HSL: note hsl(70 83% 63%),
+// fold hsl(69 89% 75%), tip hsl(69 90% 88%). Callers can override any of the
+// three (e.g. hue-shift for a pink or white note) via props.
 const NOTE_COLOR  = '#D5EF52'   // front face of the note
 const FOLD_COLOR  = '#E8F888'   // back of the paper (slightly lighter)
 const FOLD_TIP    = '#F4FCC4'   // tip of the curl — catches more light
@@ -41,7 +44,6 @@ function computeClip(rotationDeg: number, cardWidth: number, foldSize: number): 
 }
 
 const INNER_STYLE: CSSProperties = {
-  backgroundColor: NOTE_COLOR,
   backgroundImage: `repeating-linear-gradient(
     transparent,
     transparent ${LINE_STEP - 1}px,
@@ -63,6 +65,12 @@ interface Base {
   style?: CSSProperties
   /** Tilt angle of the top edge in degrees (0-360, or negative). Default: 4° */
   rotation?: number
+  /** Front face colour. Default: yellow-green #D5EF52. */
+  noteColor?: string
+  /** Fold back-face colour (slightly lighter than the front). */
+  foldColor?: string
+  /** Fold curl-tip colour (lightest — catches the light). */
+  foldTip?: string
   children: ReactNode
   'data-slug'?: string
 }
@@ -71,7 +79,17 @@ interface WithoutLink extends Base { href?: never }
 type StickyNoteProps = WithLink | WithoutLink
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export function StickyNote({ id, className, style, rotation = 4, children, ...rest }: StickyNoteProps) {
+export function StickyNote({
+  id,
+  className,
+  style,
+  rotation = 4,
+  noteColor = NOTE_COLOR,
+  foldColor = FOLD_COLOR,
+  foldTip = FOLD_TIP,
+  children,
+  ...rest
+}: StickyNoteProps) {
   const { padding = '18px 20px 26px', width, ...outerStyle } = style ?? {}
   const href     = 'href' in rest ? rest.href    : undefined
   const dataSlug = rest['data-slug']
@@ -97,7 +115,7 @@ export function StickyNote({ id, className, style, rotation = 4, children, ...re
       style={{ ...outerStyle, width }}
     >
       {/* ── Note body ── */}
-      <div style={{ ...INNER_STYLE, padding, clipPath: clip }}>
+      <div style={{ ...INNER_STYLE, backgroundColor: noteColor, padding, clipPath: clip }}>
         {body}
       </div>
 
@@ -122,8 +140,8 @@ export function StickyNote({ id, className, style, rotation = 4, children, ...re
         <defs>
           {/* Gradient on fold face: note-colour at crease → light at tip (curl) */}
           <linearGradient id={`fold-${id ?? 'g'}`} x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stopColor={FOLD_TIP} />
-            <stop offset="100%" stopColor={FOLD_COLOR} />
+            <stop offset="0%"   stopColor={foldTip} />
+            <stop offset="100%" stopColor={foldColor} />
           </linearGradient>
         </defs>
 

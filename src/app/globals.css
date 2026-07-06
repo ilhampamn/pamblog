@@ -272,6 +272,14 @@ body > div {
   font-family: var(--font-mono);
 }
 
+/* Nav brand mark is a black PNG — invert to white in dark mode so it stays visible. */
+.brand-logo {
+  filter: none;
+}
+.dark .brand-logo {
+  filter: invert(1);
+}
+
 .label-stamped {
   font-family: var(--font-ui);
   font-size: 0.75rem;
