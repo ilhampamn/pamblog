@@ -1,8 +1,12 @@
 import Link from 'next/link'
 import { NewsletterWidget } from './NewsletterWidget'
 import { TvSticker } from './TvSticker'
+import { StickyNote } from './StickyNote'
 import type { Post } from '@/lib/posts'
 import type { Locale } from '@/lib/i18n'
+
+// Gentle, alternating tilts (10–15°) so the stacked notes feel hand-placed.
+const POST_TILTS = [-11, 10, -13, 12, -10, 13, -12, 11]
 
 interface HomeListProps {
   locale: Locale
@@ -22,14 +26,6 @@ interface HomeListProps {
   }
 }
 
-const TAG_COLORS: Record<string, string> = {
-  essay: 'var(--color-blush)',
-  tutorial: 'var(--color-smudge)',
-  note: 'var(--color-smudge)',
-  catatan: 'var(--color-smudge)',
-  review: 'var(--color-smudge)',
-}
-
 /**
  * Mobile home view: the same content as the desktop canvas, laid out as a
  * straightforward vertical, scrollable list. Rendered server-side.
@@ -37,100 +33,81 @@ const TAG_COLORS: Record<string, string> = {
 export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
   return (
     <div
-      className="min-h-[100svh] pt-4 pb-10"
+      className="min-h-[100svh] pt-4 pb-10 overflow-x-hidden"
     >
       {/* ── TV — outside the max-w-md container, 8px side padding ── */}
       <div className="px-2 mb-0">
         <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width="100%" standalone />
       </div>
 
-      <div className="mx-auto flex max-w-md flex-col gap-10 px-6">
+      <div className="mx-auto flex max-w-md flex-col gap-5 px-6">
         {/* ── Header ── */}
         <header>
           <h1
             className="text-4xl font-bold leading-tight mb-2"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
           >
-            Ilham Pamungkas
+            Pam Travels
           </h1>
           <p
             className="text-base"
             style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}
           >
-            {ui.tagline}
+            Living to the fullest as part-time digital nomad
           </p>
         </header>
 
-        {/* ── Posts ── */}
-        <section className="flex flex-col gap-4">
-          {posts.slice(0, 8).map((post) => (
-            <Link
+        {/* ── Posts (sticky notes) ── */}
+        <section className="flex flex-col gap-5">
+          {posts.slice(0, 8).map((post, i) => (
+            <StickyNote
               key={post.slug}
               href={`/${locale}/blog/${post.slug}`}
-              className="block p-5"
+              rotation={3}
               style={{
-                backgroundColor: 'var(--color-ghost)',
-                border: '1px solid var(--color-torn)',
-                borderRadius: 'var(--radius-card)',
-                textDecoration: 'none',
+                width: '100%',
+                transform: `rotate(${POST_TILTS[i % POST_TILTS.length]}deg)`,
               }}
             >
-              <span
-                className="label-stamped block mb-2"
-                style={{ color: TAG_COLORS[post.tag] ?? 'var(--color-smudge)' }}
-              >
+              <p style={{ fontSize: 16, opacity: 0.55, marginBottom: 4, letterSpacing: '0.04em' }}>
                 {post.tag}
-              </span>
-              <h2
-                className="text-lg font-bold leading-snug mb-1"
-                style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-              >
+              </p>
+              <p style={{ fontSize: 24, lineHeight: 1.2, marginBottom: 18 }}>
                 {post.title}
-              </h2>
-              <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-                {post.readingTime} min
-              </span>
-            </Link>
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 16, opacity: 0.6 }}>
+                <span>{post.readingTime} min read</span>
+                <span>→</span>
+              </div>
+            </StickyNote>
           ))}
         </section>
 
-        {/* ── Currently ── */}
-        <section
-          className="p-5"
-          style={{
-            backgroundColor: 'var(--color-paper)',
-            border: '1px solid var(--color-torn)',
-            borderRadius: 'var(--radius-card)',
-          }}
-        >
-          <span className="label-stamped block mb-3">{ui.currently}</span>
-          <p className="text-sm mb-2" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
+        {/* ── Currently (sticky note) ── */}
+        <StickyNote rotation={3} style={{ width: '100%', transform: 'rotate(11deg)' }}>
+          <p style={{ fontSize: 16, opacity: 0.55, marginBottom: 10, letterSpacing: '0.04em' }}>
+            {ui.currently}
+          </p>
+          <p style={{ fontSize: 20, lineHeight: 1.3, marginBottom: 6 }}>
             📖 {ui.currentlyReading}
           </p>
-          <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
+          <p style={{ fontSize: 20, lineHeight: 1.3 }}>
             🛠 {ui.currentlyWorking}
           </p>
-        </section>
+        </StickyNote>
 
-        {/* ── About ── */}
-        <section
-          className="p-5"
-          style={{
-            backgroundColor: 'var(--color-ghost)',
-            border: '1px solid var(--color-torn)',
-            borderRadius: 'var(--radius-card)',
-          }}
-        >
-          <p className="text-sm mb-3" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
+        {/* ── About (sticky note) ── */}
+        <StickyNote rotation={3} style={{ width: '100%', transform: 'rotate(-12deg)' }}>
+          <p style={{ fontSize: 20, lineHeight: 1.35, marginBottom: 12 }}>
             {ui.aboutSnippet}
           </p>
           <Link
             href={`/${locale}/about`}
-            className="label-stamped hover:text-[var(--color-ink)] transition-colors"
+            style={{ fontSize: 16, opacity: 0.65, color: 'inherit', textDecoration: 'underline' }}
           >
-            {ui.aboutLink}
+            {ui.aboutLink} →
           </Link>
-        </section>
+        </StickyNote>
 
         {/* ── Newsletter ── */}
         <section
