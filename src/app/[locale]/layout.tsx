@@ -56,7 +56,21 @@ export default function LocaleLayout({
 
   return (
     <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable}`}>
-      <ThemeProvider>{children}</ThemeProvider>
+      <ThemeProvider>
+        {/* Global paper noise texture — fixed overlay, applies on all pages & screen sizes */}
+        <svg
+          aria-hidden
+          className="pointer-events-none fixed inset-0 w-full h-full z-[999]"
+          style={{ opacity: 0.04 }}
+        >
+          <filter id="global-paper-noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#global-paper-noise)" />
+        </svg>
+        {children}
+      </ThemeProvider>
     </div>
   )
 }

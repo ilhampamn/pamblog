@@ -6,6 +6,8 @@ import { NewsletterWidget } from './NewsletterWidget'
 import { Sticker, type StickerConfig } from './Sticker'
 import { Polaroid, type PolaroidConfig } from './Polaroid'
 import { TvSticker, type TvStickerConfig } from './TvSticker'
+import { PaperPlane3D } from './PaperPlane3D'
+import { StickyNote } from './StickyNote'
 import type { Post } from '@/lib/posts'
 import type { Locale } from '@/lib/i18n'
 
@@ -558,7 +560,13 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     <div
       ref={containerRef}
       className="canvas-viewport relative w-full overflow-hidden touch-none"
-      style={{ height: '100svh', backgroundColor: 'var(--color-paper)' }}
+      style={{
+        height: '100svh',
+        backgroundColor: 'var(--color-paper)',
+        backgroundImage: "linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('/pagebackground.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
     >
       {/* Paper texture overlay — fixed to the viewport, above the dot grid. */}
       <svg
@@ -591,46 +599,37 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           scale(zoom) to each card's CSS transform — NOT by resizing width — so
           everything stays sharp at any zoom level. ── */}
 
-      {/* ── Post cards ── */}
+      {/* ── Post cards (sticky-note style) ── */}
       {posts.slice(0, 5).map((post) => (
-        <Link
+        <StickyNote
           key={post.slug}
           href={`/${locale}/blog/${post.slug}`}
-          className="canvas-card p-5 block group"
           id={`card-${post.slug}`}
           data-slug={post.slug}
+          rotation={13}
+          className="canvas-card block"
           style={{
             position: 'absolute',
             left: -9999,
             top: -9999,
             width: cardPos.current.get(post.slug)!.width,
-            backgroundColor: 'var(--color-ghost)',
-            border: '1px solid var(--color-torn)',
-            borderRadius: 'var(--radius-card)',
-            textDecoration: 'none',
+            padding: '18px 20px 20px',
           }}
         >
-          <span
-            className="label-stamped block mb-3"
-            style={{ color: TAG_COLORS[post.tag] ?? 'var(--color-smudge)' }}
-          >
+          {/* Tag */}
+          <p style={{ fontSize: 14, opacity: 0.55, marginBottom: 8, letterSpacing: '0.04em' }}>
             {post.tag}
-          </span>
-          <h2
-            className="text-base font-bold leading-snug mb-2"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-          >
+          </p>
+          {/* Title */}
+          <p style={{ fontSize: 22, lineHeight: 1.25, marginBottom: 24 }}>
             {post.title}
-          </h2>
-          <div className="flex items-center justify-between mt-3">
-            <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-              {post.readingTime} min
-            </span>
-            <span className="label-stamped" style={{ color: 'var(--color-blush)' }}>
-              Read →
-            </span>
+          </p>
+          {/* Footer row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, opacity: 0.6 }}>
+            <span>{post.readingTime} min read</span>
+            <span>→</span>
           </div>
-        </Link>
+        </StickyNote>
       ))}
 
       {/* ── Newsletter card ── */}
@@ -704,7 +703,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
       {/* ── Stickers — also outside the world layer, same reason. ── */}
       {STICKERS.map((s) => (
-        <Sticker key={s.id} id={s.id} src={s.src} alt={s.alt} />
+        <Sticker key={s.id} id={s.id} src={s.src} alt={s.alt} filter={s.filter} />
       ))}
 
       {/* ── Polaroids — draggable photo cards with a white frame. ── */}
@@ -760,6 +759,9 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
   / | \\
 ~~~|~~~`}
       </pre>
+
+      {/* Cursor-following paper plane — hidden for now, revisit later */}
+      {/* <PaperPlane3D /> */}
     </div>
   )
 }

@@ -37,7 +37,7 @@ export default function ComponentsPage({ params }: ComponentShowcaseProps) {
   const { resolvedTheme } = useThemeProvider()
 
   return (
-    <main className="min-h-screen pt-24 pb-16 px-6 md:px-8" style={{ backgroundColor: 'var(--color-paper)', color: 'var(--color-ink)' }}>
+    <main className="min-h-screen pt-24 pb-16 px-6 md:px-8" style={{ color: 'var(--color-ink)' }}>
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <header className="mb-16">
@@ -370,7 +370,7 @@ export default function ComponentsPage({ params }: ComponentShowcaseProps) {
             <div
               className="p-5"
               style={{
-                backgroundColor: 'var(--color-paper)',
+               backgroundColor: 'var(--color-paper)',
                 border: '1px solid var(--color-torn)',
                 borderRadius: 'var(--radius-card)',
               }}

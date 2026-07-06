@@ -37,11 +37,10 @@ const TAG_COLORS: Record<string, string> = {
 export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
   return (
     <div
-      className="min-h-[100svh] pt-24 pb-20"
-      style={{ backgroundColor: 'var(--color-paper)' }}
+      className="min-h-[100svh] pt-4 pb-10"
     >
       {/* ── TV — outside the max-w-md container, 8px side padding ── */}
-      <div className="px-2 mb-10">
+      <div className="px-2 mb-0">
         <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width="100%" standalone />
       </div>
 

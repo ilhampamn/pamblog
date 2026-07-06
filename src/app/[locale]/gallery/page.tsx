@@ -24,7 +24,7 @@ export default function GalleryPage({ params }: { params: { locale: string } }) 
   return (
     <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
-      <main className="pt-32 pb-16 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
+      <main className="pt-32 pb-16 px-8">
         <div className="max-w-[var(--layout-width)] mx-auto">
           <h1
             className="text-4xl md:text-5xl font-black leading-tight mb-4"

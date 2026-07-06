@@ -252,7 +252,7 @@ export default function UsesPage({ params }: { params: { locale: string } }) {
 
       <main
         className="pt-32 pb-0 px-8 min-h-screen"
-        style={{ backgroundColor: 'var(--color-paper)' }}
+       
       >
         <div className="max-w-[var(--prose-width)] mx-auto">
 

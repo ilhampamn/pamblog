@@ -100,21 +100,43 @@ export function Nav({ locale, ui }: NavProps) {
 
   return (
     <>
+      {/* Floating nav wrapper — centres the pill at 90% / 80% width */}
+      <div className="fixed top-6 left-0 right-0 z-50 flex justify-center pointer-events-none">
       <nav
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-8 py-5"
+        className="relative flex items-center justify-between px-6 md:px-8 py-4 pointer-events-auto w-[90%] md:w-[80%] overflow-hidden"
         style={{
-          borderBottom: '1px solid var(--color-torn)',
           backgroundColor: 'var(--color-paper)',
+          border: '1px solid var(--color-torn)',
+          borderRadius: '999px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
         }}
       >
+        {/* Noise texture overlay */}
+        <svg
+          aria-hidden
+          className="pointer-events-none absolute inset-0 w-full h-full"
+          style={{ opacity: 0.035 }}
+        >
+          <filter id="nav-noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#nav-noise)" />
+        </svg>
         <Link
           href={`/${locale}`}
           onClick={handleLinkClick}
-          className="font-bold text-base tracking-tight relative z-50"
-          style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-display)' }}
+          className="relative z-50"
+          style={{
+            color: 'var(--color-ink)',
+            fontFamily: 'var(--font-playfair)',
+            fontSize: '1.25rem',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+          }}
         >
-          Ilham Pamungkas
+          PAMN
         </Link>
 
         {/* Desktop nav */}
@@ -155,6 +177,7 @@ export function Nav({ locale, ui }: NavProps) {
           </button>
         </div>
       </nav>
+      </div>
 
       {/* Full-screen overlay menu */}
       <div

@@ -28,9 +28,11 @@ export interface StickerConfig {
   rotation?: number
   /** Base display width in world px at zoom 1 (height is auto). */
   width?: number
+  /** Optional CSS filter applied to the image, e.g. to recolour it. */
+  filter?: string
 }
 
-export function Sticker({ id, src, alt }: Pick<StickerConfig, 'id' | 'src' | 'alt'>) {
+export function Sticker({ id, src, alt, filter }: Pick<StickerConfig, 'id' | 'src' | 'alt' | 'filter'>) {
   return (
     <div
       id={id}
@@ -50,7 +52,7 @@ export function Sticker({ id, src, alt }: Pick<StickerConfig, 'id' | 'src' | 'al
       <img
         src={src}
         alt={alt}
-        style={{ width: '100%', height: 'auto', display: 'block', pointerEvents: 'none' }}
+        style={{ width: '100%', height: 'auto', display: 'block', pointerEvents: 'none', filter }}
         draggable={false}
       />
     </div>

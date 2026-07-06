@@ -27,7 +27,7 @@ export default async function DestinationsPage({ params }: { params: { locale: s
   return (
     <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
-      <main className="pt-32 pb-0 px-8" style={{ backgroundColor: 'var(--color-paper)' }}>
+      <main className="pt-32 pb-0 px-8">
         <div className="max-w-[var(--layout-width)] mx-auto">
           <Breadcrumbs
             items={[

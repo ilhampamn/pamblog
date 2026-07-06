@@ -24,7 +24,6 @@ export default function LocaleError({
       flexDirection: 'column',
       justifyContent: 'center',
       padding: '4rem 2rem',
-      backgroundColor: 'var(--color-paper)',
     }}>
       <p style={{
         fontFamily: 'var(--font-ui)',

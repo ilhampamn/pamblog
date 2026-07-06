@@ -84,7 +84,7 @@ export default async function PostPage({
 
       <main
         className="pt-32 pb-0"
-        style={{ backgroundColor: 'var(--color-paper)' }}
+       
       >
         {/* ── Post header ── */}
         <header className="px-8 mb-16">
