@@ -410,11 +410,19 @@ export async function resolveStops(
 }
 
 // ── Portable Text bodies (detail pages only) ──────────────────────────────────
-type BodyResult = { body?: PortableTextBlock[]; bodyFallback?: PortableTextBlock[] } | null
+type BodyResult = {
+  body?: PortableTextBlock[]
+  bodyFallback?: PortableTextBlock[]
+  bodyFallback2?: PortableTextBlock[]
+} | null
 
 function pickBody(res: BodyResult): PortableTextBlock[] | null {
   if (!res) return null
-  return res.body?.length ? res.body : res.bodyFallback ?? null
+  return res.body?.length
+    ? res.body
+    : res.bodyFallback?.length
+      ? res.bodyFallback
+      : res.bodyFallback2 ?? null
 }
 
 export async function getDestinationBody(locale: Locale, slug: string): Promise<PortableTextBlock[] | null> {

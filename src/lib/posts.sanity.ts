@@ -92,7 +92,7 @@ export async function getAlternatePost(
 
 /**
  * The Portable Text body for one locale (detail page only).
- * Falls back to the English body when the requested locale is empty.
+ * Falls back locale → English → Indonesian when the requested locale is empty.
  */
 export async function getArticleBody(
   locale: Locale,
@@ -101,9 +101,14 @@ export async function getArticleBody(
   const res = await sanityClient.fetch<{
     body?: PortableTextBlock[]
     bodyFallback?: PortableTextBlock[]
+    bodyFallback2?: PortableTextBlock[]
   } | null>(articleBodyBySlugQuery, { locale, slug })
   if (!res) return null
-  return res.body?.length ? res.body : res.bodyFallback ?? null
+  return res.body?.length
+    ? res.body
+    : res.bodyFallback?.length
+      ? res.bodyFallback
+      : res.bodyFallback2 ?? null
 }
 
 /** Lightweight preview for the inline <LinkedPost> hover card. */

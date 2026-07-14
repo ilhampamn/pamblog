@@ -27,6 +27,7 @@ type RawAbout = {
   intro: string | null
   body?: PortableTextBlock[]
   bodyFallback?: PortableTextBlock[]
+  bodyFallback2?: PortableTextBlock[]
   currentlyLabel: string | null
   currently: { label: string | null; value: string | null }[] | null
   contactLabel: string | null
@@ -38,7 +39,11 @@ export async function getAbout(locale: Locale): Promise<About | null> {
   const raw = await sanityClient.fetch<RawAbout>(aboutQuery, { locale })
   if (!raw) return null
 
-  const body = raw.body?.length ? raw.body : raw.bodyFallback ?? []
+  const body = raw.body?.length
+    ? raw.body
+    : raw.bodyFallback?.length
+      ? raw.bodyFallback
+      : raw.bodyFallback2 ?? []
 
   return {
     intro: raw.intro ?? '',

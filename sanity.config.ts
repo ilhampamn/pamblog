@@ -42,7 +42,9 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
     internationalizedArray({
       languages: LANGUAGES.map((l) => ({ id: l.id, title: l.title })),
-      defaultLanguages: ['en'],
+      // Show every language's input by default — editors see EN/ID/ZH fields
+      // immediately instead of clicking "+ ID" / "+ ZH" per field.
+      defaultLanguages: LANGUAGES.map((l) => l.id),
       fieldTypes: [
         'string',
         'text',

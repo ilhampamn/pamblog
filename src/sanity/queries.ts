@@ -5,12 +5,12 @@ import { groq } from 'next-sanity'
  *
  * LOCALIZATION: every translatable field is an internationalizedArray, i.e.
  * `[{_key:'en', value}, {_key:'id', value}, {_key:'zh', value}]`. The `loc()`
- * helper picks the requested locale and FALLS BACK TO ENGLISH when the value is
- * missing — matching the agreed rule (never render blank). `$locale` is passed
- * as a query param.
+ * helper picks the requested locale and falls back through the chain
+ * locale → English → Indonesian when values are missing — never render blank.
+ * `$locale` is passed as a query param.
  */
 const loc = (field: string) =>
-  `coalesce(${field}[_key == $locale][0].value, ${field}[_key == "en"][0].value)`
+  `coalesce(${field}[_key == $locale][0].value, ${field}[_key == "en"][0].value, ${field}[_key == "id"][0].value)`
 
 // Body needs the same locale pick, then references inside Portable Text
 // (linkedPost) dereferenced so the renderer has the target slug.
@@ -23,6 +23,13 @@ const localizedBody = (field: string) => `
     }
   },
   "bodyFallback": ${field}[_key == "en"][0].value[]{
+    ...,
+    _type == "linkedPost" => {
+      ...,
+      "post": post->{ "slug": slug.current }
+    }
+  },
+  "bodyFallback2": ${field}[_key == "id"][0].value[]{
     ...,
     _type == "linkedPost" => {
       ...,
