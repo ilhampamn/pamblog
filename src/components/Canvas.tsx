@@ -5,7 +5,7 @@ import { gsap, prefersReducedMotion } from '@/lib/gsap'
 import { NewsletterWidget } from './NewsletterWidget'
 import { Sticker, type StickerConfig } from './Sticker'
 import { Polaroid, type PolaroidConfig } from './Polaroid'
-import { TvSticker, type TvStickerConfig } from './TvSticker'
+import { VideoPolaroid, type VideoPolaroidConfig } from './VideoPolaroid'
 // import { PaperPlane3D } from './PaperPlane3D'
 import { StickyNote } from './StickyNote'
 import type { Post } from '@/lib/posts.sanity'
@@ -131,16 +131,18 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     },
   ]
 
-  // ── TV Stickers ──────────────────────────────────────────────────────────────
-  // Retro TV frame with a live YouTube embed in the screen.
-  // Add entries here to place more TVs on the canvas.
-  const TV_STICKERS: TvStickerConfig[] = [
+  // ── Video Polaroids ──────────────────────────────────────────────────────────
+  // Landscape instant-film frames with live YouTube embeds.
+  const VIDEO_POLAROIDS: VideoPolaroidConfig[] = [
     {
       id: 'tv-youtube',
       videoId: 'wM2G2exs15w',
+      caption: 'the memories.',
+      postedAt: '27 June 2026',
       worldX: CENTER_X,
-      worldY: CENTER_Y,
-      rotation: 0,
+      // Keep the large frame clear of the fixed navigation on initial load.
+      worldY: CENTER_Y + 180,
+      rotation: -1.5,
       width: 780,
     },
   ]
@@ -159,7 +161,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     new Map([
       ...STICKERS.map(s    => [s.id, { x: s.worldX, y: s.worldY }] as [string, { x: number; y: number }]),
       ...POLAROIDS.map(p   => [p.id, { x: p.worldX, y: p.worldY }] as [string, { x: number; y: number }]),
-      ...TV_STICKERS.map(t => [t.id, { x: t.worldX, y: t.worldY }] as [string, { x: number; y: number }]),
+      ...VIDEO_POLAROIDS.map(t => [t.id, { x: t.worldX, y: t.worldY }] as [string, { x: number; y: number }]),
     ])
   )
 
@@ -180,7 +182,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     cardPos.current.set('about', { ...aboutPos, width: 224 })           // w-56 = 224px
     posts.slice(0, 5).forEach((post, i) => {
       const pos = placeCard(post.slug, i + 4)
-      cardPos.current.set(post.slug, { ...pos, width: 224 })            // w-56 = 224px
+      cardPos.current.set(post.slug, { ...pos, width: 208 })
     })
   }
 
@@ -215,9 +217,8 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       el.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale.current})`
     })
 
-    // TV Stickers: same scale() approach as Polaroids. The iframe inside scales
-    // with the TV frame so the video stays locked to the screen cutout.
-    TV_STICKERS.forEach(({ id, rotation = 0 }) => {
+    // Video Polaroids use the same fixed-width scale transform as photo Polaroids.
+    VIDEO_POLAROIDS.forEach(({ id, rotation = 0 }) => {
       const el = document.getElementById(id)
       if (!el) return
       const pos = stickerPos.current.get(id)!
@@ -558,9 +559,9 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       style={{
         height: '100svh',
         backgroundColor: 'var(--color-paper)',
-        backgroundImage: "linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('/pagebackground.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage: 'linear-gradient(var(--color-grid-home) 1px, transparent 1px), linear-gradient(90deg, var(--color-grid-home) 1px, transparent 1px)',
+        backgroundSize: 'var(--grid-size) var(--grid-size)',
+        backgroundPosition: '-1px -1px',
       }}
     >
       {/* Paper texture overlay — fixed to the viewport, above the dot grid. */}
@@ -575,7 +576,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         <rect width="100%" height="100%" filter="url(#paper-noise)" />
       </svg>
 
-      {/* ── The pannable / zoomable world — dot pattern only ── */}
+      {/* ── The transparent pannable / zoomable world ── */}
       <div
         ref={worldRef}
         className="canvas-world absolute top-0 left-0"
@@ -583,8 +584,6 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           width: WORLD_W,
           height: WORLD_H,
           transformOrigin: '0 0',
-          backgroundImage: 'radial-gradient(var(--color-torn) 1.4px, transparent 1.4px)',
-          backgroundSize: '34px 34px',
         }}
       />
 
@@ -601,7 +600,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           href={`/${locale}/blog/${post.slug}`}
           id={`card-${post.slug}`}
           data-slug={post.slug}
-          rotation={13}
+          rotation={0.45}
           className="canvas-card block"
           style={{
             position: 'absolute',
@@ -612,17 +611,17 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           }}
         >
           {/* Tag */}
-          <p style={{ fontSize: 14, opacity: 0.55, marginBottom: 8, letterSpacing: '0.04em' }}>
+          <p style={{ fontSize: 17, lineHeight: 1.2, opacity: 0.72, marginBottom: 10, letterSpacing: '0.04em' }}>
             {post.tag}
           </p>
           {/* Title */}
-          <p style={{ fontSize: 22, lineHeight: 1.25, marginBottom: 24 }}>
+          <p style={{ fontSize: 27, lineHeight: 1.2, marginBottom: 26 }}>
             {post.title}
           </p>
           {/* Footer row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, opacity: 0.6 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 17, lineHeight: 1.2, opacity: 0.72 }}>
             <span>{post.readingTime} min read</span>
-            <span>→</span>
+            <span aria-hidden="true" style={{ fontSize: 22, lineHeight: 1 }}>→</span>
           </div>
         </StickyNote>
       ))}
@@ -706,9 +705,16 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         <Polaroid key={p.id} id={p.id} src={p.src} alt={p.alt} caption={p.caption} width={p.width} links={p.links} />
       ))}
 
-      {/* ── TV Stickers — retro TV frame with a live YouTube embed. ── */}
-      {TV_STICKERS.map((t) => (
-        <TvSticker key={t.id} id={t.id} videoId={t.videoId} width={t.width} />
+      {/* ── Featured videos in landscape instant-film frames. ── */}
+      {VIDEO_POLAROIDS.map((video) => (
+        <VideoPolaroid
+          key={video.id}
+          id={video.id}
+          videoId={video.videoId}
+          caption={video.caption}
+          postedAt={video.postedAt}
+          width={video.width}
+        />
       ))}
 
       {/* ── Zoom controls ── */}

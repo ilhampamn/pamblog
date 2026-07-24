@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import { NewsletterWidget } from './NewsletterWidget'
-import { TvSticker } from './TvSticker'
+import { VideoPolaroid } from './VideoPolaroid'
 import { StickyNote } from './StickyNote'
 import { Polaroid } from './Polaroid'
 import type { Post } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
-// Gentle, alternating tilts (10–15°) so the stacked notes feel hand-placed.
-const POST_TILTS = [-11, 10, -13, 12, -10, 13, -12, 11]
+// Casebook uses restrained placement; tiny differences feel more physical than
+// large alternating rotations.
+const POST_TILTS = [-2.2, 1.6, -1.4, 2, -1.8, 1.2, -2, 1.5]
 
 interface HomeListProps {
   locale: Locale
@@ -34,21 +35,29 @@ interface HomeListProps {
 export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
   return (
     <div
-      className="min-h-[100svh] pt-4 pb-10 overflow-x-hidden"
+      className="home-grid min-h-[100svh] pt-28 pb-10 overflow-x-hidden"
     >
-      {/* ── TV — outside the max-w-md container, 8px side padding ── */}
-      <div className="px-2 mb-0">
-        <TvSticker id="tv-mobile" videoId="wM2G2exs15w" width="100%" standalone />
+      {/* ── Featured video in an instant-film frame ── */}
+      <div className="px-4 mb-8">
+        <VideoPolaroid
+          id="video-mobile"
+          videoId="wM2G2exs15w"
+          caption="the memories."
+          postedAt="27 June 2026"
+          rotation={-1.5}
+          width="100%"
+          standalone
+        />
       </div>
 
       <div className="mx-auto flex max-w-md flex-col px-6">
         {/* ── Posts (sticky notes — stacked, overlapping) ── */}
-        <section className="flex flex-col">
+        <section className="mx-auto flex w-[92%] flex-col">
           {posts.slice(0, 8).map((post, i) => (
             <StickyNote
               key={post.slug}
               href={`/${locale}/blog/${post.slug}`}
-              rotation={3}
+              rotation={0.45}
               style={{
                 width: '100%',
                 marginTop: i === 0 ? 0 : -28,
@@ -92,11 +101,9 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
 
         {/* ── Currently (sticky note — pink: base hue shifted to 330°) ── */}
         <StickyNote
-          rotation={3}
+          rotation={0.45}
           noteColor="hsl(330, 83%, 63%)"
-          foldColor="hsl(330, 89%, 75%)"
-          foldTip="hsl(330, 90%, 88%)"
-          style={{ width: '100%', transform: 'rotate(11deg)' }}
+          style={{ width: '100%', transform: 'rotate(1.8deg)' }}
         >
           <p style={{ fontSize: 16, opacity: 0.55, marginBottom: 10, letterSpacing: '0.04em' }}>
             {ui.currently}
@@ -132,11 +139,9 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
 
         {/* ── About (sticky note — white) ── */}
         <StickyNote
-          rotation={3}
+          rotation={0.45}
           noteColor="hsl(0, 0%, 100%)"
-          foldColor="hsl(0, 0%, 92%)"
-          foldTip="hsl(0, 0%, 97%)"
-          style={{ width: '100%', transform: 'rotate(-12deg)' }}
+          style={{ width: '100%', transform: 'rotate(-1.6deg)' }}
         >
           <p style={{ fontSize: 20, lineHeight: 1.35, marginBottom: 12 }}>
             {ui.aboutSnippet}

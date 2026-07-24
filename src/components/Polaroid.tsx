@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { PushPin } from './PushPin'
 
 /**
  * Polaroid — a draggable photo card with a classic polaroid frame.
@@ -60,8 +61,8 @@ export function Polaroid({
 }: Pick<PolaroidConfig, 'id' | 'src' | 'alt' | 'caption' | 'width' | 'rotation' | 'links'> & { standalone?: boolean }) {
   // Fixed pixel padding — safe because applyTransform uses CSS scale() on this
   // element (not width resizing), so padding, image, and caption all zoom together.
-  const pad = 8                   // top + sides
-  const padBottom = 12            // bottom strip (caption area)
+  const pad = 10                  // top + sides
+  const padBottom = 14            // caption completes the generous lower strip
   const [revealed, setRevealed] = useState(false)
   // Caption font size scales off a pixel width. When `width` is a CSS string
   // (e.g. '100%' in standalone mode) fall back to the old default basis so
@@ -71,7 +72,7 @@ export function Polaroid({
   return (
     <div
       id={id}
-      className={standalone ? 'select-none' : 'canvas-sticker group'}
+      className={standalone ? 'polaroid select-none' : 'polaroid canvas-sticker group'}
       style={standalone
         ? {
             position: 'relative',
@@ -93,37 +94,38 @@ export function Polaroid({
           }
       }
     >
+      <PushPin tone="red" className="polaroid__pin" />
+
       {/* Polaroid card — tappable in standalone mode to toggle the pills below */}
       <div
+        className="polaroid__paper"
         onClick={standalone ? () => setRevealed((r) => !r) : undefined}
         role={standalone ? 'button' : undefined}
         tabIndex={standalone ? 0 : undefined}
         aria-expanded={standalone ? revealed : undefined}
         style={{
-          backgroundColor: '#ffffff',
           padding: `${pad}px ${pad}px ${padBottom}px`,
-          borderRadius: 2,
           cursor: standalone ? 'pointer' : undefined,
         }}
       >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        style={{ width: '100%', height: 'auto', display: 'block', pointerEvents: 'none' }}
-        draggable={false}
-      />
+      <div className="polaroid__photo-well">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          className="polaroid__photo"
+          draggable={false}
+        />
+      </div>
       {caption && (
-        <div style={{ pointerEvents: 'none', textAlign: 'center', paddingTop: Math.round(pad * 0.5) }}>
+        <div className="polaroid__caption">
           {caption.split('\n').map((line, i) => (
             <p
               key={i}
               style={{
                 margin: 0,
-                fontSize: Math.round(captionWidthBasis * 0.13),
-                fontFamily: 'var(--font-reenie), var(--font-handwriting)',
-                color: i === 0 ? 'var(--color-ink)' : 'var(--color-smudge)',
-                lineHeight: 1,
+                fontSize: Math.max(11, Math.round(captionWidthBasis * 0.055)),
+                color: i === 0 ? '#3a352c' : '#746c5d',
               }}
             >
               {line}

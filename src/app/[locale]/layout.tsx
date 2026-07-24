@@ -1,5 +1,12 @@
 import { notFound } from 'next/navigation'
-import { Inter, Playfair_Display, Lora, JetBrains_Mono, Reenie_Beanie } from 'next/font/google'
+import {
+  Inter,
+  Playfair_Display,
+  Lora,
+  JetBrains_Mono,
+  Reenie_Beanie,
+  Caveat,
+} from 'next/font/google'
 import { LOCALES, isLocale } from '@/lib/i18n'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
@@ -38,6 +45,13 @@ const reenieBeanie = Reenie_Beanie({
   weight: '400',
 })
 
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  display: 'swap',
+  weight: ['500', '600', '700'],
+})
+
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
@@ -53,7 +67,7 @@ export default function LocaleLayout({
   if (!isLocale(locale)) notFound()
 
   return (
-    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable}`}>
+    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable} ${caveat.variable}`}>
       <ThemeProvider>
         {/* Global paper noise texture — fixed overlay, applies on all pages & screen sizes */}
         <svg

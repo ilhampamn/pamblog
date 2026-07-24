@@ -4,6 +4,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'utfs.io' },         // Uploadthing CDN
       { protocol: 'https', hostname: 'uploadthing.com' },
+      { protocol: 'https', hostname: 'picsum.photos' },
     ],
   },
 }

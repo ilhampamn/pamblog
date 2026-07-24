@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
@@ -22,16 +23,31 @@ export default function ExploreHub({ params }: { params: { locale: string } }) {
   const ui = t(locale)
 
   const sections = [
-    { href: `/${locale}/explore/destinations`, title: ui.explore.destinations, desc: ui.explore.destinationsDesc },
-    { href: `/${locale}/explore/itineraries`, title: ui.explore.itineraries, desc: ui.explore.itinerariesDesc },
-    { href: `/${locale}/explore/stories`, title: ui.explore.stories, desc: ui.explore.storiesDesc },
+    {
+      href: `/${locale}/explore/destinations`,
+      title: ui.explore.destinations,
+      desc: ui.explore.destinationsDesc,
+      image: 'https://picsum.photos/seed/bookpamn-destinations/800/500',
+    },
+    {
+      href: `/${locale}/explore/itineraries`,
+      title: ui.explore.itineraries,
+      desc: ui.explore.itinerariesDesc,
+      image: 'https://picsum.photos/seed/bookpamn-itineraries/800/500',
+    },
+    {
+      href: `/${locale}/explore/stories`,
+      title: ui.explore.stories,
+      desc: ui.explore.storiesDesc,
+      image: 'https://picsum.photos/seed/bookpamn-stories/800/500',
+    },
   ]
 
   return (
     <div className="page-shell">
       <Nav locale={locale} ui={ui.nav} />
-      <main className="pt-32 pb-0 px-8">
-        <div className="max-w-[var(--prose-width)] mx-auto">
+      <main className="pt-32 pb-0 px-4 md:px-8">
+        <div className="max-w-[var(--layout-width)] mx-auto">
           <h1
             className="text-4xl md:text-5xl font-black leading-tight text-balance"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
@@ -42,28 +58,55 @@ export default function ExploreHub({ params }: { params: { locale: string } }) {
             {ui.explore.intro}
           </p>
 
-          <div className="mt-12 grid gap-5 sm:grid-cols-3">
-            {sections.map((s) => (
+          <div
+            className="mt-12 grid grid-cols-1 gap-px border sm:grid-cols-3"
+            style={{
+              borderColor: 'var(--color-ink)',
+              backgroundColor: 'var(--color-ink)',
+            }}
+          >
+            {sections.map((s, index) => (
               <Link
                 key={s.href}
                 href={s.href}
-                className="block p-6 transition-shadow hover:shadow-lg"
+                className="group block p-5 md:p-8"
                 style={{
-                  backgroundColor: 'var(--color-ghost)',
-                  border: '1px solid var(--color-torn)',
-                  borderRadius: 'var(--radius-card)',
+                  backgroundColor: 'var(--color-paper)',
                   textDecoration: 'none',
                 }}
               >
-                <h2
-                  className="text-xl font-bold mb-2"
-                  style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
+                <div
+                  className="mb-7 flex items-center justify-between text-sm uppercase tracking-[0.08em] md:text-base"
+                  style={{ fontFamily: 'var(--font-ui)', color: 'var(--color-ink)' }}
                 >
-                  {s.title}
-                </h2>
-                <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}>
-                  {s.desc}
-                </p>
+                  <span>{ui.explore.title}</span>
+                  <span>{String(index + 1).padStart(2, '0')} / {String(sections.length).padStart(2, '0')}</span>
+                </div>
+
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
+                    src={s.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 639px) calc(100vw - 72px), (max-width: 1199px) 30vw, 340px"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+                  />
+                </div>
+
+                <div className="pt-7 pb-2">
+                  <h2
+                    className="inline text-xl font-bold leading-snug"
+                    style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
+                  >
+                    {s.title} —{' '}
+                  </h2>
+                  <p
+                    className="inline text-lg leading-snug"
+                    style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}
+                  >
+                    {s.desc}
+                  </p>
+                </div>
               </Link>
             ))}
           </div>
