@@ -3,8 +3,12 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { t, type Locale } from '@/lib/i18n'
+import { getCloudinaryImagesByTag } from '@/lib/cloudinary'
 
 const LOCALES = ['en', 'id', 'zh'] as const
+const GALLERY_TAG = 'blog-gallery'
+
+export const revalidate = 300
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
@@ -16,10 +20,11 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
   }
 }
 
-export default function GalleryPage({ params }: { params: { locale: string } }) {
+export default async function GalleryPage({ params }: { params: { locale: string } }) {
   const locale = params.locale as Locale
   if (!LOCALES.includes(locale as Locale)) notFound()
   const ui = t(locale)
+  const assets = await getCloudinaryImagesByTag(GALLERY_TAG)
 
   return (
     <div className="page-shell">
@@ -39,23 +44,54 @@ export default function GalleryPage({ params }: { params: { locale: string } }) 
             {locale === 'id' ? 'Foto-foto dari perjalanan dan keseharian.' : 'Photos from travels and everyday life.'}
           </p>
 
-          {/* Placeholder grid — replace with real photos */}
-          <div
-            className="grid gap-2"
-            style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}
-          >
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  aspectRatio: i % 3 === 0 ? '4/5' : i % 3 === 1 ? '16/9' : '1/1',
-                  backgroundColor: 'var(--color-ghost)',
-                  border: '1px solid var(--color-torn)',
-                  borderRadius: 'var(--radius-card)',
-                }}
-              />
-            ))}
-          </div>
+          {assets.length > 0 ? (
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+              {assets.map((asset) => (
+                <figure
+                  key={asset.assetId}
+                  className="mb-4 break-inside-avoid overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--color-ghost)',
+                    border: '1px solid var(--color-torn)',
+                    borderRadius: 'var(--radius-card)',
+                  }}
+                >
+                  {/* Dimensions preserve the asset's natural ratio in the masonry layout. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={asset.url}
+                    alt={asset.alt}
+                    width={asset.width}
+                    height={asset.height}
+                    loading="lazy"
+                    className="block w-full h-auto"
+                  />
+                  {asset.caption && (
+                    <figcaption
+                      className="px-4 py-3 text-sm"
+                      style={{
+                        fontFamily: 'var(--font-typewriter)',
+                        color: 'var(--color-smudge)',
+                      }}
+                    >
+                      {asset.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <p
+              className="py-16 text-center"
+              style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}
+            >
+              {locale === 'id'
+                ? 'Belum ada foto di galeri.'
+                : locale === 'zh'
+                  ? '图库中还没有照片。'
+                  : 'No gallery photos yet.'}
+            </p>
+          )}
         </div>
       </main>
       <Footer locale={locale} />

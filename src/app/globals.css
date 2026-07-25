@@ -83,6 +83,17 @@ body {
   flex-direction: column;
 }
 
+/* Headings use the hand-lettered Caveat face throughout the site. Inline
+   display-font declarations remain available for non-heading UI elements. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-caveat), var(--font-reenie), cursive !important;
+}
+
 /* ─── Sticky footer ──────────────────────────────────────────── */
 /* Full chain: html(100%) → body(min-100% flex-col) → layout div(flex:1 flex-col)
    → .page-shell(flex:1 flex-col) → main(flex:1) → footer at bottom.
@@ -349,6 +360,14 @@ body > div {
     scale  120ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Vector doodles should look like ink directly on the page, without the
+   lifted-paper shadow used by raster stickers and Polaroids. */
+.canvas-sticker.rough-drawing,
+.canvas-sticker.rough-drawing:hover,
+.canvas-sticker.rough-drawing.is-dragging {
+  filter: none;
+}
+
 /* Aged instant-film stock: warm paper, imperfect edges, print grain and the
    broader bottom margin that makes a Polaroid silhouette recognizable. */
 .polaroid {
@@ -553,12 +572,12 @@ body > div {
   font-family: var(--font-mono);
 }
 
-/* Nav brand mark is a black PNG — invert to white in dark mode so it stays visible. */
+/* Preserve the hand-drawn logo's original colors in both themes. */
 .brand-logo {
   filter: none;
 }
 .dark .brand-logo {
-  filter: invert(1);
+  filter: none;
 }
 
 .label-stamped {

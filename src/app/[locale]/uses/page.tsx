@@ -40,25 +40,22 @@ interface UsesCategory {
 const usesData: Partial<Record<Locale, UsesCategory[]>> = {
   en: [
     {
-      label: 'Camera & Photography',
+      label: 'Camera',
       items: [
         {
-          name: 'Fujifilm X100VI',
-          description:
-            'My daily carry. Fixed 35mm-equivalent lens, beautiful JPEG rendering straight out of camera. The best camera for not thinking about gear.',
-          slug: 'fujifilm-x100vi',
+          name: 'Lumix S9',
+          description: 'Compact full-frame camera for travel photography and video.',
+          slug: 'lumix-s9',
         },
         {
-          name: 'Sony A7 IV',
-          description:
-            'When I need full-frame. Paired with a 35mm f/1.4 for the majority of serious work. Heavy, but the files are extraordinary.',
-          slug: 'sony-a7iv',
+          name: 'Fujifilm X-T3',
+          description: 'Mirrorless camera for still photography and everyday shooting.',
+          slug: 'fujifilm-x-t3',
         },
         {
-          name: 'Peak Design Slide Strap',
-          description:
-            'I have tried every strap. This is the last one. The quick-release clips are genuinely useful, not a gimmick.',
-          slug: 'peak-design-strap',
+          name: 'DJI Action 6',
+          description: 'Action camera for travel, movement, and compact video recording.',
+          slug: 'dji-action-6',
         },
       ],
     },
@@ -66,28 +63,14 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Hardware',
       items: [
         {
-          name: 'MacBook Pro 14" M3 Pro',
-          description:
-            'Does not get warm editing 4K video. Battery lasts a flight to Tokyo. That is the whole review.',
-          slug: 'apple-macbook-pro',
+          name: 'MacBook Pro 16-inch M2 Pro',
+          description: 'Laptop for design, development, photography, and video work.',
+          slug: 'macbook-pro-16-m2-pro',
         },
         {
-          name: 'CalDigit TS4 Thunderbolt Dock',
-          description:
-            'One cable in, everything works. Worth every cent of the price.',
-          slug: 'caldigit-ts4',
-        },
-        {
-          name: 'Keychron Q1 Pro',
-          description:
-            'Gasket-mounted, tactile switches, nice weight. I have tried mechanical keyboards at every price point. This is where I stopped.',
-          slug: 'keychron-q1',
-        },
-        {
-          name: 'Logitech MX Master 3S',
-          description:
-            'The horizontal scroll wheel alone justifies it. Side buttons configured for Mission Control and app switcher.',
-          slug: 'logitech-mx-master',
+          name: 'Legion Pro 7i',
+          description: 'Windows workstation for demanding creative and technical tasks.',
+          slug: 'legion-pro-7i',
         },
       ],
     },
@@ -95,34 +78,19 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Software',
       items: [
         {
-          name: 'Arc Browser',
-          description:
-            'Took a week to adjust to. Now I cannot imagine going back. Spaces for separate contexts, command bar, mini Arc for quick lookups.',
-          slug: 'arc-browser',
-        },
-        {
-          name: 'Raycast',
-          description:
-            'Replaced Spotlight. The clipboard history and window manager are the two features I use every ten minutes.',
-          slug: 'raycast',
-        },
-        {
           name: 'Figma',
-          description:
-            'Where I design. The auto-layout updates from the last two years made it actually good for responsive thinking, not just visual output.',
+          description: 'Interface design, prototyping, and visual collaboration.',
           slug: 'figma',
         },
         {
-          name: 'Obsidian',
-          description:
-            'Where I think. Plain markdown files, local first, synced via iCloud. No lock-in. The graph view is mostly decorative but I enjoy looking at it.',
-          slug: 'obsidian',
+          name: 'CapCut',
+          description: 'Fast editing for short-form and travel video.',
+          slug: 'capcut',
         },
         {
-          name: 'Capture One',
-          description:
-            'Better colour science than Lightroom for Fuji files specifically. The skin tones on Fuji sensors are difficult to handle well — Capture One handles them well.',
-          slug: 'capture-one',
+          name: 'Visual Studio Code',
+          description: 'Code editor for building and maintaining web projects.',
+          slug: 'visual-studio-code',
         },
       ],
     },
@@ -130,47 +98,41 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Books',
       items: [
         {
-          name: 'Thinking in Systems — Donella Meadows',
-          description:
-            'Changed how I see almost everything. A short book with a very long half-life.',
+          name: 'Thinking in Systems',
+          description: 'A practical introduction to seeing structures, feedback, and change.',
           slug: 'thinking-in-systems',
         },
         {
-          name: 'Show Your Work — Austin Kleon',
-          description:
-            'The book that convinced me to start writing in public. Read in an afternoon, still applies every day.',
-          slug: 'show-your-work',
+          name: 'Happiness by Design',
+          description: 'A book about shaping everyday life around attention and happiness.',
+          slug: 'happiness-by-design',
         },
         {
-          name: 'On Photography — Susan Sontag',
-          description:
-            'Dense and worth it. Makes you think harder about what you are doing when you point a camera at something.',
-          slug: 'on-photography',
+          name: 'The Great Mental Models series',
+          description: 'A series of frameworks for clearer thinking and better decisions.',
+          slug: 'the-great-mental-models',
         },
       ],
     },
   ],
   id: [
     {
-      label: 'Kamera & Fotografi',
+      label: 'Kamera',
       items: [
         {
-          name: 'Fujifilm X100VI',
-          description:
-            'Kamera harian saya. Lensa fixed setara 35mm, rendering JPEG yang indah langsung dari kamera. Kamera terbaik untuk tidak memikirkan peralatan.',
-          slug: 'fujifilm-x100vi',
+          name: 'Lumix S9',
+          description: 'Kamera full-frame ringkas untuk fotografi perjalanan dan video.',
+          slug: 'lumix-s9',
         },
         {
-          name: 'Sony A7 IV',
-          description:
-            'Ketika saya membutuhkan full-frame. Dipasangkan dengan 35mm f/1.4 untuk sebagian besar pekerjaan serius. Berat, tapi file-nya luar biasa.',
-          slug: 'sony-a7iv',
+          name: 'Fujifilm X-T3',
+          description: 'Kamera mirrorless untuk fotografi dan pemotretan sehari-hari.',
+          slug: 'fujifilm-x-t3',
         },
         {
-          name: 'Peak Design Slide Strap',
-          description:
-            'Saya telah mencoba setiap tali kamera. Ini yang terakhir. Quick-release clips-nya benar-benar berguna, bukan gimmick.',
-          slug: 'peak-design-strap',
+          name: 'DJI Action 6',
+          description: 'Kamera aksi untuk perjalanan, aktivitas, dan perekaman video ringkas.',
+          slug: 'dji-action-6',
         },
       ],
     },
@@ -178,16 +140,14 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Perangkat Keras',
       items: [
         {
-          name: 'MacBook Pro 14" M3 Pro',
-          description:
-            'Tidak panas saat mengedit video 4K. Baterainya bertahan sepanjang penerbangan ke Tokyo. Itulah seluruh ulasannya.',
-          slug: 'apple-macbook-pro',
+          name: 'MacBook Pro 16-inch M2 Pro',
+          description: 'Laptop untuk desain, pengembangan, fotografi, dan pekerjaan video.',
+          slug: 'macbook-pro-16-m2-pro',
         },
         {
-          name: 'Keychron Q1 Pro',
-          description:
-            'Gasket-mounted, tactile switches. Saya sudah mencoba keyboard mekanikal di setiap rentang harga. Di sinilah saya berhenti.',
-          slug: 'keychron-q1',
+          name: 'Legion Pro 7i',
+          description: 'Workstation Windows untuk pekerjaan kreatif dan teknis yang berat.',
+          slug: 'legion-pro-7i',
         },
       ],
     },
@@ -195,28 +155,19 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Perangkat Lunak',
       items: [
         {
-          name: 'Raycast',
-          description:
-            'Menggantikan Spotlight. Clipboard history dan window manager adalah dua fitur yang saya gunakan setiap sepuluh menit.',
-          slug: 'raycast',
-        },
-        {
           name: 'Figma',
-          description:
-            'Tempat saya mendesain. Pembaruan auto-layout dari dua tahun terakhir membuatnya benar-benar bagus untuk berpikir responsif.',
+          description: 'Desain antarmuka, prototipe, dan kolaborasi visual.',
           slug: 'figma',
         },
         {
-          name: 'Obsidian',
-          description:
-            'Tempat saya berpikir. File markdown polos, local first, disinkronkan via iCloud. Tidak ada lock-in.',
-          slug: 'obsidian',
+          name: 'CapCut',
+          description: 'Penyuntingan cepat untuk video pendek dan perjalanan.',
+          slug: 'capcut',
         },
         {
-          name: 'Capture One',
-          description:
-            'Color science yang lebih baik dari Lightroom untuk file Fuji. Capture One menangani tone kulit dengan baik.',
-          slug: 'capture-one',
+          name: 'Visual Studio Code',
+          description: 'Editor kode untuk membangun dan memelihara proyek web.',
+          slug: 'visual-studio-code',
         },
       ],
     },
@@ -224,16 +175,19 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
       label: 'Buku',
       items: [
         {
-          name: 'Thinking in Systems — Donella Meadows',
-          description:
-            'Mengubah cara saya melihat hampir segalanya. Buku tipis dengan half-life yang sangat panjang.',
+          name: 'Thinking in Systems',
+          description: 'Pengantar praktis untuk memahami struktur, umpan balik, dan perubahan.',
           slug: 'thinking-in-systems',
         },
         {
-          name: 'On Photography — Susan Sontag',
-          description:
-            'Padat dan layak dibaca. Membuat Anda berpikir lebih keras tentang apa yang Anda lakukan ketika mengarahkan kamera ke sesuatu.',
-          slug: 'on-photography',
+          name: 'Happiness by Design',
+          description: 'Buku tentang membentuk keseharian melalui perhatian dan kebahagiaan.',
+          slug: 'happiness-by-design',
+        },
+        {
+          name: 'The Great Mental Models series',
+          description: 'Seri kerangka berpikir untuk keputusan yang lebih jernih dan baik.',
+          slug: 'the-great-mental-models',
         },
       ],
     },

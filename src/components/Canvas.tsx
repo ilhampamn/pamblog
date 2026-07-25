@@ -8,10 +8,13 @@ import { Polaroid, type PolaroidConfig } from './Polaroid'
 import { VideoPolaroid, type VideoPolaroidConfig } from './VideoPolaroid'
 // import { PaperPlane3D } from './PaperPlane3D'
 import { StickyNote } from './StickyNote'
+import { RoughHeart } from './RoughHeart'
+import { RoughBackpack, RoughGlobe, RoughWelcome } from './RoughDoodles'
+import { RopeLayer, type RopeConnection } from './RopeLayer'
 import type { Post } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
-interface CanvasProps {
+export interface CanvasProps {
   locale: Locale
   posts: Post[]
   ui: {
@@ -27,6 +30,7 @@ interface CanvasProps {
     placeholder: string
     button: string
   }
+  allowMobileInteraction?: boolean
 }
 
 // ── World geometry ──────────────────────────────────────────────────────────
@@ -39,20 +43,11 @@ const CENTER_Y = WORLD_H / 2
 
 const MIN_SCALE = 0.4
 const MAX_SCALE = 2.5
+const GRID_SIZE = 24
 // How far past the world edges the viewport may overscroll, in screen px.
 const PAN_MARGIN = 200
-
-// Deterministic seeded random — same scatter on every render (SSR-safe).
-function seedRandom(seed: string) {
-  let h = 0
-  for (let i = 0; i < seed.length; i++) h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0
-  return () => {
-    h ^= h << 13
-    h ^= h >> 17
-    h ^= h << 5
-    return (h >>> 0) / 4294967296
-  }
-}
+const LABUAN_BAJO_IMAGE =
+  'https://res.cloudinary.com/bub4hnum/image/upload/f_auto,q_auto/v1784942935/402F38BD-7487-4EEC-B6C6-21E5D0BF8C66_ixzzxo.jpg'
 
 // TAG_COLORS kept for future use (HomeList still uses it)
 // const TAG_COLORS: Record<string, string> = { ... }
@@ -72,19 +67,13 @@ interface CardPos {
   width: number
 }
 
-// Scatter a card outward from the world centre using its seed.
-function placeCard(seed: string, index: number): Placed {
-  const rng = seedRandom(seed)
-  const angle = rng() * Math.PI * 2
-  const distance = 320 + rng() * 360 + index * 30 // spread further out per card
-  const jitterX = (rng() - 0.5) * 120
-  const jitterY = (rng() - 0.5) * 100
-  return {
-    x: CENTER_X + Math.cos(angle) * distance + jitterX,
-    y: CENTER_Y + Math.sin(angle) * distance * 0.7 + jitterY, // flatten — desk feel
-    rotation: (rng() - 0.5) * 8,
-  }
-}
+const POST_LAYOUT: Placed[] = [
+  { x: CENTER_X + 565, y: CENTER_Y - 85, rotation: -4 },
+  { x: CENTER_X - 375, y: CENTER_Y + 520, rotation: 0 },
+  { x: CENTER_X + 760, y: CENTER_Y + 610, rotation: 3 },
+  { x: CENTER_X - 730, y: CENTER_Y + 650, rotation: -3 },
+  { x: CENTER_X + 760, y: CENTER_Y - 420, rotation: 2 },
+]
 
 // ── Stickers ────────────────────────────────────────────────────────────────
 // Add new stickers here — they appear on the canvas and are independently
@@ -94,8 +83,8 @@ const STICKERS: StickerConfig[] = [
     id: 'sticker-rainbow',
     src: '/stickers/rainbow.webp',
     alt: 'Rainbow sticker',
-    worldX: CENTER_X + 700,
-    worldY: CENTER_Y - 280,
+    worldX: CENTER_X + 475,
+    worldY: CENTER_Y - 275,
     rotation: 12,
     width: 130,
   },
@@ -103,14 +92,64 @@ const STICKERS: StickerConfig[] = [
     id: 'sticker-paperplane',
     src: '/stickers/paperplane.png',
     alt: 'Paper plane sticker',
-    worldX: CENTER_X - 500,
-    worldY: CENTER_Y - 350,
+    worldX: CENTER_X - 420,
+    worldY: CENTER_Y - 85,
     rotation: -8,
     width: 120,
   },
 ]
 
-export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
+const ROUGH_DRAWINGS = [
+  {
+    id: 'rough-welcome',
+    kind: 'welcome',
+    worldX: CENTER_X + 45,
+    worldY: CENTER_Y - 175,
+    rotation: -1.5,
+    width: 560,
+  },
+  {
+    id: 'rough-heart',
+    kind: 'heart',
+    worldX: CENTER_X - 65,
+    worldY: CENTER_Y + 650,
+    rotation: 7,
+    width: 210,
+  },
+  {
+    id: 'rough-globe',
+    kind: 'globe',
+    worldX: CENTER_X - 555,
+    worldY: CENTER_Y + 10,
+    rotation: -7,
+    width: 190,
+  },
+  {
+    id: 'rough-backpack',
+    kind: 'backpack',
+    worldX: CENTER_X + 520,
+    worldY: CENTER_Y + 250,
+    rotation: 5,
+    width: 185,
+  },
+] as const
+
+const ROPE_CONNECTIONS: RopeConnection[] = [
+  {
+    id: 'essay-to-labuan-bajo',
+    fromId: 'card-a-not-so-hidden-gem-karimun-jawa',
+    toId: 'polaroid-labuan-bajo',
+    color: '#c9364f',
+  },
+]
+
+export function Canvas({
+  locale,
+  posts,
+  ui,
+  newsletter,
+  allowMobileInteraction = false,
+}: CanvasProps) {
   // ── Polaroids ────────────────────────────────────────────────────────────────
   // Add photo polaroids here — same drag mechanics as stickers, but wrapped in a
   // classic white polaroid frame. Width sets the photo area; height is automatic.
@@ -124,10 +163,20 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         { label: 'Destination', href: `/${locale}/explore/destinations/kyrgyzstan/bishkek/ala-archa-national-park` },
         { label: 'Itinerary', href: `/${locale}/explore/itineraries/3-days-in-hanoi` },
       ],
-      worldX: CENTER_X - 680,
-      worldY: CENTER_Y + 220,
+      worldX: CENTER_X - 480,
+      worldY: CENTER_Y + 245,
       rotation: -6,
-      width: 200,
+      width: 170,
+    },
+    {
+      id: 'polaroid-labuan-bajo',
+      src: LABUAN_BAJO_IMAGE,
+      alt: 'Labuan Bajo',
+      caption: 'Labuan Bajo',
+      worldX: CENTER_X + 515,
+      worldY: CENTER_Y + 535,
+      rotation: 5,
+      width: 175,
     },
   ]
 
@@ -139,11 +188,11 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       videoId: 'wM2G2exs15w',
       caption: 'the memories.',
       postedAt: '27 June 2026',
-      worldX: CENTER_X,
+      worldX: CENTER_X + 45,
       // Keep the large frame clear of the fixed navigation on initial load.
-      worldY: CENTER_Y + 180,
+      worldY: CENTER_Y + 165,
       rotation: -1.5,
-      width: 780,
+      width: 680,
     },
   ]
   const containerRef = useRef<HTMLDivElement>(null)
@@ -162,13 +211,29 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       ...STICKERS.map(s    => [s.id, { x: s.worldX, y: s.worldY }] as [string, { x: number; y: number }]),
       ...POLAROIDS.map(p   => [p.id, { x: p.worldX, y: p.worldY }] as [string, { x: number; y: number }]),
       ...VIDEO_POLAROIDS.map(t => [t.id, { x: t.worldX, y: t.worldY }] as [string, { x: number; y: number }]),
+      ...ROUGH_DRAWINGS.map(drawing => [
+        drawing.id,
+        { x: drawing.worldX, y: drawing.worldY },
+      ] as [string, { x: number; y: number }]),
     ])
   )
 
   // Compute initial card positions once (these are stable values).
-  const newsletterPos = placeCard('newsletter', 1)
-  const currentlyPos = placeCard('currently', 2)
-  const aboutPos = placeCard('about', 3)
+  const newsletterPos: Placed = {
+    x: CENTER_X + 70,
+    y: CENTER_Y + 510,
+    rotation: 0,
+  }
+  const currentlyPos: Placed = {
+    x: CENTER_X + 205,
+    y: CENTER_Y - 400,
+    rotation: 0,
+  }
+  const aboutPos: Placed = {
+    x: CENTER_X - 405,
+    y: CENTER_Y - 205,
+    rotation: 0,
+  }
 
   // Mutable world-space positions for cards (updated while dragging).
   // width is the card's intrinsic world-px width; applyTransform scales it.
@@ -181,7 +246,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     cardPos.current.set('currently', { ...currentlyPos, width: 208 })  // w-52 = 208px
     cardPos.current.set('about', { ...aboutPos, width: 224 })           // w-56 = 224px
     posts.slice(0, 5).forEach((post, i) => {
-      const pos = placeCard(post.slug, i + 4)
+      const pos = POST_LAYOUT[i]
       cardPos.current.set(post.slug, { ...pos, width: 208 })
     })
   }
@@ -190,6 +255,17 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
     const world = worldRef.current
     if (!world) return
     world.style.transform = `translate(${tx.current}px, ${ty.current}px) scale(${scale.current})`
+
+    // Keep the grid infinite, but anchor it to the same world origin as every
+    // canvas object. Its cells grow and shrink with zoom, and its offset follows
+    // pan, instead of remaining pinned to the screen at a fixed 24px size.
+    const viewport = containerRef.current
+    if (viewport) {
+      const scaledGridSize = GRID_SIZE * scale.current
+      viewport.style.backgroundSize = `${scaledGridSize}px ${scaledGridSize}px`
+      viewport.style.backgroundPosition = `${tx.current - scale.current}px ${ty.current - scale.current}px`
+      viewport.dataset.canvasScale = String(scale.current)
+    }
 
     // Stickers + Polaroids live outside the world layer — re-rasterised at the
     // correct display size on every zoom change, always sharp.
@@ -203,6 +279,17 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       el.style.top       = `${ty.current + pos.y * scale.current}px`
       el.style.width     = `${width * scale.current}px`
       el.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`
+    })
+
+    ROUGH_DRAWINGS.forEach(({ id, width, rotation }) => {
+      const drawing = document.getElementById(id)
+      if (!drawing) return
+      const pos = stickerPos.current.get(id)!
+      drawing.style.left = `${tx.current + pos.x * scale.current}px`
+      drawing.style.top = `${ty.current + pos.y * scale.current}px`
+      drawing.style.width = `${width * scale.current}px`
+      drawing.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`
+      if (id === 'rough-welcome') drawing.style.fontSize = `${48 * scale.current}px`
     })
 
     // Polaroids: fixed CSS width + scale() in transform — identical to how
@@ -498,7 +585,9 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
 
     // The canvas is a desktop-only experience; mobile renders a list instead.
     // Attach pan/zoom only at ≥768px and (de)activate on breakpoint crossings.
-    const desktop = window.matchMedia('(min-width: 768px)')
+    const desktop = window.matchMedia(
+      allowMobileInteraction ? '(min-width: 0px)' : '(min-width: 768px)',
+    )
     let active = false
     const sync = () => {
       if (desktop.matches && !active) {
@@ -516,7 +605,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
       desktop.removeEventListener('change', sync)
       if (active) detach()
     }
-  }, [applyTransform, centerOnWorld, clampPan, zoomTo])
+  }, [allowMobileInteraction, applyTransform, centerOnWorld, clampPan, zoomTo])
 
   // ── Entrance: gentle staggered fade-in of the cards ──
   useEffect(() => {
@@ -560,7 +649,7 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         height: '100svh',
         backgroundColor: 'var(--color-paper)',
         backgroundImage: 'linear-gradient(var(--color-grid-home) 1px, transparent 1px), linear-gradient(90deg, var(--color-grid-home) 1px, transparent 1px)',
-        backgroundSize: 'var(--grid-size) var(--grid-size)',
+        backgroundSize: `${GRID_SIZE}px ${GRID_SIZE}px`,
         backgroundPosition: '-1px -1px',
       }}
     >
@@ -575,6 +664,8 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         </filter>
         <rect width="100%" height="100%" filter="url(#paper-noise)" />
       </svg>
+
+      <RopeLayer connections={ROPE_CONNECTIONS} />
 
       {/* ── The transparent pannable / zoomable world ── */}
       <div
@@ -700,6 +791,31 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
         <Sticker key={s.id} id={s.id} src={s.src} alt={s.alt} filter={s.filter} />
       ))}
 
+      {ROUGH_DRAWINGS.map((drawing) => {
+        const Component =
+          drawing.kind === 'welcome'
+            ? RoughWelcome
+            : drawing.kind === 'heart'
+            ? RoughHeart
+            : drawing.kind === 'globe'
+              ? RoughGlobe
+              : RoughBackpack
+        return (
+          <Component
+            key={drawing.id}
+            id={drawing.id}
+            className="canvas-sticker rough-drawing"
+            style={{
+              position: 'absolute',
+              left: -9999,
+              top: -9999,
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+            }}
+          />
+        )
+      })}
+
       {/* ── Polaroids — draggable photo cards with a white frame. ── */}
       {POLAROIDS.map((p) => (
         <Polaroid key={p.id} id={p.id} src={p.src} alt={p.alt} caption={p.caption} width={p.width} links={p.links} />
@@ -744,22 +860,6 @@ export function Canvas({ locale, posts, ui, newsletter }: CanvasProps) {
           ⤢
         </button>
       </div>
-
-      {/* ASCII art plant — bottom-right corner */}
-      <pre
-        className="absolute bottom-6 right-8 text-xs leading-tight pointer-events-none select-none z-20"
-        aria-hidden="true"
-        style={{ color: 'var(--color-torn)', fontFamily: 'var(--font-mono)' }}
-      >
-{`    |
-   /|\\
-  / | \\
- /  |  \\
-    |
-   /|\\
-  / | \\
-~~~|~~~`}
-      </pre>
 
       {/* Cursor-following paper plane — hidden for now, revisit later */}
       {/* <PaperPlane3D /> */}

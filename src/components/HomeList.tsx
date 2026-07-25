@@ -3,12 +3,16 @@ import { NewsletterWidget } from './NewsletterWidget'
 import { VideoPolaroid } from './VideoPolaroid'
 import { StickyNote } from './StickyNote'
 import { Polaroid } from './Polaroid'
+import { RoughHeart } from './RoughHeart'
+import { RoughBackpack, RoughGlobe } from './RoughDoodles'
 import type { Post } from '@/lib/posts.sanity'
 import type { Locale } from '@/lib/i18n'
 
 // Casebook uses restrained placement; tiny differences feel more physical than
 // large alternating rotations.
 const POST_TILTS = [-2.2, 1.6, -1.4, 2, -1.8, 1.2, -2, 1.5]
+const LABUAN_BAJO_IMAGE =
+  'https://res.cloudinary.com/bub4hnum/image/upload/f_auto,q_auto/v1784942935/402F38BD-7487-4EEC-B6C6-21E5D0BF8C66_ixzzxo.jpg'
 
 interface HomeListProps {
   locale: Locale
@@ -99,6 +103,20 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           }}
         />
 
+        <RoughGlobe
+          className="pointer-events-none select-none"
+          style={{
+            width: 172,
+            alignSelf: 'flex-end',
+            marginTop: -36,
+            marginRight: 8,
+            marginBottom: -34,
+            position: 'relative',
+            zIndex: 30,
+            transform: 'rotate(7deg)',
+          }}
+        />
+
         {/* ── Currently (sticky note — pink: base hue shifted to 330°) ── */}
         <StickyNote
           rotation={0.45}
@@ -154,6 +172,33 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           </Link>
         </StickyNote>
 
+        <RoughHeart
+          className="pointer-events-none select-none"
+          style={{
+            width: 190,
+            alignSelf: 'center',
+            marginTop: -18,
+            marginBottom: -22,
+            position: 'relative',
+            zIndex: 30,
+            transform: 'rotate(-5deg)',
+          }}
+        />
+
+        <RoughBackpack
+          className="pointer-events-none select-none"
+          style={{
+            width: 166,
+            alignSelf: 'flex-start',
+            marginTop: -34,
+            marginLeft: 14,
+            marginBottom: -28,
+            position: 'relative',
+            zIndex: 30,
+            transform: 'rotate(-6deg)',
+          }}
+        />
+
         {/* ── Newsletter ── */}
         <section
           className="p-5 mt-10"
@@ -185,6 +230,18 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
               { label: 'Destination', href: `/${locale}/explore/destinations/kyrgyzstan/bishkek/ala-archa-national-park` },
               { label: 'Itinerary', href: `/${locale}/explore/itineraries/3-days-in-hanoi` },
             ]}
+          />
+        </div>
+
+        <div className="mt-14 mb-6">
+          <Polaroid
+            id="polaroid-labuan-bajo-mobile"
+            src={LABUAN_BAJO_IMAGE}
+            alt="Labuan Bajo"
+            caption="Labuan Bajo"
+            width="100%"
+            rotation={5}
+            standalone
           />
         </div>
       </div>

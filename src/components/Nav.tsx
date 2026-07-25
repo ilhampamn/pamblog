@@ -130,10 +130,15 @@ export function Nav({ locale, ui }: NavProps) {
           className="relative z-50 flex items-center"
         >
           <img
-            src="/P-logo.png"
+            src="/P%20Logo.png"
             alt="Pam Travels"
             className="brand-logo"
-            style={{ height: 28, width: 'auto', display: 'block' }}
+            style={{
+              height: 60,
+              width: 'auto',
+              display: 'block',
+              transform: 'rotate(-4deg)',
+            }}
           />
         </Link>
 

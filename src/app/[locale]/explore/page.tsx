@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
+import { RoughCard } from '@/components/RoughCard'
 import { t, type Locale } from '@/lib/i18n'
 
 const LOCALES = ['en', 'id', 'zh'] as const
@@ -58,22 +58,15 @@ export default function ExploreHub({ params }: { params: { locale: string } }) {
             {ui.explore.intro}
           </p>
 
-          <div
-            className="mt-12 grid grid-cols-1 gap-px border sm:grid-cols-3"
-            style={{
-              borderColor: 'var(--color-ink)',
-              backgroundColor: 'var(--color-ink)',
-            }}
-          >
+          <div className="mt-12 grid grid-cols-1 gap-3 sm:grid-cols-3">
             {sections.map((s, index) => (
-              <Link
+              <RoughCard
                 key={s.href}
                 href={s.href}
-                className="group block p-5 md:p-8"
-                style={{
-                  backgroundColor: 'var(--color-paper)',
-                  textDecoration: 'none',
-                }}
+                orientation="vertical"
+                seed={307 + index * 271}
+                className="group"
+                contentClassName="p-5 no-underline md:p-8"
               >
                 <div
                   className="mb-7 flex items-center justify-between text-sm uppercase tracking-[0.08em] md:text-base"
@@ -107,7 +100,7 @@ export default function ExploreHub({ params }: { params: { locale: string } }) {
                     {s.desc}
                   </p>
                 </div>
-              </Link>
+              </RoughCard>
             ))}
           </div>
         </div>

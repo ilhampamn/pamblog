@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
-import { Canvas } from '@/components/Canvas'
-import { HomeList } from '@/components/HomeList'
+import { HomeExperience } from '@/components/HomeExperience'
 import { Nav } from '@/components/Nav'
 import { getPostsByLocale } from '@/lib/posts.sanity'
 import { t, type Locale } from '@/lib/i18n'
@@ -22,25 +21,12 @@ export default async function HomePage({ params }: { params: { locale: string } 
     <>
       <Nav locale={locale} ui={ui.nav} />
 
-      {/* Desktop: pannable / zoomable canvas. */}
-      <div className="hidden md:block">
-        <Canvas
-          locale={locale}
-          posts={posts}
-          ui={ui.home}
-          newsletter={ui.newsletter}
-        />
-      </div>
-
-      {/* Mobile: structured, scrollable list. */}
-      <div className="md:hidden">
-        <HomeList
-          locale={locale}
-          posts={posts}
-          ui={ui.home}
-          newsletter={ui.newsletter}
-        />
-      </div>
+      <HomeExperience
+        locale={locale}
+        posts={posts}
+        ui={ui.home}
+        newsletter={ui.newsletter}
+      />
     </>
   )
 }

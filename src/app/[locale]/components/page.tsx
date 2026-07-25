@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import type { Locale } from '@/lib/i18n'
 import { useTheme as useThemeProvider } from '@/components/ThemeProvider'
+import { RoughCard } from '@/components/RoughCard'
 
 interface ComponentShowcaseProps {
   params: { locale: Locale }
@@ -384,6 +385,50 @@ export default function ComponentsPage({ params }: ComponentShowcaseProps) {
               <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
                 🛠 Working on: Component Gallery
               </p>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div>
+                <p className="label-stamped mb-3" style={{ color: 'var(--color-smudge)' }}>
+                  Rough card — vertical
+                </p>
+                <RoughCard
+                  orientation="vertical"
+                  seed={1409}
+                  contentClassName="p-6"
+                >
+                  <div
+                    className="mb-5 aspect-[16/10]"
+                    style={{ backgroundColor: 'var(--color-blush)', opacity: 0.72 }}
+                  />
+                  <h3 className="text-2xl font-bold">Travel journal</h3>
+                  <p className="mt-2 text-sm" style={{ color: 'var(--color-smudge)' }}>
+                    Stacked media and content for galleries, destinations, and stories.
+                  </p>
+                </RoughCard>
+              </div>
+
+              <div>
+                <p className="label-stamped mb-3" style={{ color: 'var(--color-smudge)' }}>
+                  Rough card — horizontal
+                </p>
+                <RoughCard
+                  orientation="horizontal"
+                  seed={1877}
+                  contentClassName="min-h-48"
+                >
+                  <div
+                    className="w-2/5 shrink-0"
+                    style={{ backgroundColor: '#4dabf7', opacity: 0.72 }}
+                  />
+                  <div className="flex flex-1 flex-col justify-center p-6">
+                    <h3 className="text-2xl font-bold">Field notes</h3>
+                    <p className="mt-2 text-sm" style={{ color: 'var(--color-smudge)' }}>
+                      Side-by-side media and copy for wider content rows.
+                    </p>
+                  </div>
+                </RoughCard>
+              </div>
             </div>
 
             {/* Newsletter Card */}
