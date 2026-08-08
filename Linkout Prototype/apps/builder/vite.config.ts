@@ -10,6 +10,8 @@ export default defineConfig({
       '@codapay/config-schema': resolve(__dirname, '../../packages/config-schema/src/index.ts'),
       '@codapay/tokens': resolve(__dirname, '../../packages/tokens/src/index.ts'),
       '@codapay/checkout-ui': resolve(__dirname, '../../packages/checkout-ui/src/index.ts'),
+      '@codapay/ui-coda/tokens.css': resolve(__dirname, '../../packages/ui-coda/src/tokens.css'),
+      '@codapay/ui-coda': resolve(__dirname, '../../packages/ui-coda/src/index.ts'),
     },
   },
 });

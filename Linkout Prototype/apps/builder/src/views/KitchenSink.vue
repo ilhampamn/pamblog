@@ -157,7 +157,7 @@ const newCardSelected = ref(false);
         <div class="ks-section-label ks-section-label--chrome">
           <span class="ks-badge ks-badge--chrome">coda-payments-design</span>
           <h2>Builder Chrome</h2>
-          <p>Used exclusively inside the builder shell. Tokens: <code>--coda-*</code></p>
+          <p>Used exclusively inside the builder shell. Tokens: <code>color/*, spacing/*, font/* (coda-payments-design)</code></p>
         </div>
 
         <!-- 1.1 Buttons & Actions -->
@@ -315,7 +315,7 @@ const newCardSelected = ref(false);
               <span class="ks-label">default state</span>
             </div>
             <div class="ks-demo-item ks-demo-item--wide">
-              <div class="uploader__zone" style="border-color:var(--coda-primary);color:var(--coda-primary);background:var(--coda-hover)">
+              <div class="uploader__zone" style="border-color:var(--color-background-control-button-primary-default);color:var(--color-background-control-button-primary-default);background:var(--color-background-control-primary-hover)">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span>Drop to upload</span>
               </div>
@@ -347,7 +347,7 @@ const newCardSelected = ref(false);
                   <div class="color-field__swatch">
                     <input type="color" value="#FF2E88" />
                   </div>
-                  <input class="color-field__hex" type="text" value="#FF2E88" maxlength="7" style="border-color:var(--coda-primary)" />
+                  <input class="color-field__hex" type="text" value="#FF2E88" maxlength="7" style="border-color:var(--color-background-control-button-primary-default)" />
                 </div>
               </div>
               <span class="ks-label">focused</span>
@@ -384,7 +384,7 @@ const newCardSelected = ref(false);
             <div class="ks-demo-item ks-demo-item--wide">
               <div class="panel__section">
                 <h4 class="panel__section-title">Section title</h4>
-                <p style="font-size:13px;color:var(--coda-text-secondary)">Panel section content goes here. Used as the card container for all settings groups.</p>
+                <p style="font-size:13px;color:var(--color-text-primary-lighter)">Panel section content goes here. Used as the card container for all settings groups.</p>
               </div>
               <span class="ks-label">panel section (show-header: true)</span>
             </div>
@@ -401,7 +401,7 @@ const newCardSelected = ref(false);
                   <div class="method-row__drag">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="1.5" fill="currentColor"/><circle cx="15" cy="7" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="17" r="1.5" fill="currentColor"/><circle cx="15" cy="17" r="1.5" fill="currentColor"/></svg>
                   </div>
-                  <div class="method-row__logo"><div style="width:32px;height:20px;background:var(--coda-surface-border);border-radius:4px"></div></div>
+                  <div class="method-row__logo"><div style="width:32px;height:20px;background:var(--color-border-primary);border-radius:4px"></div></div>
                   <span class="method-row__label">Visa •••• 3893</span>
                   <span class="method-row__type">saved</span>
                   <button class="toggle toggle--on" style="width:28px;height:16px;flex-shrink:0"><span class="toggle__thumb" style="width:12px;height:12px;top:2px;left:2px" /></button>
@@ -410,7 +410,7 @@ const newCardSelected = ref(false);
                   <div class="method-row__drag">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="1.5" fill="currentColor"/><circle cx="15" cy="7" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="17" r="1.5" fill="currentColor"/><circle cx="15" cy="17" r="1.5" fill="currentColor"/></svg>
                   </div>
-                  <div class="method-row__logo"><div style="width:32px;height:20px;background:var(--coda-surface-border);border-radius:4px"></div></div>
+                  <div class="method-row__logo"><div style="width:32px;height:20px;background:var(--color-border-primary);border-radius:4px"></div></div>
                   <span class="method-row__label">Google Pay</span>
                   <span class="method-row__type">external</span>
                   <button class="toggle"><span class="toggle__thumb" style="width:12px;height:12px;top:2px;left:2px" /></button>
@@ -419,7 +419,7 @@ const newCardSelected = ref(false);
                   <div class="method-row__drag">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="1.5" fill="currentColor"/><circle cx="15" cy="7" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="17" r="1.5" fill="currentColor"/><circle cx="15" cy="17" r="1.5" fill="currentColor"/></svg>
                   </div>
-                  <div class="method-row__logo"><div style="width:32px;height:20px;background:#fff3cd;border-radius:4px;border:1px solid #ffc107"></div></div>
+                  <div class="method-row__logo"><div style="width:32px;height:20px;background:var(--color-background-warning-lightest);border-radius:var(--border-radius-xs);border:1px solid var(--color-border-warning)"></div></div>
                   <span class="method-row__label">Custom Pay</span>
                   <span class="chip chip--negative">No logo</span>
                   <button class="toggle toggle--on" style="width:28px;height:16px;flex-shrink:0"><span class="toggle__thumb" style="width:12px;height:12px;top:2px;left:2px" /></button>
@@ -676,7 +676,7 @@ const newCardSelected = ref(false);
                       <span style="font-size: 11px; color: var(--text-body-subtle); margin-top: 2px;">Expires 12/29</span>
                     </div>
                   </div>
-                  <button style="background: none; border: none; color: #cc0705; font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; font-family: inherit;">Remove</button>
+                  <button style="background: none; border: none; color: var(--color-text-critical); font-size: 13px; font-weight: 500; cursor: pointer; padding: 0; font-family: inherit;">Remove</button>
                 </div>
               </div>
               <span class="ks-label">5. With remove action — destructive button</span>
@@ -839,18 +839,18 @@ const newCardSelected = ref(false);
 /* ── Layout ── */
 .ks {
   min-height: 100%;
-  background: var(--coda-surface-bg);
+  background: var(--color-background-secondary);
   font-family: 'Inter', system-ui, sans-serif;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
 }
 
 .ks-header {
   display: flex;
   align-items: flex-start;
-  gap: var(--coda-sp-16);
-  padding: var(--coda-sp-24) var(--coda-sp-24) var(--coda-sp-16);
-  background: var(--coda-surface-panel);
-  border-bottom: 1px solid var(--coda-surface-border);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+  background: var(--color-background-primary);
+  border-bottom: 1px solid var(--color-border-primary);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -859,115 +859,115 @@ const newCardSelected = ref(false);
 .ks-back {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
   padding: 6px 12px;
   background: none;
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-xs);
   font-size: 13px;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
   margin-top: 2px;
 }
-.ks-back:hover { background: var(--coda-hover); }
+.ks-back:hover { background: var(--color-background-control-primary-hover); }
 
 .ks-title-block { flex: 1; }
 
 .ks-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
   margin-bottom: 4px;
 }
 
 .ks-subtitle {
   font-size: 13px;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
 }
 
 .ks-ds-legend {
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
   flex-shrink: 0;
 }
 
 .ks-body {
-  padding: var(--coda-sp-24);
+  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-24);
+  gap: var(--spacing-xl);
 }
 
 /* ── DS Section ── */
 .ks-section {
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-16);
+  gap: var(--spacing-lg);
 }
 
 .ks-section-label {
-  padding: var(--coda-sp-16) var(--coda-sp-20);
-  border-radius: var(--coda-radius-l);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--border-radius-md);
   border-left: 4px solid;
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
 }
 
 .ks-section-label--chrome {
-  background: #eef0ff;
-  border-color: var(--coda-primary);
+  background: var(--color-background-control-secondary);
+  border-color: var(--color-background-control-button-primary-default);
 }
 
 .ks-section-label--whitelabel {
-  background: #f0fdf4;
-  border-color: #16a34a;
+  background: var(--color-background-positive-lightest);
+  border-color: var(--color-border-positive);
 }
 
 .ks-section-label h2 {
   font-size: 18px;
   font-weight: 700;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
 }
 
 .ks-section-label p {
   font-size: 13px;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
 }
 
 /* ── Group ── */
 .ks-group {
-  background: var(--coda-surface-panel);
-  border-radius: var(--coda-radius-l);
-  padding: var(--coda-sp-16) var(--coda-sp-20);
+  background: var(--color-background-primary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-12);
+  gap: var(--spacing-md);
 }
 
 .ks-group-title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
 .ks-meta {
   font-size: 11px;
   font-weight: 400;
-  color: var(--coda-text-muted);
+  color: var(--color-text-primary-lightest);
 }
 
 /* ── Demo rows ── */
 .ks-row {
   display: flex;
-  gap: var(--coda-sp-16);
+  gap: var(--spacing-lg);
   align-items: flex-start;
 }
 
@@ -977,14 +977,14 @@ const newCardSelected = ref(false);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--coda-sp-6);
+  gap: var(--spacing-xs);
 }
 
 .ks-demo-item--wide { min-width: 220px; flex: 1; max-width: 340px; }
 
 .ks-label {
   font-size: 11px;
-  color: var(--coda-text-muted);
+  color: var(--color-text-primary-lightest);
   font-style: italic;
 }
 
@@ -1001,19 +1001,19 @@ const newCardSelected = ref(false);
 }
 
 .ks-badge--chrome {
-  background: rgba(16, 42, 248, 0.1);
-  color: var(--coda-primary);
+  background: var(--color-background-control-secondary);
+  color: var(--color-text-primary);
 }
 
 .ks-badge--whitelabel {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--color-background-positive-lightest);
+  color: var(--color-text-positive);
 }
 
 /* ── Buttons (demo) ── */
 .btn {
   padding: 7px 14px;
-  border-radius: var(--coda-radius-s);
+  border-radius: var(--border-radius-xs);
   font-size: 13px;
   font-weight: 500;
   border: 1px solid transparent;
@@ -1024,31 +1024,31 @@ const newCardSelected = ref(false);
 }
 
 .btn--primary {
-  background: var(--coda-primary);
+  background: var(--color-background-control-button-primary-default);
   color: white;
 }
-.btn--primary:hover:not(:disabled) { background: #0d22d4; }
+.btn--primary:hover:not(:disabled) { background: var(--color-background-control-button-primary-hover); }
 
 .btn--secondary {
-  background: var(--coda-surface-bg);
-  color: var(--coda-text-secondary);
-  border-color: var(--coda-surface-border);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary-lighter);
+  border-color: var(--color-border-primary);
 }
-.btn--secondary:hover:not(:disabled) { background: var(--coda-hover); }
+.btn--secondary:hover:not(:disabled) { background: var(--color-background-control-primary-hover); }
 
 .btn--ghost {
   background: none;
-  color: var(--coda-primary);
+  color: var(--color-background-control-button-primary-default);
   border-color: transparent;
 }
 .btn--ghost:hover { text-decoration: underline; }
 
 .btn--destructive {
-  background: #fff0f0;
-  color: #cc0705;
-  border-color: #ffd7d7;
+  background: var(--color-background-critical-lightest);
+  color: var(--color-text-critical);
+  border-color: var(--color-border-critical);
 }
-.btn--destructive:hover:not(:disabled) { background: #ffd7d7; }
+.btn--destructive:hover:not(:disabled) { background: var(--color-background-critical-lightest); }
 
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -1059,30 +1059,30 @@ const newCardSelected = ref(false);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--coda-surface-bg);
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
-  color: var(--coda-text-secondary);
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-lighter);
   cursor: pointer;
 }
-.icon-btn:hover:not(:disabled) { background: var(--coda-hover); color: var(--coda-text-primary); }
+.icon-btn:hover:not(:disabled) { background: var(--color-background-control-primary-hover); color: var(--color-text-primary); }
 .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── Input extras ── */
 .field__input--error {
-  border-color: #cc0705 !important;
-  background: #fff0f0;
+  border-color: var(--color-border-critical) !important;
+  background: var(--color-background-critical-lightest);
 }
 .field__error {
   font-size: 11px;
-  color: #cc0705;
+  color: var(--color-text-critical);
 }
 
 /* ── Mode tabs ── */
 .mode-tabs {
   display: inline-flex;
-  background: var(--coda-surface-bg);
-  border-radius: var(--coda-radius-m);
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-sm);
   padding: 3px;
   gap: 2px;
 }
@@ -1093,17 +1093,17 @@ const newCardSelected = ref(false);
   padding: 5px 12px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--coda-text-muted);
-  border-radius: calc(var(--coda-radius-m) - 2px);
+  color: var(--color-text-primary-lightest);
+  border-radius: calc(var(--border-radius-sm) - 2px);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.15s ease;
 }
 
 .mode-tab--active {
-  background: var(--coda-surface-panel);
-  color: var(--coda-text-primary);
-  box-shadow: var(--coda-shadow-panel);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ── Chips ── */
@@ -1117,17 +1117,17 @@ const newCardSelected = ref(false);
   white-space: nowrap;
 }
 
-.chip--positive { background: #dcfce7; color: #166534; }
-.chip--negative { background: #fef2f2; color: #991b1b; }
-.chip--neutral  { background: var(--coda-surface-bg); color: var(--coda-text-secondary); border: 1px solid var(--coda-surface-border); }
-.chip--warning  { background: #fffbeb; color: #92400e; }
+.chip--positive { background: var(--color-background-positive-lightest); color: var(--color-text-positive); }
+.chip--negative { background: var(--color-background-critical-lightest); color: var(--color-text-critical); }
+.chip--neutral  { background: var(--color-background-secondary); color: var(--color-text-primary-lighter); border: 1px solid var(--color-border-primary); }
+.chip--warning  { background: var(--color-background-warning-lightest); color: var(--color-text-warning); }
 
 .ks-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 
 /* ── Method list demo ── */
 .method-list {
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-m);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
   width: 100%;
 }
@@ -1135,32 +1135,32 @@ const newCardSelected = ref(false);
 .method-row {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-8) var(--coda-sp-12);
-  border-bottom: 1px solid var(--coda-surface-border);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 .method-row:last-child { border-bottom: none; }
-.method-row--hover { background: var(--coda-hover); }
-.method-row--unmatched { background: #fffbeb; }
+.method-row--hover { background: var(--color-background-control-primary-hover); }
+.method-row--unmatched { background: var(--color-background-warning-lightest); }
 
-.method-row__drag { color: var(--coda-text-muted); cursor: grab; }
+.method-row__drag { color: var(--color-text-primary-lightest); cursor: grab; }
 .method-row__logo { flex-shrink: 0; }
 .method-row__label { flex: 1; font-size: 13px; font-weight: 500; }
-.method-row__type { font-size: 11px; color: var(--coda-text-muted); }
+.method-row__type { font-size: 11px; color: var(--color-text-primary-lightest); }
 
 /* ── Snackbar ── */
 .snackbar-demo {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-12) var(--coda-sp-16);
-  border-radius: var(--coda-radius-m);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-sm);
   font-size: 13px;
   font-weight: 500;
 }
 
-.snackbar-demo--positive { background: #1a2e1a; color: #86efac; }
-.snackbar-demo--critical { background: #2e1a1a; color: #fca5a5; }
+.snackbar-demo--positive { background: var(--color-background-positive); color: var(--color-text-primary-invert); }
+.snackbar-demo--critical { background: var(--color-background-critical); color: var(--color-text-primary-invert); }
 
 /* ── Dialog ── */
 .dialog-overlay {
@@ -1174,33 +1174,33 @@ const newCardSelected = ref(false);
 }
 
 .dialog {
-  background: var(--coda-surface-panel);
-  border-radius: var(--coda-radius-l);
-  padding: var(--coda-sp-24);
+  background: var(--color-background-primary);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-xl);
   width: 400px;
   max-width: 90vw;
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-16);
+  gap: var(--spacing-lg);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .dialog__title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
 }
 
 .dialog__body {
   font-size: 13px;
   line-height: 1.6;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
 }
 
 .dialog__actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 
 /* ── Tooltip ── */
@@ -1215,12 +1215,12 @@ const newCardSelected = ref(false);
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: #0d0d1a;
+  background: var(--color-charcoal-90);
   color: white;
   font-size: 11px;
   line-height: 1.5;
   padding: 6px 10px;
-  border-radius: var(--coda-radius-s);
+  border-radius: var(--border-radius-xs);
   white-space: nowrap;
   max-width: 200px;
   white-space: normal;
@@ -1236,8 +1236,8 @@ const newCardSelected = ref(false);
 .progress-spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid var(--coda-surface-border);
-  border-top-color: var(--coda-primary);
+  border: 2px solid var(--color-border-primary);
+  border-top-color: var(--color-background-control-button-primary-default);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -1245,14 +1245,14 @@ const newCardSelected = ref(false);
 .progress-bar-wrap {
   width: 200px;
   height: 4px;
-  background: var(--coda-surface-border);
+  background: var(--color-border-primary);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .progress-bar {
   height: 100%;
-  background: var(--coda-primary);
+  background: var(--color-background-control-button-primary-default);
   border-radius: 999px;
   transition: width 0.3s ease;
 }
@@ -1260,8 +1260,8 @@ const newCardSelected = ref(false);
 /* ── Table ── */
 .ks-table-wrap {
   overflow-x: auto;
-  border-radius: var(--coda-radius-m);
-  border: 1px solid var(--coda-surface-border);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border-primary);
 }
 
 .ks-table {
@@ -1271,30 +1271,30 @@ const newCardSelected = ref(false);
 }
 
 .ks-table th {
-  background: var(--coda-surface-bg);
+  background: var(--color-background-secondary);
   padding: 8px 12px;
   text-align: left;
   font-weight: 600;
-  color: var(--coda-text-secondary);
-  border-bottom: 1px solid var(--coda-surface-border);
+  color: var(--color-text-primary-lighter);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .ks-table td {
   padding: 7px 12px;
-  border-bottom: 1px solid var(--coda-surface-border);
+  border-bottom: 1px solid var(--color-border-primary);
   vertical-align: top;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
 }
 
 .ks-table tr:last-child td { border-bottom: none; }
 
 .ks-table-group-row td {
-  background: var(--coda-surface-bg);
+  background: var(--color-background-secondary);
   font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--coda-text-muted);
+  color: var(--color-text-primary-lightest);
   padding: 6px 12px;
 }
 
@@ -1306,8 +1306,8 @@ const newCardSelected = ref(false);
 /* ── Phone preview ── */
 .ks-theme-switch {
   display: inline-flex;
-  background: var(--coda-surface-bg);
-  border-radius: var(--coda-radius-m);
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-sm);
   padding: 3px;
   gap: 2px;
 }
@@ -1316,8 +1316,8 @@ const newCardSelected = ref(false);
   display: flex;
   justify-content: center;
   padding: 28px;
-  background: radial-gradient(circle at 50% 0%, #EBEDF1, #E3E6EB);
-  border-radius: var(--coda-radius-l);
+  background: radial-gradient(circle at 50% 0%, var(--color-charcoal-20), var(--color-charcoal-30));
+  border-radius: var(--border-radius-md);
 }
 
 .phone {
@@ -1325,7 +1325,7 @@ const newCardSelected = ref(false);
   height: 812px;
   flex-shrink: 0;
   border-radius: 44px;
-  background: #000;
+  background: var(--color-black-0);
   padding: 11px;
   box-shadow: 0 24px 60px -12px rgba(20,24,40,.45), 0 0 0 1px rgba(0,0,0,.06);
 }
@@ -1342,32 +1342,32 @@ const newCardSelected = ref(false);
 .ks-anatomy-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--coda-sp-12);
+  gap: var(--spacing-md);
 }
 
 .ks-anatomy-card {
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-m);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
 }
 
 .ks-anatomy-card__header {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-8) var(--coda-sp-12);
-  background: var(--coda-surface-bg);
-  border-bottom: 1px solid var(--coda-surface-border);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .ks-anatomy-card__name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
 }
 
 .ks-anatomy-card__tokens {
-  padding: var(--coda-sp-8) var(--coda-sp-12);
+  padding: var(--spacing-sm) var(--spacing-md);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1377,12 +1377,12 @@ const newCardSelected = ref(false);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 
 .ks-anatomy-token dt {
   font-size: 11px;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
   font-family: 'SF Mono', 'Fira Code', monospace;
 }
 
@@ -1409,7 +1409,7 @@ const newCardSelected = ref(false);
 .ks-demo-item--checkout { min-width: 340px; flex: 1; max-width: 440px; }
 
 .ks-co-demo {
-  border-radius: var(--coda-radius-l);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.08);
 }
@@ -1428,7 +1428,7 @@ const newCardSelected = ref(false);
 
 .ks-desc {
   font-size: 13px;
-  color: var(--coda-text-secondary);
+  color: var(--color-text-primary-lighter);
   line-height: 1.6;
   margin: 0;
 }

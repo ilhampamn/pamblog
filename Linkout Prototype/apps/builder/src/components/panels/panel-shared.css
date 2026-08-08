@@ -1,33 +1,34 @@
-/* Shared panel styles — coda-payments-design tokens only */
+/* Shared panel styles — coda-payments-design tokens only (real, from ui-coda) */
 
 .panel {
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
 }
 
 .panel__section {
-  background: var(--coda-surface-panel);
-  border-radius: var(--coda-radius-l);
-  padding: var(--coda-sp-16);
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-12);
+  gap: var(--spacing-md);
 }
 
 .panel__section-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--coda-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary-lightest);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--font-letter-spacing-wider);
 }
 
 /* Field */
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
 }
 
 .field--row {
@@ -37,29 +38,31 @@
 }
 
 .field__label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--coda-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 .field__input,
 .field__select {
-  background: var(--coda-surface-bg);
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
-  padding: 7px var(--coda-sp-12);
-  font-size: 13px;
+  background: var(--color-background-control-primary);
+  border: 1px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-md);
   font-family: inherit;
-  color: var(--coda-text-primary);
+  color: var(--color-text-primary);
   outline: none;
   transition: border-color 0.15s ease;
   width: 100%;
 }
 
+.field__input:hover,
+.field__select:hover { border-color: var(--color-border-primary); }
+
 .field__input:focus,
 .field__select:focus {
-  border-color: var(--coda-primary);
-  box-shadow: 0 0 0 2px rgba(16, 42, 248, 0.12);
+  border-color: var(--color-border-control-primary-active);
 }
 
 .field__input--number {
@@ -68,29 +71,29 @@
 
 /* Toggle */
 .toggle {
-  width: 36px;
-  height: 20px;
-  border-radius: 999px;
+  width: 32px;
+  height: 16px;
+  border-radius: var(--border-radius-full);
   border: none;
-  background: var(--coda-surface-border-strong);
+  background: var(--color-background-control-disabled);
   position: relative;
   transition: background 0.2s ease;
   flex-shrink: 0;
   padding: 0;
 }
 
-.toggle--on { background: var(--coda-primary); }
+.toggle--on { background: var(--color-background-neutral); }
 
 .toggle__thumb {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: white;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--border-radius-full);
+  background: var(--color-white-0);
   transition: transform 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .toggle--on .toggle__thumb { transform: translateX(16px); }
@@ -101,21 +104,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-20);
-  border: 1.5px dashed var(--coda-surface-border-strong);
-  border-radius: var(--coda-radius-m);
-  color: var(--coda-text-muted);
-  font-size: 12px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border: 1.5px dashed var(--color-border-control-primary);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-primary-lightest);
+  font-size: var(--font-size-sm);
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
 }
 
 .uploader__zone:hover {
-  border-color: var(--coda-primary);
-  color: var(--coda-primary);
-  background: var(--coda-hover);
+  border-color: var(--color-border-control-primary-active);
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
 }
 
 .uploader__input { display: none; }
@@ -128,7 +131,7 @@
 .uploader__preview img {
   max-height: 48px;
   max-width: 100%;
-  border-radius: var(--coda-radius-s);
+  border-radius: var(--border-radius-xs);
 }
 
 .uploader__remove {
@@ -137,9 +140,9 @@
   right: -6px;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
-  background: #cc0705;
-  color: white;
+  border-radius: var(--border-radius-full);
+  background: var(--color-background-critical);
+  color: var(--color-text-primary-invert);
   border: none;
   display: flex;
   align-items: center;
@@ -149,36 +152,37 @@
 /* Info banner */
 .info-banner {
   display: flex;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-8) var(--coda-sp-12);
-  border-radius: var(--coda-radius-s);
-  font-size: 12px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-xs);
+  font-size: var(--font-size-sm);
+  border: 1px solid;
 }
 
 .info-banner--warning {
-  background: #fff8e1;
-  color: #7a5800;
-  border: 1px solid #ffe082;
+  background: var(--color-background-warning-lightest);
+  color: var(--color-text-warning);
+  border-color: var(--color-border-warning);
 }
 
 .info-banner--error {
-  background: #fff0f0;
-  color: #8b0000;
-  border: 1px solid #ffcdd2;
+  background: var(--color-background-critical-lightest);
+  color: var(--color-text-critical);
+  border-color: var(--color-border-critical);
 }
 
 /* Color swatch input */
 .color-field {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 
 .color-field__swatch {
   width: 28px;
   height: 28px;
-  border-radius: var(--coda-radius-s);
-  border: 1px solid var(--coda-surface-border);
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary);
   overflow: hidden;
   flex-shrink: 0;
   cursor: pointer;
@@ -195,17 +199,17 @@
 
 .color-field__hex {
   flex: 1;
-  background: var(--coda-surface-bg);
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
-  padding: 5px var(--coda-sp-8);
-  font-size: 12px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  color: var(--coda-text-primary);
+  background: var(--color-background-control-primary);
+  border: 1px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-jet-brains-mono);
+  color: var(--color-text-primary);
   outline: none;
   text-transform: uppercase;
 }
 
 .color-field__hex:focus {
-  border-color: var(--coda-primary);
+  border-color: var(--color-border-control-primary-active);
 }

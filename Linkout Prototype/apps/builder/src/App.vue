@@ -8,9 +8,11 @@ import ProductPanel from './components/panels/ProductPanel.vue';
 import RewardsPanel from './components/panels/RewardsPanel.vue';
 import PaymentsPanel from './components/panels/PaymentsPanel.vue';
 import ThemePanel from './components/panels/ThemePanel.vue';
+import ComponentsPanel from './components/panels/ComponentsPanel.vue';
 import KitchenSink from './views/KitchenSink.vue';
 import { useConfigStore } from './stores/config.ts';
 import { useThemeStore } from './stores/theme.ts';
+import { CodaButton, CodaIconButton } from '@codapay/ui-coda';
 
 const configStore = useConfigStore();
 const themeStore = useThemeStore();
@@ -66,6 +68,7 @@ const PANEL_TITLES: Record<string, string> = {
   rewards: 'Rewards',
   payments: 'Payment Methods',
   theme: 'Theme & Tokens',
+  components: 'Components',
 };
 </script>
 
@@ -103,6 +106,7 @@ const PANEL_TITLES: Record<string, string> = {
             <RewardsPanel v-else-if="configStore.activeSection === 'rewards'" />
             <PaymentsPanel v-else-if="configStore.activeSection === 'payments'" />
             <ThemePanel v-else-if="configStore.activeSection === 'theme'" />
+            <ComponentsPanel v-else-if="configStore.activeSection === 'components'" />
           </div>
         </div>
       </main>
@@ -120,8 +124,8 @@ const PANEL_TITLES: Record<string, string> = {
           <h3 id="reset-title" class="dialog__title">Reset to defaults?</h3>
           <p class="dialog__body">All unsaved changes will be lost. This cannot be undone.</p>
           <div class="dialog__actions">
-            <button class="dialog__btn dialog__btn--secondary" @click="showResetDialog = false">Cancel</button>
-            <button class="dialog__btn dialog__btn--danger" @click="confirmReset">Reset</button>
+            <CodaButton variant="secondary" @click="showResetDialog = false">Cancel</CodaButton>
+            <CodaButton variant="critical" @click="confirmReset">Reset</CodaButton>
           </div>
         </div>
       </div>
@@ -133,9 +137,9 @@ const PANEL_TITLES: Record<string, string> = {
         <div class="dialog dialog--wide" role="dialog" aria-modal="true" aria-labelledby="export-title">
           <div class="dialog__header">
             <h3 id="export-title" class="dialog__title">Export Artifact</h3>
-            <button class="dialog__close" @click="showExportDialog = false" aria-label="Close">
+            <CodaIconButton size="sm" label="Close" @click="showExportDialog = false">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
+            </CodaIconButton>
           </div>
 
           <div class="dialog__tabs">
@@ -150,13 +154,9 @@ const PANEL_TITLES: Record<string, string> = {
           </div>
 
           <div class="dialog__actions">
-            <button class="dialog__btn dialog__btn--secondary" @click="showExportDialog = false">Close</button>
-            <button class="dialog__btn dialog__btn--primary" @click="downloadConfigJson">
-              Download config.json
-            </button>
-            <button class="dialog__btn dialog__btn--primary" @click="downloadTokensCss">
-              Download tokens.css
-            </button>
+            <CodaButton variant="secondary" @click="showExportDialog = false">Close</CodaButton>
+            <CodaButton variant="primary" @click="downloadConfigJson">Download config.json</CodaButton>
+            <CodaButton variant="primary" @click="downloadTokensCss">Download tokens.css</CodaButton>
           </div>
         </div>
       </div>
@@ -170,7 +170,7 @@ const PANEL_TITLES: Record<string, string> = {
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background: var(--coda-surface-bg);
+  background: var(--color-background-secondary);
 }
 
 .ks-overlay {
@@ -186,18 +186,18 @@ const PANEL_TITLES: Record<string, string> = {
 
 /* Left rail */
 .builder__rail {
-  width: 220px;
-  background: var(--coda-surface-panel);
-  border-right: 1px solid var(--coda-surface-border);
+  background: var(--color-background-primary);
+  border-right: 1px solid var(--color-border-primary);
   overflow-y: auto;
+  overflow-x: hidden;
   flex-shrink: 0;
 }
 
 /* Center settings panel */
 .builder__panel {
   width: 300px;
-  background: var(--coda-surface-bg);
-  border-right: 1px solid var(--coda-surface-border);
+  background: var(--color-background-secondary);
+  border-right: 1px solid var(--color-border-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -212,26 +212,27 @@ const PANEL_TITLES: Record<string, string> = {
 }
 
 .builder__panel-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--coda-text-primary);
-  padding: var(--coda-sp-16) var(--coda-sp-16) var(--coda-sp-8);
-  border-bottom: 1px solid var(--coda-surface-border);
-  background: var(--coda-surface-panel);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-letter-spacing-wide);
+  color: var(--color-text-primary);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
   flex-shrink: 0;
 }
 
 .builder__panel-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: var(--coda-sp-12);
+  padding: var(--spacing-md);
 }
 
 /* Preview */
 .builder__preview {
   flex: 1;
   overflow: hidden;
-  background: var(--coda-surface-bg);
+  background: var(--color-background-secondary);
 }
 
 .builder__preview--full {
@@ -242,7 +243,7 @@ const PANEL_TITLES: Record<string, string> = {
 .dialog-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -251,15 +252,15 @@ const PANEL_TITLES: Record<string, string> = {
 }
 
 .dialog {
-  background: var(--coda-surface-panel);
-  border-radius: var(--coda-radius-l);
-  padding: var(--coda-sp-24);
+  background: var(--color-background-primary);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xl);
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-16);
+  gap: var(--spacing-lg);
 }
 
 .dialog--wide { max-width: 720px; max-height: 80vh; overflow: hidden; }
@@ -271,61 +272,49 @@ const PANEL_TITLES: Record<string, string> = {
 }
 
 .dialog__title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--coda-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-letter-spacing-wide);
+  color: var(--color-text-primary);
 }
 
 .dialog__body {
-  font-size: 14px;
-  color: var(--coda-text-secondary);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary-lighter);
   line-height: 1.5;
 }
-
-.dialog__close {
-  background: none;
-  border: none;
-  color: var(--coda-text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--coda-radius-s);
-  padding: var(--coda-sp-4);
-}
-
-.dialog__close:hover { background: var(--coda-hover); }
 
 .dialog__tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--coda-sp-12);
+  gap: var(--spacing-md);
   overflow: hidden;
 }
 
 .export-block {
   display: flex;
   flex-direction: column;
-  gap: var(--coda-sp-4);
+  gap: var(--spacing-xs);
   overflow: hidden;
 }
 
 .export-block__label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--coda-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary-lightest);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--font-letter-spacing-wider);
 }
 
 .export-block__code {
   flex: 1;
-  background: var(--coda-surface-bg);
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
-  padding: var(--coda-sp-12);
-  font-size: 11px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  color: var(--coda-text-secondary);
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-jet-brains-mono);
+  color: var(--color-text-primary-lighter);
   overflow: auto;
   max-height: 300px;
   white-space: pre;
@@ -335,23 +324,7 @@ const PANEL_TITLES: Record<string, string> = {
 .dialog__actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
-
-.dialog__btn {
-  padding: 7px 16px;
-  border-radius: var(--coda-radius-s);
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-}
-
-.dialog__btn--primary { background: var(--coda-primary); color: white; }
-.dialog__btn--primary:hover { background: #0d22d4; }
-.dialog__btn--secondary { background: var(--coda-surface-bg); color: var(--coda-text-secondary); border-color: var(--coda-surface-border); }
-.dialog__btn--secondary:hover { background: var(--coda-hover); }
-.dialog__btn--danger { background: #cc0705; color: white; }
-.dialog__btn--danger:hover { background: #a80604; }
 </style>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useConfigStore } from '../../stores/config.ts';
 import { useThemeStore } from '../../stores/theme.ts';
+import { CodaButton, CodaIconButton } from '@codapay/ui-coda';
 
 const config = useConfigStore();
 const theme = useThemeStore();
@@ -19,10 +20,10 @@ defineProps<{ mode: 'edit' | 'preview' }>();
   <header class="topbar">
     <div class="topbar__left">
       <div class="topbar__logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <rect width="32" height="32" rx="8" fill="#102AF8"/>
-          <path d="M8 10h10a6 6 0 0 1 0 12H8V10z" fill="white" opacity="0.9"/>
-          <circle cx="22" cy="22" r="4" fill="white" opacity="0.6"/>
+        <svg class="topbar__logo-mark" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect class="mark-bg" width="32" height="32" rx="8" />
+          <path class="mark-fg" d="M8 10h10a6 6 0 0 1 0 12H8V10z" opacity="0.9" />
+          <circle class="mark-fg" cx="22" cy="22" r="4" opacity="0.6" />
         </svg>
         <span class="topbar__wordmark">Checkout Builder</span>
       </div>
@@ -54,56 +55,33 @@ defineProps<{ mode: 'edit' | 'preview' }>();
     <div class="topbar__right">
       <span v-if="config.isDirty" class="topbar__dirty-badge" aria-label="Unsaved changes">●</span>
 
-      <button
-        class="topbar__btn topbar__btn--secondary"
-        :disabled="!config.canUndo"
-        aria-label="Undo"
-        title="Undo (⌘Z)"
-        @click="config.undo()"
-      >
+      <CodaIconButton size="md" label="Undo (⌘Z)" :disabled="!config.canUndo" @click="config.undo()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M3 7v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M3 13c1.5-4.5 6-7.5 10.5-7.5A9 9 0 0 1 21 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
-      </button>
+      </CodaIconButton>
 
-      <button
-        class="topbar__btn topbar__btn--secondary"
-        :disabled="!config.canRedo"
-        aria-label="Redo"
-        title="Redo (⌘⇧Z)"
-        @click="config.redo()"
-      >
+      <CodaIconButton size="md" label="Redo (⌘⇧Z)" :disabled="!config.canRedo" @click="config.redo()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M21 7v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M21 13c-1.5-4.5-6-7.5-10.5-7.5A9 9 0 0 0 3 14.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
-      </button>
+      </CodaIconButton>
 
-      <button
-        class="topbar__btn topbar__btn--secondary"
-        title="Reset to defaults"
-        @click="emit('reset')"
-      >
-        Reset
-      </button>
+      <CodaButton variant="secondary" size="md" @click="emit('reset')">Reset</CodaButton>
 
-      <button
-        class="topbar__btn topbar__btn--primary"
+      <CodaButton variant="secondary" size="md" @click="emit('kitchenSink')">Kitchen Sink</CodaButton>
+
+      <CodaButton
+        variant="primary"
+        size="md"
         :disabled="theme.hasErrors"
         :title="theme.hasErrors ? 'Fix validation errors before exporting' : 'Export config'"
         @click="emit('export')"
       >
         Export
-      </button>
-
-      <button
-        class="topbar__btn topbar__btn--secondary"
-        title="Component kitchen sink"
-        @click="emit('kitchenSink')"
-      >
-        Kitchen Sink
-      </button>
+      </CodaButton>
     </div>
   </header>
 </template>
@@ -113,18 +91,18 @@ defineProps<{ mode: 'edit' | 'preview' }>();
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
-  padding: 0 var(--coda-sp-16);
-  background: var(--coda-surface-panel);
-  border-bottom: 1px solid var(--coda-surface-border);
+  height: var(--spacing-5xl); /* 64px */
+  padding: 0 var(--spacing-lg);
+  background: var(--color-background-primary);
+  border-bottom: 1px solid var(--color-border-primary);
   flex-shrink: 0;
-  gap: var(--coda-sp-12);
+  gap: var(--spacing-md);
 }
 
 .topbar__left, .topbar__right {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
   min-width: 200px;
 }
 
@@ -135,79 +113,48 @@ defineProps<{ mode: 'edit' | 'preview' }>();
 .topbar__logo {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 
+.topbar__logo-mark { color: var(--color-text-primary); }
+.topbar__logo-mark .mark-bg { fill: currentColor; }
+.topbar__logo-mark .mark-fg { fill: var(--color-background-primary); }
+
 .topbar__wordmark {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--coda-text-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 .topbar__mode-switch {
   display: flex;
-  background: var(--coda-surface-bg);
-  border-radius: var(--coda-radius-m);
-  padding: 3px;
-  gap: 2px;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-2xs);
+  gap: var(--spacing-2xs);
 }
 
 .topbar__tab {
   background: none;
   border: none;
-  padding: 5px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--coda-text-muted);
-  border-radius: calc(var(--coda-radius-m) - 2px);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--font-letter-spacing-wider);
+  color: var(--color-text-primary-lightest);
+  border-radius: var(--border-radius-xs);
   transition: all 0.15s ease;
 }
 
 .topbar__tab--active {
-  background: var(--coda-surface-panel);
-  color: var(--coda-text-primary);
-  box-shadow: var(--coda-shadow-panel);
-}
-
-.topbar__btn {
-  padding: 6px 14px;
-  border-radius: var(--coda-radius-s);
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-  display: flex;
-  align-items: center;
-  gap: var(--coda-sp-4);
-}
-
-.topbar__btn--primary {
-  background: var(--coda-primary);
-  color: var(--coda-text-inverse);
-}
-
-.topbar__btn--primary:hover:not(:disabled) {
-  background: #0d22d4;
-}
-
-.topbar__btn--secondary {
-  background: none;
-  color: var(--coda-text-secondary);
-  border-color: var(--coda-surface-border);
-}
-
-.topbar__btn--secondary:hover:not(:disabled) {
-  background: var(--coda-hover);
-  color: var(--coda-text-primary);
-}
-
-.topbar__btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .topbar__dirty-badge {
-  color: var(--coda-primary);
-  font-size: 10px;
+  color: var(--color-text-link);
+  font-size: var(--font-size-xs);
 }
 </style>

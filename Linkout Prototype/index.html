@@ -96,8 +96,9 @@
         0 1px 0 rgba(255,255,255,.8) inset;
     }
 
-    .card--soon { cursor: default; }
-    .card--soon:active { cursor: default; }
+    /* "soon" cards have no destination, but they're still draggable */
+    .card--soon { cursor: grab; }
+    .card--soon:active { cursor: grabbing; }
 
     /* polaroid image area */
     .card__art {
@@ -245,7 +246,7 @@
 <!-- Center tagline (fixed, not draggable) -->
 <div id="tagline">
   <div class="tagline-eyebrow">pampam world</div>
-  <div class="tagline-text">Keep building,<br/>keep playing</div>
+  <div class="tagline-text">Maxed up that token &lt;3</div>
   <div class="tagline-hint">
     <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
       <path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -546,7 +547,7 @@
 
   // ── Draggable cards + GSAP micro-animations ─────────────────────────────────
   (function() {
-    const draggableCards = ['card-checkout'];
+    const draggableCards = ['card-checkout', 'card-webbuilder', 'card-future'];
 
     draggableCards.forEach(id => {
       const el = document.getElementById(id);
@@ -610,12 +611,14 @@
         });
       });
 
-      // Click to open (only if mouse barely moved)
-      el.addEventListener('click', e => {
-        if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
-          window.location.href = 'apps/builder/dist/';
-        }
-      });
+      // Click to open (only the live checkout card has a destination)
+      if (id === 'card-checkout') {
+        el.addEventListener('click', e => {
+          if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
+            window.location.href = 'apps/builder/dist/';
+          }
+        });
+      }
     });
   })();
 </script>

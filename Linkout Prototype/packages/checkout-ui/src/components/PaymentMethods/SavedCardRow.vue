@@ -59,18 +59,18 @@ const emit = defineEmits<{ select: [] }>();
 
 <style>
 .co-opt {
-  background: var(--bg-card-default);
-  border: 1px solid var(--border-card-default);
-  border-radius: var(--radius-container-s);
+  background: var(--ov-card-bg, var(--bg-card-default));
+  border: var(--ov-card-border-width, 1px) solid var(--ov-card-border-color, var(--border-card-default));
+  border-radius: var(--ov-card-radius, var(--radius-container-s));
   padding: 12px;
   cursor: pointer;
   transition: background .2s ease, border-color .2s ease;
 }
 
 .co-opt.sel {
-  background: var(--bg-card-selected-gradient, var(--bg-card-selected));
-  border-color: var(--border-input-focused);
-  border-width: var(--border-weight-selected);
+  background: var(--ov-cardsel-bg, var(--bg-card-selected-gradient, var(--bg-card-selected)));
+  border-color: var(--ov-cardsel-border-color, var(--border-input-focused));
+  border-width: var(--ov-cardsel-border-width, var(--border-weight-selected));
   box-shadow: var(--shadow-card-selected, none);
 }
 
@@ -216,9 +216,9 @@ const emit = defineEmits<{ select: [] }>();
   position: relative;
   width: 100%;
   height: 52px;
-  background: var(--bg-input-default);
-  border: 1px solid var(--border-input-default);
-  border-radius: var(--radius-input-m);
+  background: var(--ov-input-bg, var(--bg-input-default));
+  border: 1px solid var(--ov-input-border-color, var(--border-input-default));
+  border-radius: var(--ov-input-radius, var(--radius-input-m));
   padding: 0 12px;
   color: var(--text-body-default);
   font-size: 13px;

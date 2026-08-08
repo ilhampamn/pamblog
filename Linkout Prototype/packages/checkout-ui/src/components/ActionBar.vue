@@ -50,10 +50,10 @@ const priceLabel = computed(() =>
 .co-paybtn {
   width: 100%;
   height: 50px;
-  border: none;
-  background: var(--bg-action-primary-gradient, var(--bg-action-primary));
-  color: var(--text-action-on-primary, #06222B);
-  border-radius: var(--radius-control-full);
+  border: var(--ov-paybtn-border-width, 0) solid var(--ov-paybtn-border-color, transparent);
+  background: var(--ov-paybtn-bg, var(--bg-action-primary-gradient, var(--bg-action-primary)));
+  color: var(--ov-paybtn-text, var(--text-action-on-primary, #06222B));
+  border-radius: var(--ov-paybtn-radius, var(--radius-control-full));
   font-size: 15px;
   font-weight: 700;
   font-family: inherit;

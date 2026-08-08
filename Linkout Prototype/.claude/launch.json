@@ -4,8 +4,8 @@
     {
       "name": "builder",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "builder", "run", "dev"],
-      "port": 5173
+      "runtimeArgs": ["--filter", "builder", "exec", "vite", "--port", "5190", "--strictPort"],
+      "port": 5190
     },
     {
       "name": "flappy-luna",
@@ -30,6 +30,54 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-p", "5183", "/Users/pam/Linkout Prototype"],
       "port": 5183
+    },
+    {
+      "name": "hanzidaily",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/pam/HanziDaily", "--", "-p", "3001"],
+      "port": 3001
+    },
+    {
+      "name": "rogue-trader",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/pam/rogue-trader-store", "--", "--port", "5184"],
+      "port": 5184
+    },
+    {
+      "name": "commerce-engine-store",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/pam/commerce-engine-store", "--", "--port", "5185"],
+      "port": 5185
+    },
+    {
+      "name": "luxury-travel",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "/Users/pam/luxury-travel-website", "dev", "--port", "3002"],
+      "port": 3002
+    },
+    {
+      "name": "blog",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/pam/blog"],
+      "port": 3000
+    },
+    {
+      "name": "coda-webstore-prototype",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/pam/coda-webstore-prototype/coda-webstore-prototype-main", "--", "--port", "5186"],
+      "port": 5186
+    },
+    {
+      "name": "hanzika-v2",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5187", "/Users/pam/Documents/Side project - Hanzika v2"],
+      "port": 5187
+    },
+    {
+      "name": "hanzika-original",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5188", "/Users/pam/Documents/Side project - Hanzika"],
+      "port": 5188
     }
   ]
 }

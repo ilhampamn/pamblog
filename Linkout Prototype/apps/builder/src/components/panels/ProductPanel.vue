@@ -119,6 +119,6 @@ function handleImageUpload(e: Event) {
 .field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 </style>

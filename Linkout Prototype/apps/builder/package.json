@@ -13,6 +13,7 @@
     "@codapay/checkout-ui": "workspace:*",
     "@codapay/config-schema": "workspace:*",
     "@codapay/tokens": "workspace:*",
+    "@codapay/ui-coda": "workspace:*",
     "pinia": "^2.1.0",
     "vue": "^3.4.0"
   },

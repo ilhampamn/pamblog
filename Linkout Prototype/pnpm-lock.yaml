@@ -38,6 +38,9 @@ importers:
       '@codapay/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
+      '@codapay/ui-coda':
+        specifier: workspace:*
+        version: link:../../packages/ui-coda
       pinia:
         specifier: ^2.1.0
         version: 2.3.1(typescript@5.9.3)(vue@3.5.38(typescript@5.9.3))
@@ -101,6 +104,22 @@ importers:
       vitest:
         specifier: ^1.6.0
         version: 1.6.1
+
+  packages/ui-coda:
+    dependencies:
+      vue:
+        specifier: ^3.4.0
+        version: 3.5.38(typescript@5.9.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.0.0
+        version: 5.2.4(vite@5.4.21)(vue@3.5.38(typescript@5.9.3))
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+      vue-tsc:
+        specifier: ^2.0.0
+        version: 2.2.12(typescript@5.9.3)
 
 packages:
 

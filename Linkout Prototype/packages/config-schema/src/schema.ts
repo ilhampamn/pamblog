@@ -47,6 +47,20 @@ export const ThemeConfigSchema = z.object({
   /** Decorative skin — structural pseudo-element effects (gloss, shine, gradient borders).
    *  'glossy' activates the .candy CSS layer in CheckoutRoot. */
   skin: z.enum(['none', 'glossy']).default('none'),
+  /**
+   * Per-component style overrides. Shape: { [roleId]: { [propKey]: cssValue } }.
+   * Each entry shadows a global token for a single component role (see
+   * COMPONENT_ROLES in components.ts). Absence of a key = fall back to the token.
+   */
+  componentOverrides: z
+    .record(z.string(), z.record(z.string(), z.string()))
+    .default({}),
+  /**
+   * Advanced escape hatch: raw CSS declarations per component role, wrapped in
+   * `.checkout-scope <selector> { … }` at render time. Bypasses token/contrast
+   * validation by design; scope-contained and reversible (clear to remove).
+   */
+  componentCss: z.record(z.string(), z.string()).default({}),
 });
 
 // ── Screens ──────────────────────────────────────────────────────────────────

@@ -58,9 +58,9 @@ defineProps<{ config: NavbarConfig }>();
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: var(--bg-navbar-blend, var(--bg-navbar));
+  background: var(--ov-navbar-bg, var(--bg-navbar-blend, var(--bg-navbar)));
   backdrop-filter: var(--backdrop-blur-navbar, none);
-  border-bottom: 1px solid var(--border-navbar);
+  border-bottom: 1px solid var(--ov-navbar-border-color, var(--border-navbar));
 }
 .co-navbar .l { display: flex; align-items: center; gap: 12px; }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, watchEffect, onUnmounted, ref, watch } from 'vue';
 import type { CheckoutConfig } from '@codapay/config-schema';
+import { compileComponentOverrides, compileComponentCss } from '@codapay/config-schema';
 import Navbar from './components/Navbar.vue';
 import ProductSummary from './components/ProductSummary.vue';
 import PaymentMethods from './components/PaymentMethods/PaymentMethods.vue';
@@ -25,7 +26,17 @@ const props = defineProps<{
 const emit = defineEmits<{ pay: [] }>();
 
 // ── Theme tokens ─────────────────────────────────────────────────────────────
-const css = computed(() => props.tokensCss ?? props.config.theme.tokensCss ?? '');
+// Global theme tokens (from the artifact) + per-component overrides compiled
+// into the same scoped CSS. Both flow through this single injected <style>, so
+// the builder preview and production checkout stay byte-for-byte identical.
+const css = computed(() => {
+  const base = props.tokensCss ?? props.config.theme.tokensCss ?? '';
+  const overrides = compileComponentOverrides(props.config.theme.componentOverrides);
+  // Advanced raw CSS goes LAST so its higher-specificity selector wins over the
+  // token + structured-override layer.
+  const rawCss = compileComponentCss(props.config.theme.componentCss);
+  return [base, overrides, rawCss].filter(Boolean).join('\n');
+});
 // Skin drives structural pseudo-element decoration (gloss, shine, gradient borders).
 // Gradient/shadow/blur tokens are handled by component CSS — no class needed for those.
 const isGlossy = computed(() => props.config.theme.skin === 'glossy');

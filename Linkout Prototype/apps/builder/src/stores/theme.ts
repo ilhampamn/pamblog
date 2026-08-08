@@ -8,6 +8,7 @@ export interface SavedTheme {
   name: string;
   tokens: TokenSet;
   isPreset?: boolean;
+  skin?: 'none' | 'glossy';
 }
 
 export const RIFT_RACING_TOKENS: TokenSet = {
@@ -92,9 +93,9 @@ export const useThemeStore = defineStore('theme', () => {
   const tokens = ref<TokenSet>(structuredClone(RIFT_RACING_TOKENS));
 
   const savedThemes = ref<SavedTheme[]>([
-    { name: 'Rift Racing', tokens: structuredClone(RIFT_RACING_TOKENS), isPreset: true },
-    { name: 'Candy Crush', tokens: structuredClone(CANDY_CRUSH_TOKENS), isPreset: true },
-    { name: 'Codapay Default', tokens: structuredClone(DEFAULT_TOKENS), isPreset: true },
+    { name: 'Rift Racing', tokens: structuredClone(RIFT_RACING_TOKENS), isPreset: true, skin: 'none' },
+    { name: 'Candy Crush', tokens: structuredClone(CANDY_CRUSH_TOKENS), isPreset: true, skin: 'glossy' },
+    { name: 'Codapay Default', tokens: structuredClone(DEFAULT_TOKENS), isPreset: true, skin: 'none' },
   ]);
 
   const activeThemeName = ref<string | null>('Rift Racing');
@@ -109,11 +110,12 @@ export const useThemeStore = defineStore('theme', () => {
     activeThemeName.value = null;
   }
 
-  function applyTheme(name: string) {
+  function applyTheme(name: string): 'none' | 'glossy' {
     const theme = savedThemes.value.find((t) => t.name === name);
-    if (!theme) return;
+    if (!theme) return 'none';
     tokens.value = { ...theme.tokens };
     activeThemeName.value = name;
+    return theme.skin ?? 'none';
   }
 
   function saveTheme(name: string) {

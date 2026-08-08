@@ -1,0 +1,1233 @@
+/**
+ * Coda Payments Design System — Foundations 2.0 + Components 2.0
+ *
+ * Figma sources:
+ *   Foundations 2.0: https://www.figma.com/design/g9fLEmV7eIGmOf3oQDyvPj/Foundations-2.0
+ *   Components 2.0:  https://www.figma.com/design/eNf5yR53XuGGvzR4L55iC4/Components-2.0
+ *
+ * Token naming: Figma slash-notation maps directly to CSS double-dash-notation.
+ *   spacing/sm           → --spacing-sm
+ *   color/text/primary   → --color-text-primary
+ *   border-radius/xs     → --border-radius-xs
+ *
+ * FONT NOTE
+ *   ABC Monument Grotesk (ABC Dinamo) is the production typeface and is
+ *   self-hosted from /fonts/ (Regular, Medium, Heavy + italics — see the
+ *   @font-face block below). It is the PRIMARY family.
+ *   Space Grotesk (Google Fonts) is loaded only as a FALLBACK for environments
+ *   where the licensed files aren't present; the family stack lists Monument
+ *   Grotesk first, then Space Grotesk, then system-ui.
+ *   JetBrains Mono is the mono family.
+ */
+
+/* Space Grotesk = fallback only (Monument Grotesk self-hosted below); JetBrains Mono = mono family */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+/* ABC Monument Grotesk — self-hosted from /fonts/. Resolves to the real family;
+   falls through to Space Grotesk only if a file is missing. */
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk"),
+       url("./fonts/ABCMonumentGrotesk-Regular.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-Regular.woff") format("woff");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk Regular Italic"),
+       url("./fonts/ABCMonumentGrotesk-RegularItalic.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-RegularItalic.woff") format("woff");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk Medium"),
+       url("./fonts/ABCMonumentGrotesk-Medium.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-Medium.woff") format("woff");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk Medium Italic"),
+       url("./fonts/ABCMonumentGrotesk-MediumItalic.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-MediumItalic.woff") format("woff");
+  font-weight: 500; font-style: italic; font-display: swap;
+}
+/* The family ships Regular / Medium / Heavy — no Bold cut. We map Heavy
+   to both 700 (so font-weight: bold uses it) and 900 (natural weight)
+   via the 700-900 range, so any consumer asking for "bold" still gets
+   the Heavy file instead of a faux-bold synthesized from Regular. */
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk Heavy"),
+       url("./fonts/ABCMonumentGrotesk-Heavy.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-Heavy.woff") format("woff");
+  font-weight: 700 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Monument Grotesk";
+  src: local("ABC Monument Grotesk Heavy Italic"),
+       url("./fonts/ABCMonumentGrotesk-HeavyItalic.woff2") format("woff2"),
+       url("./fonts/ABCMonumentGrotesk-HeavyItalic.woff") format("woff");
+  font-weight: 700 900; font-style: italic; font-display: swap;
+}
+
+/* ============================================================
+   PRIMITIVE TOKENS
+   ============================================================ */
+
+:root {
+
+  /* ----------------------------------------------------------
+     Spacing
+     ---------------------------------------------------------- */
+
+  --spacing-2xs: 2px;
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  12px;
+  --spacing-lg:  16px;
+  --spacing-xl:  24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 40px;
+  --spacing-4xl: 48px;
+  --spacing-5xl: 64px;
+
+
+  /* ----------------------------------------------------------
+     Color — Charcoal (greyscale primitives)
+     ---------------------------------------------------------- */
+
+  --color-charcoal-0:   #ffffff;
+  --color-charcoal-10:  #fcfcfc;
+  --color-charcoal-20:  #f3f3f3;
+  --color-charcoal-30:  #e2e2e2;
+  --color-charcoal-40:  #c0c0c0;
+  --color-charcoal-50:  #878787;
+  --color-charcoal-60:  #4f4f4f;
+  --color-charcoal-70:  #303030;
+  --color-charcoal-80:  #202020;
+  --color-charcoal-90:  #161616;
+  --color-charcoal-100: #121212;
+
+  --color-charcoal-alpha-50-hover:   rgba(135, 135, 135, 0.1);
+  --color-charcoal-alpha-50-pressed: rgba(135, 135, 135, 0.2);
+
+
+  /* ----------------------------------------------------------
+     Color — Semantic primitives
+     ---------------------------------------------------------- */
+
+  --color-green-0:   #fafffd;
+  --color-green-10:  #f4fffa;
+  --color-green-20:  #e5faf1;
+  --color-green-30:  #cbeedf;
+  --color-green-40:  #9bd5bb;
+  --color-green-50:  #24a86d;
+  --color-green-60:  #007c44;
+  --color-green-70:  #005c33;
+  --color-green-80:  #004a29;
+  --color-green-90:  #003f22;
+  --color-green-100: #00381f;
+
+  --color-yellow-0:   #fff4cb;
+  --color-yellow-10:  #f9e18c;
+  --color-yellow-20:  #f3cf4d;
+  --color-yellow-30:  #edbc0e;
+  --color-yellow-40:  #cea514;
+  --color-yellow-50:  #ae8d14;
+  --color-yellow-60:  #8f730f;
+  --color-yellow-70:  #705909;
+  --color-yellow-80:  #504003;
+  --color-yellow-90:  #312600;
+  --color-yellow-100: #120e00;
+
+  --color-orange-0:  #fff8f6;
+  --color-orange-20: #ffece2;
+  --color-orange-50: #ed4521;
+  --color-orange-60: #cc3d1d;
+  --color-orange-70: #691e0d;
+
+  --color-blue-40: #93a7ff;
+  --color-blue-50: #6883ff;
+  --color-blue-60: #3e61ff;
+  --color-blue-70: #1b44ff;
+  --color-blue-90: #112dac;
+
+  --color-purple-60: #8044ff;
+  --color-purple-70: #671fff;
+
+  --color-pink-60: #d62c92;
+
+  --color-black-0: #000000;
+  --color-white-0: #ffffff;
+
+
+  /* ----------------------------------------------------------
+     Color — Coda full brand palette
+     (decorative accents, marketing, glow effects)
+     ---------------------------------------------------------- */
+
+  --color-brand-blue-01:    #b0f4ff;
+  --color-brand-blue-02:    #4eaaff;
+  --color-brand-blue-03:    #002eff;
+  --color-brand-blue-04:    #041668;
+
+  --color-brand-green-01:   #aafdc0;
+  --color-brand-green-02:   #1bc97a;
+  --color-brand-green-03:   #007c44;
+  --color-brand-green-04:   #003d21;
+
+  --color-brand-yellow-01:  #fff293;
+  --color-brand-yellow-02:  #f6df5a;
+  --color-brand-yellow-03:  #edbc0e;
+  --color-brand-yellow-04:  #945e0c;
+
+  --color-brand-orange-01:  #ffbcad;
+  --color-brand-orange-02:  #f68068;
+  --color-brand-orange-03:  #ed4521;
+  --color-brand-orange-04:  #721b08;
+
+  --color-brand-pink-01:    #ffc0e6;
+  --color-brand-pink-02:    #fe77c7;
+  --color-brand-pink-03:    #d62c92;
+  --color-brand-pink-04:    #3f0929;
+
+  --color-brand-purple-01:  #d3beff;
+  --color-brand-purple-02:  #a47aff;
+  --color-brand-purple-03:  #671fff;
+  --color-brand-purple-04:  #2d0078;
+
+  --color-brand-grey-01:    #c0c2a9;
+  --color-brand-grey-02:    #5a5a4f;
+  --color-brand-off-white:  #f8f9eb;
+  --color-brand-charcoal:   #202020;
+  --color-brand-black:      #000000;
+
+
+  /* ----------------------------------------------------------
+     Color — Background design tokens
+     ---------------------------------------------------------- */
+
+  --color-background-primary:           var(--color-white-0);
+  --color-background-secondary:         var(--color-charcoal-10);
+  --color-background-tertiary:          var(--color-charcoal-30);
+  --color-background-emphasis:          #f8f9eb;
+  --color-background-neutral:           var(--color-charcoal-70);
+  --color-background-neutral-lighter:   var(--color-charcoal-50);
+  --color-background-neutral-lightest:  var(--color-charcoal-40);
+
+  --color-background-positive:          var(--color-green-60);
+  --color-background-positive-lightest: var(--color-green-30);
+
+  --color-background-warning:           var(--color-yellow-30);
+  --color-background-warning-lightest:  var(--color-yellow-0);
+
+  --color-background-critical:          var(--color-orange-60);
+  --color-background-critical-hover:    var(--color-orange-50);
+  --color-background-critical-pressed:  var(--color-orange-70);
+  --color-background-critical-lightest: var(--color-orange-20);
+
+  --color-background-control-primary:         var(--color-charcoal-0);
+  --color-background-control-primary-hover:   var(--color-charcoal-alpha-50-hover);
+  --color-background-control-primary-pressed: var(--color-charcoal-alpha-50-pressed);
+  --color-background-control-primary-invert:  var(--color-charcoal-80);
+  --color-background-control-secondary:       var(--color-charcoal-20);
+  --color-background-control-disabled:        var(--color-charcoal-30);
+
+  --color-background-control-button-primary-default: var(--color-charcoal-80);
+  --color-background-control-button-primary-hover:   var(--color-charcoal-70);
+  --color-background-control-button-primary-pressed: var(--color-black-0);
+
+  --color-button-primary-disabled: var(--color-charcoal-50);
+
+  --color-card:             var(--color-white-0);
+  --color-ring-focus:       var(--color-blue-40);
+  --color-surface-neutral-pressed: var(--color-charcoal-50);
+
+
+  /* ----------------------------------------------------------
+     Color — Text design tokens
+     ---------------------------------------------------------- */
+
+  --color-text-primary:          var(--color-charcoal-80);
+  --color-text-primary-lighter:  var(--color-charcoal-60);
+  --color-text-primary-lightest: var(--color-charcoal-50);
+  --color-text-primary-invert:   var(--color-white-0);
+  --color-text-disabled:         var(--color-charcoal-40);
+
+  --color-text-link:         var(--color-blue-60);
+  --color-text-link-hover:   var(--color-blue-70);
+  --color-text-link-pressed: var(--color-blue-90);
+
+  --color-text-positive: var(--color-green-60);
+  --color-text-warning:  var(--color-yellow-80);
+  --color-text-critical: var(--color-orange-60);
+
+
+  /* ----------------------------------------------------------
+     Color — Border design tokens
+     ---------------------------------------------------------- */
+
+  --color-border-primary:         var(--color-charcoal-30);
+  --color-border-primary-lighter: var(--color-charcoal-20);
+
+  --color-border-control-primary:        var(--color-charcoal-40);
+  --color-border-control-primary-active: var(--color-black-0);
+
+  --color-border-positive: var(--color-green-60);
+  --color-border-warning:  var(--color-yellow-30);
+  --color-border-critical: var(--color-orange-60);
+
+
+  /* ----------------------------------------------------------
+     Color — Icon design tokens
+     ---------------------------------------------------------- */
+
+  --color-icon-primary:          var(--color-charcoal-80);
+  --color-icon-primary-invert:   var(--color-white-0);
+  --color-icon-primary-lightest: var(--color-charcoal-50);
+  --color-icon-disabled:         var(--color-charcoal-40);
+  --color-icon-link:             var(--color-blue-60);
+  --color-icon-positive:         var(--color-green-60);
+  --color-icon-warning:          var(--color-yellow-80);
+  --color-icon-critical:         var(--color-orange-60);
+
+
+  /* ----------------------------------------------------------
+     Typography
+     ---------------------------------------------------------- */
+
+  --font-family-monument-grotesk: "ABC Monument Grotesk", "Space Grotesk", system-ui, sans-serif;
+  --font-family-jet-brains-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --font-size-xs:  10px;
+  --font-size-sm:  12px;
+  --font-size-md:  14px;
+  --font-size-lg:  16px;
+  --font-size-xl:  20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 48px;
+
+  --font-weight-regular:    400;
+  --font-weight-medium:     500;
+  --font-weight-bold:       700;
+  --font-weight-extra-bold: 800;
+
+  --font-letter-spacing-normal: 0em;
+  --font-letter-spacing-tight:  -0.006em;
+  --font-letter-spacing-wide:   0.006em;
+  --font-letter-spacing-wider:  0.013em;
+
+
+  /* ----------------------------------------------------------
+     Border radius
+     ---------------------------------------------------------- */
+
+  --border-radius-xs:   4px;
+  --border-radius-sm:   8px;
+  --border-radius-md:   12px;
+  --border-radius-lg:   20px;
+  --border-radius-full: 9999px;
+
+
+  /* ----------------------------------------------------------
+     Shadow
+     ---------------------------------------------------------- */
+
+  --shadow-sm: 0px 1px 1px -1px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0px 8px 16px -4px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0px 20px 20px -8px rgba(0, 0, 0, 0.28);
+
+}
+
+
+/* ============================================================
+   COMPOSITE TYPOGRAPHY STYLES
+   ============================================================ */
+
+.title-lg {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-lg);       /* 16px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.0;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.title-xl {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-xl);       /* 20px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.title-2xl {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-2xl);      /* 24px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.title-3xl {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-3xl);      /* 32px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.1;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.title-4xl {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-4xl);      /* 48px */
+  font-weight: var(--font-weight-extra-bold);
+  line-height: 1.0;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.body-lg {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-lg);       /* 16px */
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.body-md {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);       /* 14px */
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+.body-sm {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);       /* 12px */
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+.label-lg {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-lg);       /* 16px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wide);
+}
+
+.label-md {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);       /* 14px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+.label-sm {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);       /* 12px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+.label-xs {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-xs);       /* 10px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+/* Mono variants */
+.body-lg-mono,
+.body-md-mono,
+.body-sm-mono,
+.label-lg-mono,
+.label-md-mono,
+.label-sm-mono,
+.label-xs-mono {
+  font-family: var(--font-family-jet-brains-mono);
+}
+
+
+/* ============================================================
+   COMPONENT STYLES
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   Button
+   ---------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+  padding-inline: var(--spacing-sm);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 120ms ease;
+}
+
+.btn-sm { height: 28px; border-radius: var(--border-radius-sm); }
+.btn-md { height: 32px; border-radius: var(--border-radius-sm); }
+.btn-lg { height: 40px; border-radius: var(--border-radius-sm); }
+
+.btn-primary {
+  background-color: var(--color-background-control-button-primary-default);
+  color: var(--color-text-primary-invert);
+}
+.btn-primary:hover   { background-color: var(--color-background-control-button-primary-hover); }
+.btn-primary:active  { background-color: var(--color-background-control-button-primary-pressed); }
+.btn-primary:focus-visible { outline: 2px solid var(--color-ring-focus); outline-offset: 2px; }
+
+.btn-secondary {
+  background-color: var(--color-background-control-secondary);
+  color: var(--color-text-primary);
+}
+.btn-secondary:hover  { background-color: var(--color-background-control-primary-hover); }
+.btn-secondary:active { background-color: var(--color-background-control-primary-pressed); }
+
+.btn-critical {
+  background-color: var(--color-background-critical);
+  color: var(--color-text-primary-invert);
+}
+.btn-critical:hover  { background-color: var(--color-background-critical-hover); }
+.btn-critical:active { background-color: var(--color-background-critical-pressed); }
+
+.btn-link {
+  background: none;
+  box-shadow: none;
+  color: var(--color-text-link);
+  padding-inline: 0;
+}
+.btn-link:hover  { color: var(--color-text-link-hover); }
+.btn-link:active { color: var(--color-text-link-pressed); }
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  background-color: var(--color-button-primary-disabled);
+  color: var(--color-text-primary-invert);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* ----------------------------------------------------------
+   Icon Button
+   ---------------------------------------------------------- */
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  background-color: transparent;
+  color: var(--color-icon-primary);
+}
+
+.btn-icon-sm { width: 28px; height: 28px; }
+.btn-icon-md { width: 32px; height: 32px; }
+.btn-icon-lg { width: 40px; height: 40px; padding: var(--spacing-sm); }
+
+.btn-icon:hover  { background-color: var(--color-background-control-primary-hover); }
+.btn-icon:active { background-color: var(--color-background-control-primary-pressed); }
+.btn-icon:focus-visible { outline: 2px solid var(--color-ring-focus); outline-offset: 2px; }
+
+.btn-icon:disabled { color: var(--color-icon-disabled); cursor: not-allowed; }
+
+
+/* ----------------------------------------------------------
+   Input
+   ---------------------------------------------------------- */
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 209px;
+}
+
+.input-field {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  background-color: var(--color-background-control-primary);
+  border: 1px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-sm);
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 120ms ease;
+}
+
+.input-field:hover  { border-color: var(--color-border-primary); }
+.input-field:focus  { border-color: var(--color-border-control-primary-active); }
+.input-field.error  { border-color: var(--color-border-critical); }
+.input-field:disabled {
+  background-color: var(--color-background-control-disabled);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.input-label {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.input-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary-lightest);
+}
+
+.input-error-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-critical);
+}
+
+.textarea {
+  width: 250px;
+  min-height: 113px;
+  resize: vertical;
+}
+
+
+/* ----------------------------------------------------------
+   Dropdown
+   ---------------------------------------------------------- */
+
+.dropdown {
+  position: absolute;
+  width: 150px;
+  background-color: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+}
+
+.dropdown-item {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.dropdown-item:hover { background-color: var(--color-background-control-secondary); }
+
+
+/* ----------------------------------------------------------
+   Toggle
+   ---------------------------------------------------------- */
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 10px; /* custom — no matching system token */
+  background-color: var(--color-background-control-disabled);
+  transition: background-color 150ms ease;
+}
+
+.toggle-md { width: 32px; height: 16px; }
+.toggle-lg { width: 40px; height: 20px; }
+
+.toggle[aria-checked="true"] { background-color: var(--color-background-neutral); }
+
+
+/* ----------------------------------------------------------
+   Checkbox
+   ---------------------------------------------------------- */
+
+.checkbox {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-background-control-primary);
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.checkbox-md { width: 20px; height: 20px; padding: var(--spacing-xs); }
+.checkbox-lg { width: 24px; height: 24px; padding: var(--spacing-xs); }
+
+.checkbox:checked {
+  background-color: var(--color-background-control-button-primary-default);
+  border-color: var(--color-background-control-button-primary-default);
+}
+.checkbox:focus-visible { outline: 2px solid var(--color-ring-focus); outline-offset: 2px; }
+.checkbox:disabled {
+  border-color: var(--color-border-control-primary);
+  background-color: var(--color-background-control-disabled);
+  cursor: not-allowed;
+}
+
+
+/* ----------------------------------------------------------
+   Radio Button
+   ---------------------------------------------------------- */
+
+.radio {
+  appearance: none;
+  display: inline-block;
+  flex-shrink: 0;
+  border: 1.5px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-background-control-primary);
+  cursor: pointer;
+  transition: border-color 120ms ease;
+}
+
+.radio-md { width: 20px; height: 20px; }
+.radio-lg { width: 24px; height: 24px; }
+
+.radio:checked {
+  border-color: var(--color-background-control-button-primary-default);
+  background-color: var(--color-background-control-button-primary-default);
+}
+.radio:focus-visible { outline: 2px solid var(--color-ring-focus); outline-offset: 2px; }
+
+
+/* ----------------------------------------------------------
+   Chips
+   ---------------------------------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding-inline: var(--spacing-xs);
+  padding-block: var(--spacing-2xs);
+  border-radius: var(--border-radius-xs);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+}
+
+.chip-default  {
+  background-color: var(--color-background-secondary);
+  color: var(--color-text-primary-lighter);
+}
+.chip-positive {
+  background-color: var(--color-background-positive-lightest);
+  color: var(--color-text-positive);
+}
+.chip-pending  {
+  background-color: var(--color-background-warning-lightest);
+  color: var(--color-text-warning);
+}
+.chip-negative {
+  background-color: var(--color-background-critical-lightest);
+  color: var(--color-text-critical);
+}
+
+
+/* ----------------------------------------------------------
+   Card
+   ---------------------------------------------------------- */
+
+.card {
+  background-color: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  width: 292px;
+}
+
+.card-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.card-header-title {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.0;
+  letter-spacing: var(--font-letter-spacing-wide);
+  color: var(--color-text-primary);
+}
+
+.card-body {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.card-body-text {
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  letter-spacing: var(--font-letter-spacing-wider);
+  color: var(--color-text-primary);
+}
+
+
+/* ----------------------------------------------------------
+   Table  —  spec: Components 2.0 / Table page
+   • Container: rounded, 1px border, sm shadow
+   • Header row: 36px, bg #f3f3f3, 14px medium, color text-primary-lighter
+   • Data row: 36/44/64 (sm/md/lg), padding 8×12, 14px medium, color text-primary
+   ---------------------------------------------------------- */
+
+.table-wrapper {
+  width: 100%;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border-primary);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-background-control-primary);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-background-control-primary);
+}
+
+.table th {
+  height: 36px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.33;
+  letter-spacing: var(--font-letter-spacing-wider);
+  color: var(--color-text-primary-lighter);
+  text-align: left;
+  background-color: var(--color-background-control-secondary);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  letter-spacing: var(--font-letter-spacing-wider);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-primary);
+  vertical-align: middle;
+}
+
+/* All sizes share the same text spec (regular 400 / 14 / 1.5) — sizes
+   only change row height, not text emphasis. Per Figma. */
+
+/* Row heights per size — Figma: sm=36, md=44, lg=64 */
+.table-sm td { height: 36px; }
+.table-md td { height: 44px; }
+.table-lg td { height: 64px; }
+
+/* Striped — uses the very subtle secondary bg so headers stay distinct */
+.table-striped tbody tr:nth-child(even) td {
+  background-color: var(--color-background-secondary);
+}
+
+/* Row hover */
+.table tbody tr {
+  transition: background-color 120ms ease;
+}
+.table tbody tr:hover td {
+  background-color: var(--color-background-control-primary-hover);
+}
+
+/* Selected row */
+.table tbody tr.selected td {
+  background-color: var(--color-background-control-secondary);
+}
+
+/* Disabled row */
+.table tr.disabled td {
+  color: var(--color-text-disabled);
+}
+
+
+/* ----------------------------------------------------------
+   Snackbar
+   ---------------------------------------------------------- */
+
+.snackbar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  height: 44px;
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-primary-invert);
+}
+
+.snackbar-neutral  { background-color: var(--color-background-neutral); }
+.snackbar-positive { background-color: var(--color-background-positive); }
+.snackbar-warning  { background-color: var(--color-background-warning); color: var(--color-text-warning); }
+.snackbar-critical { background-color: var(--color-background-critical); }
+
+
+/* ----------------------------------------------------------
+   Info Banner
+   ---------------------------------------------------------- */
+
+.info-banner {
+  display: flex;
+  align-items: flex-start;
+  width: 300px;
+  min-height: 110px;
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-sm);
+  gap: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid;
+}
+
+.info-banner-default  {
+  background-color: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+}
+.info-banner-positive {
+  background-color: var(--color-background-positive-lightest);
+  border-color: var(--color-border-positive);
+}
+.info-banner-warning  {
+  background-color: var(--color-background-warning-lightest);
+  border-color: var(--color-border-warning);
+}
+.info-banner-critical {
+  background-color: var(--color-background-critical-lightest);
+  border-color: var(--color-border-critical);
+}
+
+
+/* ----------------------------------------------------------
+   Global Info Bar
+   ---------------------------------------------------------- */
+
+.global-info-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: 46px;
+  padding-inline: var(--spacing-md);
+  padding-block: var(--spacing-sm);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+}
+
+.global-info-bar-web    { width: 1280px; }
+.global-info-bar-tablet { width: 744px; }
+.global-info-bar-mobile { width: 375px; height: auto; min-height: 94px; padding-block: var(--spacing-md); }
+
+
+/* ----------------------------------------------------------
+   Modal
+   ---------------------------------------------------------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background-color: var(--color-background-primary);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-lg);
+  width: 400px;
+  min-height: 201px;
+  overflow: hidden;
+}
+
+.modal-critical .modal-header {
+  background-color: var(--color-background-critical-lightest);
+}
+
+
+/* ----------------------------------------------------------
+   Side Dialog
+   ---------------------------------------------------------- */
+
+.side-dialog {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100dvh;
+  background-color: var(--color-background-primary);
+  border-left: 1px solid var(--color-border-primary);
+  box-shadow: var(--shadow-lg);
+  z-index: 90;
+  overflow-y: auto;
+}
+
+
+/* ----------------------------------------------------------
+   Navigation — Top bar
+   ---------------------------------------------------------- */
+
+.nav-top {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-bottom: 1px solid var(--color-border-primary);
+  background-color: var(--color-background-primary);
+}
+
+.nav-top-lg {
+  width: 1264px;
+  padding-inline: var(--spacing-lg);
+  padding-block: var(--spacing-md);
+}
+
+.nav-top-sm {
+  width: 100%;
+  padding-inline: var(--spacing-md);
+  padding-block: var(--spacing-md);
+}
+
+
+/* ----------------------------------------------------------
+   Navigation — Side bar
+   ---------------------------------------------------------- */
+
+.nav-side {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background-color: var(--color-background-primary);
+  border-right: 1px solid var(--color-border-primary);
+  overflow: hidden;
+  transition: width 200ms ease;
+}
+
+.nav-side-expanded  { width: 240px; }
+.nav-side-collapsed { width: 56px; }
+.nav-side-sm        { width: 360px; }
+
+
+/* ----------------------------------------------------------
+   Progress bar
+   ---------------------------------------------------------- */
+
+.progress-bar-track {
+  width: 320px;
+  height: 4px;
+  background-color: var(--color-background-tertiary);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--color-background-neutral);
+  border-radius: var(--border-radius-full);
+  transition: width 300ms ease;
+}
+
+
+/* ----------------------------------------------------------
+   Spinner
+   ---------------------------------------------------------- */
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 3px solid var(--color-background-tertiary);
+  border-top-color: var(--color-background-neutral);
+  border-radius: var(--border-radius-full);
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ----------------------------------------------------------
+   Tooltip
+   ---------------------------------------------------------- */
+
+.tooltip {
+  position: absolute;
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-background-neutral);
+  color: var(--color-text-primary-invert);
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  padding: var(--spacing-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+  pointer-events: none;
+}
+
+.tooltip-definition {
+  max-width: 143px;
+}
+
+.tooltip-description {
+  max-width: 234px;
+}
+
+
+/* ----------------------------------------------------------
+   Date Picker
+   ---------------------------------------------------------- */
+
+.date-picker-single {
+  width: 248px;
+  height: 248px;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary);
+  background-color: var(--color-background-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.date-picker-double {
+  width: 488px;
+  height: 248px;
+  padding: var(--spacing-md);
+  gap: var(--spacing-lg);
+  border-radius: var(--border-radius-xs);
+}
+
+
+/* ----------------------------------------------------------
+   Uploader
+   ---------------------------------------------------------- */
+
+.uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 156px;
+  gap: var(--spacing-xs);
+  border: 1.5px dashed var(--color-border-control-primary);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-background-secondary);
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.uploader-file  { height: 141px; }
+.uploader-image { height: 287px; }
+
+.uploader:hover         { border-color: var(--color-border-control-primary-active); }
+.uploader.drop-active   { background-color: var(--color-background-positive-lightest); border-color: var(--color-border-positive); }
+.uploader.selected      { border-style: solid; border-color: var(--color-border-control-primary-active); }
+.uploader.error         { border-color: var(--color-border-critical); }
+.uploader:disabled      { background-color: var(--color-background-control-disabled); cursor: not-allowed; }
+
+
+/* ============================================================
+   LAYOUT GRID
+   ============================================================ */
+
+.grid-container {
+  display: grid;
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* xs — 4 columns, 8px gutter, 12px margin */
+@media (max-width: 599px) {
+  .grid-container {
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 8px;
+    padding-inline: 12px;
+  }
+}
+
+/* sm — 8 columns, 12px gutter, 24px margin */
+@media (min-width: 600px) and (max-width: 899px) {
+  .grid-container {
+    grid-template-columns: repeat(8, 1fr);
+    column-gap: 12px;
+    padding-inline: 24px;
+  }
+}
+
+/* md/lg/xl — 12 columns, 12px gutter, 24px margin */
+@media (min-width: 900px) {
+  .grid-container {
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 12px;
+    padding-inline: 24px;
+  }
+}
+
+
+/* ----------------------------------------------------------
+   Global focus ring — Components 2.0 spec
+   Color: --color-ring-focus (#93A7FF)
+   Stroke: 2px solid · offset: 2px · matches host border-radius
+   Applied to all natively-focusable interactive elements so
+   inline-styled React components inherit the same treatment.
+   ---------------------------------------------------------- */
+
+:where(button, [role="button"], a, input, textarea, select, summary,
+       [role="radio"], [role="checkbox"], [role="switch"], [role="tab"],
+       [role="menuitem"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--color-ring-focus);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+
+/* Tabs — focus ring belongs on the inner pill, not the full hit area
+   (which includes the 4px gap + 2px indicator strip below). */
+[role="tab"]:focus-visible {
+  outline: none;
+}
+[role="tab"]:focus-visible > .tab-pill {
+  outline: 2px solid var(--color-ring-focus);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}

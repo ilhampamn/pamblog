@@ -1,5 +1,8 @@
 /* Builder chrome global styles — coda-payments-design tokens ONLY */
-/* No whitelabel (--bg-*, --text-*, --radius-*) vars here */
+/* Real Coda tokens + component classes come from @codapay/ui-coda. */
+/* No whitelabel (--bg-*, --text-*, --radius-*) vars here, no invented tokens. */
+
+@import '@codapay/ui-coda/tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -10,53 +13,13 @@ html, body, #app {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 14px;
+  font-family: var(--font-family-monument-grotesk);
+  font-size: var(--font-size-md);
   line-height: 1.5;
-  color: #1a1a2e;
-  background: #f0f0f5;
+  letter-spacing: var(--font-letter-spacing-wider);
+  color: var(--color-text-primary);
+  background: var(--color-background-secondary);
   -webkit-font-smoothing: antialiased;
-}
-
-/* Coda-style design tokens for the builder chrome */
-:root {
-  /* Brand */
-  --coda-primary: #102AF8;
-  --coda-primary-light: #e8eeff;
-
-  /* Surfaces */
-  --coda-surface-bg: #f5f5f8;
-  --coda-surface-panel: #ffffff;
-  --coda-surface-border: #e2e2ea;
-  --coda-surface-border-strong: #c8c8d8;
-
-  /* Text */
-  --coda-text-primary: #0d0d1a;
-  --coda-text-secondary: #4a4a68;
-  --coda-text-muted: #8a8aa8;
-  --coda-text-inverse: #ffffff;
-
-  /* Interactive */
-  --coda-hover: rgba(16, 42, 248, 0.06);
-  --coda-selected: rgba(16, 42, 248, 0.1);
-
-  /* Radius */
-  --coda-radius-s: 6px;
-  --coda-radius-m: 8px;
-  --coda-radius-l: 12px;
-
-  /* Shadow */
-  --coda-shadow-panel: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
-
-  /* Spacing (Coda spatial scale) */
-  --coda-sp-2: 2px;
-  --coda-sp-4: 4px;
-  --coda-sp-6: 6px;
-  --coda-sp-8: 8px;
-  --coda-sp-12: 12px;
-  --coda-sp-16: 16px;
-  --coda-sp-20: 20px;
-  --coda-sp-24: 24px;
 }
 
 /* Reset */
@@ -70,4 +33,4 @@ p { margin: 0; }
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--coda-surface-border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: var(--color-border-control-primary); border-radius: var(--border-radius-full); }

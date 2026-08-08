@@ -10,7 +10,8 @@
     "paths": {
       "@codapay/config-schema": ["../../packages/config-schema/src/index.ts"],
       "@codapay/tokens": ["../../packages/tokens/src/index.ts"],
-      "@codapay/checkout-ui": ["../../packages/checkout-ui/src/index.ts"]
+      "@codapay/checkout-ui": ["../../packages/checkout-ui/src/index.ts"],
+      "@codapay/ui-coda": ["../../packages/ui-coda/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

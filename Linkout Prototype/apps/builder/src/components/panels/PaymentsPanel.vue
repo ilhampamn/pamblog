@@ -141,52 +141,52 @@ function onDrop(targetId: MethodId) {
 <style scoped src="./panel-shared.css" />
 <style scoped>
 .panel__hint {
-  font-size: 11px;
-  color: var(--coda-text-muted);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary-lightest);
   margin-top: -4px;
 }
 
 .method-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .method-row {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
-  padding: var(--coda-sp-8) var(--coda-sp-8);
-  background: var(--coda-surface-bg);
-  border-radius: var(--coda-radius-s);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-xs);
   border: 1px solid transparent;
   transition: all 0.12s ease;
   cursor: grab;
 }
 
-.method-row:hover { border-color: var(--coda-surface-border); }
+.method-row:hover { border-color: var(--color-border-primary); }
 .method-row:active { cursor: grabbing; }
 .method-row--hidden { opacity: 0.4; }
 
-.method-row__drag { color: var(--coda-text-muted); cursor: grab; flex-shrink: 0; }
+.method-row__drag { color: var(--color-text-primary-lightest); cursor: grab; flex-shrink: 0; }
 
 .method-row__name {
   flex: 1;
-  font-size: 13px;
-  color: var(--coda-text-primary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
 }
 
 .method-row__actions {
   display: flex;
   align-items: center;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
 }
 
 .method-row__radio {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
-  border: 1.5px solid var(--coda-surface-border-strong);
+  border-radius: var(--border-radius-full);
+  border: 1.5px solid var(--color-border-control-primary);
   background: none;
   display: flex;
   align-items: center;
@@ -196,15 +196,15 @@ function onDrop(targetId: MethodId) {
 }
 
 .method-row__radio--selected {
-  border-color: var(--coda-primary);
-  background: var(--coda-primary);
+  border-color: var(--color-background-control-button-primary-default);
+  background: var(--color-background-control-button-primary-default);
 }
 
 .method-row__radio-dot {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
-  background: white;
+  border-radius: var(--border-radius-full);
+  background: var(--color-white-0);
   display: block;
 }
 
@@ -224,10 +224,10 @@ function onDrop(targetId: MethodId) {
   display: inline-block;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-full);
   vertical-align: middle;
 }
 
-.legend-dot--radio { background: var(--coda-primary); }
-.legend-dot--toggle { background: var(--coda-primary); border-radius: 10px; }
+.legend-dot--radio { background: var(--color-background-control-button-primary-default); }
+.legend-dot--toggle { background: var(--color-background-neutral); border-radius: var(--border-radius-full); }
 </style>

@@ -88,8 +88,8 @@ const discount = computed(() => {
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: var(--bg-card-default);
-  border-bottom: 1px solid var(--border-divider);
+  background: var(--ov-banner-bg, var(--bg-card-default));
+  border-bottom: 1px solid var(--ov-banner-border-color, var(--border-divider));
   cursor: pointer;
   user-select: none;
 }

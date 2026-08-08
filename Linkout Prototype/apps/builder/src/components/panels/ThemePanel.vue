@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useThemeStore } from '../../stores/theme.ts';
+import { useConfigStore } from '../../stores/config.ts';
 import type { TokenSet } from '@codapay/tokens';
+import { CodaButton } from '@codapay/ui-coda';
 
 const theme = useThemeStore();
+const config = useConfigStore();
 
 // v-model computed so applyTheme fires reliably (plain @change on :value select has Vue 3 reconciliation issues)
 const selectedThemeName = computed({
   get: () => theme.activeThemeName ?? '',
-  set: (name: string) => { if (name) theme.applyTheme(name); },
+  set: (name: string) => {
+    if (name) {
+      const skin = theme.applyTheme(name);
+      config.updateSection('theme', { skin });
+    }
+  },
 });
 
 type InputMode = 'manual' | 'upload' | 'generate';
@@ -103,14 +111,14 @@ const FROZEN_KEYS = new Set([
             {{ t.name }}{{ t.isPreset ? ' (preset)' : '' }}
           </option>
         </select>
-        <button
-          class="btn btn--secondary"
+        <CodaButton
+          variant="secondary"
           title="Delete theme"
           :disabled="!theme.activeThemeName || !!theme.savedThemes.find(t => t.name === theme.activeThemeName)?.isPreset"
           @click="theme.activeThemeName && theme.deleteTheme(theme.activeThemeName)"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
+        </CodaButton>
       </div>
 
       <div class="field-row">
@@ -121,9 +129,9 @@ const FROZEN_KEYS = new Set([
           placeholder="Save as…"
           @keydown.enter="saveAs"
         />
-        <button class="btn btn--primary" :disabled="!newThemeName.trim()" @click="saveAs">
+        <CodaButton variant="primary" :disabled="!newThemeName.trim()" @click="saveAs">
           Save
-        </button>
+        </CodaButton>
       </div>
     </div>
 
@@ -136,9 +144,9 @@ const FROZEN_KEYS = new Set([
         rows="6"
         placeholder=":root { --bg-action-primary: #ff6600; … }"
       />
-      <button class="btn btn--primary" :disabled="!cssImport.trim()" @click="importCss">
+      <CodaButton variant="primary" :disabled="!cssImport.trim()" @click="importCss">
         Apply CSS
-      </button>
+      </CodaButton>
     </div>
 
     <!-- Generate mode -->
@@ -163,7 +171,7 @@ const FROZEN_KEYS = new Set([
           />
         </div>
       </div>
-      <button class="btn btn--primary" @click="generate">Generate Theme</button>
+      <CodaButton variant="primary" @click="generate">Generate Theme</CodaButton>
     </div>
 
     <!-- Manual token groups -->
@@ -218,72 +226,55 @@ const FROZEN_KEYS = new Set([
 <style scoped>
 .mode-tabs {
   display: flex;
-  background: var(--coda-surface-bg);
-  border-radius: var(--coda-radius-m);
-  padding: 3px;
-  gap: 2px;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-2xs);
+  gap: var(--spacing-2xs);
 }
 
 .mode-tab {
   flex: 1;
   background: none;
   border: none;
-  padding: 5px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--coda-text-muted);
-  border-radius: calc(var(--coda-radius-m) - 2px);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary-lightest);
+  border-radius: var(--border-radius-xs);
   transition: all 0.15s ease;
 }
 
 .mode-tab--active {
-  background: var(--coda-surface-panel);
-  color: var(--coda-text-primary);
-  box-shadow: var(--coda-shadow-panel);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .field-row {
   display: flex;
-  gap: var(--coda-sp-8);
+  gap: var(--spacing-sm);
   align-items: stretch;
 }
 
 .field-row .field__select,
 .field-row .field__input { flex: 1; }
 
-.btn {
-  padding: 6px 12px;
-  border-radius: var(--coda-radius-s);
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: var(--coda-sp-4);
-  flex-shrink: 0;
-}
-
-.btn--primary { background: var(--coda-primary); color: white; }
-.btn--primary:hover:not(:disabled) { background: #0d22d4; }
-.btn--secondary { background: var(--coda-surface-bg); color: var(--coda-text-secondary); border-color: var(--coda-surface-border); }
-.btn--secondary:hover:not(:disabled) { background: var(--coda-hover); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.field-row :deep(.btn) { flex-shrink: 0; }
 
 .field__textarea {
-  background: var(--coda-surface-bg);
-  border: 1px solid var(--coda-surface-border);
-  border-radius: var(--coda-radius-s);
-  padding: var(--coda-sp-8) var(--coda-sp-12);
-  font-size: 12px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  color: var(--coda-text-primary);
+  background: var(--color-background-control-primary);
+  border: 1px solid var(--color-border-control-primary);
+  border-radius: var(--border-radius-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-jet-brains-mono);
+  color: var(--color-text-primary);
   resize: vertical;
   outline: none;
   width: 100%;
   box-sizing: border-box;
 }
 
-.field__textarea:focus { border-color: var(--coda-primary); }
+.field__textarea:focus { border-color: var(--color-border-control-primary-active); }
 </style>

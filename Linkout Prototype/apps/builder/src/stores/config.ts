@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import type { CheckoutConfig } from '@codapay/config-schema';
 import { RIFT_RACING_FIXTURE } from '@codapay/config-schema';
 
-export type ConfigSection = 'navbar' | 'product' | 'rewards' | 'payments' | 'theme';
+export type ConfigSection = 'navbar' | 'product' | 'rewards' | 'payments' | 'theme' | 'components';
 
 export const useConfigStore = defineStore('config', () => {
   const config = ref<CheckoutConfig>(structuredClone(RIFT_RACING_FIXTURE));
