@@ -58,10 +58,24 @@ function components(locale: Locale): PortableTextComponents {
   }
 }
 
+// Editors often press Enter twice in the Studio to visually space paragraphs;
+// that saves as an empty "block" which renders as a zero-height <p> (no text
+// means no line box) instead of the gap they intended. Paragraph spacing is
+// handled by CSS (.prose-body p), so these empty blocks are just dead weight.
+function isEmptyBlock(block: PortableTextBlock): boolean {
+  return (
+    block._type === 'block' &&
+    (block.children as { text?: string }[] | undefined)?.every(
+      (child) => !child.text?.trim()
+    ) === true
+  )
+}
+
 export function renderPortableText(
   blocks: PortableTextBlock[] | undefined | null,
   locale: Locale
 ): React.ReactNode {
   if (!blocks || blocks.length === 0) return null
-  return <PortableText value={blocks} components={components(locale)} />
+  const filtered = blocks.filter((block) => !isEmptyBlock(block))
+  return <PortableText value={filtered} components={components(locale)} />
 }

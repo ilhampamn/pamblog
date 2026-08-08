@@ -560,6 +560,14 @@ body > div {
   max-width: var(--prose-width);
 }
 
+.prose-body p {
+  margin-bottom: calc(var(--space-unit) * 3);
+}
+
+.prose-body p:last-child {
+  margin-bottom: 0;
+}
+
 .font-display {
   font-family: var(--font-display);
 }
