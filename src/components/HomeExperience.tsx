@@ -22,10 +22,11 @@ export function HomeExperience(props: CanvasProps) {
     window.localStorage.setItem('bookpamn-home-view', view)
 
     if (view === 'canvas') {
-      // The canvas may have mounted while display:none in List mode. Trigger
-      // its existing resize handler after it becomes visible so it recentres.
+      // The canvas mounts while display:none in List mode, so its initial
+      // fitScale() ran against clientWidth 0. Wait a frame for layout to
+      // settle after un-hiding, then have it refit and recentre for real.
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => window.dispatchEvent(new Event('resize')))
+        requestAnimationFrame(() => window.dispatchEvent(new Event('canvas:fit')))
       })
     }
   }

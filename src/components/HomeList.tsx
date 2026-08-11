@@ -103,20 +103,6 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           }}
         />
 
-        <RoughGlobe
-          className="pointer-events-none select-none"
-          style={{
-            width: 172,
-            alignSelf: 'flex-end',
-            marginTop: -36,
-            marginRight: 8,
-            marginBottom: -34,
-            position: 'relative',
-            zIndex: 30,
-            transform: 'rotate(7deg)',
-          }}
-        />
-
         {/* ── Currently (sticky note — pink: base hue shifted to 330°) ── */}
         <StickyNote
           rotation={0.45}
@@ -185,20 +171,6 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           }}
         />
 
-        <RoughBackpack
-          className="pointer-events-none select-none"
-          style={{
-            width: 166,
-            alignSelf: 'flex-start',
-            marginTop: -34,
-            marginLeft: 14,
-            marginBottom: -28,
-            position: 'relative',
-            zIndex: 30,
-            transform: 'rotate(-6deg)',
-          }}
-        />
-
         {/* ── Newsletter ── */}
         <section
           className="p-5 mt-10"
@@ -214,6 +186,20 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
             button={newsletter.button}
           />
         </section>
+
+        <RoughGlobe
+          className="pointer-events-none select-none"
+          style={{
+            width: 172,
+            alignSelf: 'flex-end',
+            marginTop: 24,
+            marginRight: 8,
+            marginBottom: -8,
+            position: 'relative',
+            zIndex: 30,
+            transform: 'rotate(7deg)',
+          }}
+        />
 
         {/* ── Polaroid — tap to reveal links, sits at the very bottom of the page.
             Width matches the sticky notes above (100% of the shared container). ── */}
@@ -233,7 +219,21 @@ export function HomeList({ locale, posts, ui, newsletter }: HomeListProps) {
           />
         </div>
 
-        <div className="mt-14 mb-6">
+        <RoughBackpack
+          className="pointer-events-none select-none"
+          style={{
+            width: 166,
+            alignSelf: 'flex-start',
+            marginTop: -40,
+            marginLeft: 14,
+            marginBottom: -36,
+            position: 'relative',
+            zIndex: 30,
+            transform: 'rotate(-6deg)',
+          }}
+        />
+
+        <div className="mb-6">
           <Polaroid
             id="polaroid-labuan-bajo-mobile"
             src={LABUAN_BAJO_IMAGE}
