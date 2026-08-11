@@ -135,7 +135,7 @@ export default async function PostPage({
             <img
               src={post.coverImage}
               alt=""
-              className="mt-10 w-full max-w-[var(--layout-width)] max-h-[70vh] mx-auto block object-contain rounded"
+              className="mt-10 w-full md:w-1/2 max-w-[var(--layout-width)] max-h-[70vh] mx-auto block object-contain rounded"
               style={{ border: '1px solid var(--color-torn)' }}
             />
           )}

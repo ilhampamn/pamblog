@@ -82,7 +82,7 @@ export default async function ItineraryPage({
             <img
               src={itinerary.coverImage}
               alt=""
-              className="mt-10 w-full max-h-[70vh] object-contain rounded"
+              className="mt-10 w-full md:w-1/2 mx-auto block max-h-[70vh] object-contain rounded"
               style={{ border: '1px solid var(--color-torn)' }}
             />
           )}
