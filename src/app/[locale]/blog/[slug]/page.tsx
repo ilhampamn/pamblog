@@ -32,7 +32,13 @@ export async function generateMetadata({
   if (!post) return {}
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
-  const ogUrl = `${BASE_URL}/og?title=${encodeURIComponent(post.title)}&tag=${encodeURIComponent(post.tag)}&rt=${post.readingTime}`
+  const generatedOgUrl = `${BASE_URL}/og?title=${encodeURIComponent(post.title)}&tag=${encodeURIComponent(post.tag)}&rt=${post.readingTime}`
+
+  // Prefer the article's own cover image for link previews (Twitter, iMessage,
+  // Slack, etc.); fall back to the generated title-card image when there isn't one.
+  const ogImage = post.coverImage
+    ? { url: post.coverImage, alt: post.title }
+    : { url: generatedOgUrl, width: 1200, height: 630, alt: post.title }
 
   return {
     title: post.title,
@@ -42,13 +48,13 @@ export async function generateMetadata({
       description: post.excerpt,
       type: 'article',
       publishedTime: post.publishedAt,
-      images: [{ url: ogUrl, width: 1200, height: 630, alt: post.title }],
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: [ogUrl],
+      images: [ogImage.url],
     },
   }
 }
