@@ -44,6 +44,11 @@ const CENTER_Y = WORLD_H / 2
 const MIN_SCALE = 0.4
 const MAX_SCALE = 2.5
 const GRID_SIZE = 24
+// Viewport width the layout was designed at (scale 1 looks right here, e.g.
+// the 680px-wide video polaroid fits comfortably). Narrower viewports —
+// mostly phones, since the canvas is opt-in there via allowMobileInteraction —
+// start zoomed out proportionally instead of overflowing at scale 1.
+const REFERENCE_VIEWPORT_WIDTH = 820
 // How far past the world edges the viewport may overscroll, in screen px.
 const PAN_MARGIN = 200
 const LABUAN_BAJO_IMAGE =
@@ -83,8 +88,8 @@ const STICKERS: StickerConfig[] = [
     id: 'sticker-rainbow',
     src: '/stickers/rainbow.webp',
     alt: 'Rainbow sticker',
-    worldX: CENTER_X + 475,
-    worldY: CENTER_Y - 275,
+    worldX: CENTER_X + 420,
+    worldY: CENTER_Y - 480,
     rotation: 12,
     width: 130,
   },
@@ -92,8 +97,8 @@ const STICKERS: StickerConfig[] = [
     id: 'sticker-paperplane',
     src: '/stickers/paperplane.png',
     alt: 'Paper plane sticker',
-    worldX: CENTER_X - 420,
-    worldY: CENTER_Y - 85,
+    worldX: CENTER_X - 550,
+    worldY: CENTER_Y - 400,
     rotation: -8,
     width: 120,
   },
@@ -357,6 +362,14 @@ export function Canvas({
     applyTransform()
   }, [applyTransform, clampPan])
 
+  // Scale that fits the layout to narrower viewports instead of overflowing
+  // at scale 1 (which is tuned for REFERENCE_VIEWPORT_WIDTH).
+  const fitScale = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return 1
+    return Math.min(1, Math.max(MIN_SCALE, el.clientWidth / REFERENCE_VIEWPORT_WIDTH))
+  }, [])
+
   // Zoom toward a screen point (keeps the world point under the cursor fixed).
   const zoomTo = useCallback(
     (nextScale: number, screenX: number, screenY: number) => {
@@ -555,6 +568,16 @@ export function Canvas({
       applyTransform()
     }
 
+    // Fired by HomeExperience right after it un-hides the canvas (it mounts at
+    // display:none behind the List view on mobile, so the fitScale() call in
+    // attach() below runs against clientWidth 0). A plain 'resize' event isn't
+    // enough since onResize deliberately preserves the current scale/pan.
+    const onFit = () => {
+      scale.current = fitScale()
+      centerOnWorld()
+    }
+    window.addEventListener('canvas:fit', onFit)
+
     // Prevent the browser from treating <a> card elements as something to
     // drag-and-drop (e.g. dragging the URL/link). Without this, pointerdown on a
     // link card triggers a native HTML drag, which steals the pointer immediately
@@ -570,6 +593,7 @@ export function Canvas({
       el.addEventListener('dragstart', onDragStart)
       el.addEventListener('wheel', onWheel, { passive: false })
       window.addEventListener('resize', onResize)
+      scale.current = fitScale()
       centerOnWorld()
     }
     const detach = () => {
@@ -580,6 +604,7 @@ export function Canvas({
       el.removeEventListener('click', onClickCapture, true)
       el.removeEventListener('dragstart', onDragStart)
       el.removeEventListener('wheel', onWheel)
+      window.removeEventListener('canvas:fit', onFit)
       window.removeEventListener('resize', onResize)
     }
 
@@ -605,7 +630,7 @@ export function Canvas({
       desktop.removeEventListener('change', sync)
       if (active) detach()
     }
-  }, [allowMobileInteraction, applyTransform, centerOnWorld, clampPan, zoomTo])
+  }, [allowMobileInteraction, applyTransform, centerOnWorld, clampPan, fitScale, zoomTo])
 
   // ── Entrance: gentle staggered fade-in of the cards ──
   useEffect(() => {
@@ -637,7 +662,7 @@ export function Canvas({
   }
 
   const resetView = () => {
-    scale.current = 1
+    scale.current = fitScale()
     centerOnWorld()
   }
 
