@@ -129,6 +129,16 @@ export default async function PostPage({
               style={{ backgroundColor: 'var(--color-torn)' }}
             />
           </div>
+
+          {post.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.coverImage}
+              alt=""
+              className="mt-10 w-full max-w-[var(--layout-width)] mx-auto block aspect-[16/9] object-cover rounded"
+              style={{ border: '1px solid var(--color-torn)' }}
+            />
+          )}
         </header>
 
         <div className="relative px-8">

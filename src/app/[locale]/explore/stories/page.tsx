@@ -50,7 +50,17 @@ export default async function StoriesPage({ params }: { params: { locale: string
           <ul className="flex flex-col gap-8">
             {stories.map((s) => (
               <li key={s.slug}>
-                <Link href={`/${locale}/explore/stories/${s.slug}`} className="group block">
+                <Link href={`/${locale}/explore/stories/${s.slug}`} className="group flex gap-5">
+                  {s.coverImage && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={s.coverImage}
+                      alt=""
+                      className="shrink-0 w-24 h-24 object-cover rounded"
+                      style={{ border: '1px solid var(--color-torn)' }}
+                    />
+                  )}
+                  <div className="min-w-0">
                   {s.publishedAt && (
                     <span className="label-stamped block mb-1" style={{ color: 'var(--color-smudge)' }}>
                       {formatDate(s.publishedAt, locale)}
@@ -71,6 +81,7 @@ export default async function StoriesPage({ params }: { params: { locale: string
                       {s.excerpt}
                     </p>
                   )}
+                  </div>
                 </Link>
               </li>
             ))}

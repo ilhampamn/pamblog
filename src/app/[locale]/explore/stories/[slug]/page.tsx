@@ -81,6 +81,16 @@ export default async function StoryPage({
             </p>
           )}
           <div className="mt-10 h-px" style={{ backgroundColor: 'var(--color-torn)' }} />
+
+          {story.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={story.coverImage}
+              alt=""
+              className="mt-10 w-full aspect-[16/9] object-cover rounded"
+              style={{ border: '1px solid var(--color-torn)' }}
+            />
+          )}
         </div>
 
         <PostBody>{body}</PostBody>

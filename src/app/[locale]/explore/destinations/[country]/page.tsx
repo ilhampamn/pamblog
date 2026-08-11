@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
@@ -73,6 +74,19 @@ export default async function CountryPage({
             {country.regionLabel}
           </span>
 
+          {country.coverImage && (
+            <div className="relative mt-8 aspect-[16/6] overflow-hidden" style={{ borderRadius: 'var(--radius-card)' }}>
+              <Image
+                src={country.coverImage}
+                alt=""
+                fill
+                sizes="(max-width: 1023px) 100vw, var(--layout-width)"
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+
           {/* ── Cities, each with its destinations ── */}
           <div className="mt-12 flex flex-col gap-12">
             {country.cities.length === 0 && (
@@ -97,7 +111,7 @@ export default async function CountryPage({
                     <Link
                       key={dest.slug}
                       href={`/${locale}/explore/destinations/${country.slug}/${city.slug}/${dest.slug}`}
-                      className="block p-5 transition-shadow hover:shadow-lg"
+                      className="block overflow-hidden transition-shadow hover:shadow-lg"
                       style={{
                         backgroundColor: 'var(--color-ghost)',
                         border: '1px solid var(--color-torn)',
@@ -105,15 +119,28 @@ export default async function CountryPage({
                         textDecoration: 'none',
                       }}
                     >
-                      <span className="label-stamped block mb-1" style={{ color: 'var(--color-blush)' }}>
-                        {dest.type}
-                      </span>
-                      <h3
-                        className="text-lg font-bold leading-snug"
-                        style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-                      >
-                        {dest.name}
-                      </h3>
+                      {dest.coverImage && (
+                        <div className="relative aspect-[4/3]">
+                          <Image
+                            src={dest.coverImage}
+                            alt=""
+                            fill
+                            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="p-5">
+                        <span className="label-stamped block mb-1" style={{ color: 'var(--color-blush)' }}>
+                          {dest.type}
+                        </span>
+                        <h3
+                          className="text-lg font-bold leading-snug"
+                          style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
+                        >
+                          {dest.name}
+                        </h3>
+                      </div>
                     </Link>
                   ))}
                 </div>

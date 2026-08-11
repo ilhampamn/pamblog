@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
@@ -51,7 +52,7 @@ export default async function ItinerariesPage({ params }: { params: { locale: st
               <Link
                 key={it.slug}
                 href={`/${locale}/explore/itineraries/${it.slug}`}
-                className="block p-6 transition-shadow hover:shadow-lg"
+                className="block overflow-hidden transition-shadow hover:shadow-lg"
                 style={{
                   backgroundColor: 'var(--color-ghost)',
                   border: '1px solid var(--color-torn)',
@@ -59,20 +60,31 @@ export default async function ItinerariesPage({ params }: { params: { locale: st
                   textDecoration: 'none',
                 }}
               >
-                <span className="label-stamped block mb-2" style={{ color: 'var(--color-blush)' }}>
-                  {it.duration} · {it.stops.length} {ui.explore.stops}
-                </span>
-                <h2
-                  className="text-lg font-bold leading-snug mb-2"
-                  style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-                >
-                  {it.title}
-                </h2>
-                {it.excerpt && (
-                  <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}>
-                    {it.excerpt}
-                  </p>
-                )}
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src={it.coverImage || `https://picsum.photos/seed/bookpamn-itinerary-${it.slug}/800/600`}
+                    alt=""
+                    fill
+                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <span className="label-stamped block mb-2" style={{ color: 'var(--color-blush)' }}>
+                    {it.duration} · {it.stops.length} {ui.explore.stops}
+                  </span>
+                  <h2
+                    className="text-lg font-bold leading-snug mb-2"
+                    style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
+                  >
+                    {it.title}
+                  </h2>
+                  {it.excerpt && (
+                    <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}>
+                      {it.excerpt}
+                    </p>
+                  )}
+                </div>
               </Link>
             ))}
           </div>

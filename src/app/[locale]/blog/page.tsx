@@ -128,7 +128,18 @@ export default async function BlogIndexPage({
                   {/* Post list */}
                   <ul className="divide-y" style={{ borderColor: 'var(--color-torn)' }}>
                     {byYear[year].map((post) => (
-                      <li key={post.slug} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-5">
+                      <li key={post.slug} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 py-5">
+                          {/* Cover thumbnail */}
+                          {post.coverImage && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={post.coverImage}
+                              alt=""
+                              className="shrink-0 w-14 h-14 object-cover rounded"
+                              style={{ border: '1px solid var(--color-torn)' }}
+                            />
+                          )}
+
                           {/* Tag — separate link, not nested */}
                           <Link
                             href={`/${locale}/blog/tag/${post.tag}`}
