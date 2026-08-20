@@ -1,0 +1,157 @@
+/* ─── /experiment-2 — "Somewhere in Central Asia" ────────────────────────────
+   A travel-journal direction: graph paper, torn-edge cards, taped polaroids and
+   a hand-drawn UI, held together by a high-contrast serif.
+
+   Scoped under `.ex2` so it can't leak into the live site, and so it can
+   override globals.css freely — notably the blanket
+   `h1..h6 { font-family: Caveat !important }`, which is wrong here. */
+
+.ex2 {
+  --ex2-ink: #1c1c1c;
+  --ex2-body: #4a4a4a;
+  --ex2-muted: #8a8a8a;
+  --ex2-paper: #fdfdfb;
+  --ex2-grid: rgba(120, 145, 190, 0.16);
+  --ex2-grid-size: 26px;
+  --ex2-rule: #d9d9d4;
+
+  --ex2-gutter: clamp(18px, 4vw, 56px);
+  --ex2-measure: 1140px;
+
+  position: relative;
+  isolation: isolate;
+  color: var(--ex2-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background-color: var(--ex2-paper);
+  /* Graph paper. Painted here rather than on <html> so it stops at the hero,
+     which sits on top of it as a full-bleed photograph. */
+  background-image:
+    linear-gradient(var(--ex2-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ex2-grid) 1px, transparent 1px);
+  background-size: var(--ex2-grid-size) var(--ex2-grid-size);
+  overflow-x: clip;
+}
+
+/* ─── Type ─────────────────────────────────────────────────────────────────── */
+
+/* No `color` here on purpose: headings inherit `--ex2-ink` from `.ex2`, and
+   leaving it unset lets a utility class (e.g. the white hero title over the
+   photograph) win — an element+class selector would otherwise outrank it. */
+.ex2 h1,
+.ex2 h2,
+.ex2 h3 {
+  font-family: var(--ex2-serif), Georgia, serif !important;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.ex2-display {
+  font-size: clamp(2.75rem, 7.5vw, 5.75rem);
+  line-height: 1.02;
+}
+
+.ex2-section-title {
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Small letterspaced caps — the eyebrow above the hero title. */
+.ex2-eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ex2-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.ex2-copy {
+  font-size: 0.8125rem;
+  line-height: 1.62;
+  color: var(--ex2-body);
+}
+
+.ex2-copy--quiet {
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  color: var(--ex2-muted);
+}
+
+/* ─── Hand-drawn surfaces ──────────────────────────────────────────────────── */
+
+/* All three are single SVGs stretched to whatever box the content needs. The
+   strokes distort a little at extreme ratios, which reads as hand-drawn rather
+   than broken — the alternative (nine-slice borders) would flatten the wobble
+   that gives them their character. */
+.ex2-paper-card {
+  background-image: url('/experiment2/paper.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  /* The artwork is a near-white cream on a near-white page, so on its own the
+     card has no edge. Its baked-in shadow lives inside an 8px margin of a
+     1083px canvas, which all but vanishes once stretched down to card size —
+     hence a real shadow here to lift it off the graph paper. */
+  filter: drop-shadow(0 5px 16px rgba(28, 28, 28, 0.13));
+}
+
+.ex2-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.5rem;
+  background-image: url('/experiment2/button.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ex2-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: translate 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ex2-btn:hover {
+  translate: 0 -2px;
+}
+
+.ex2-btn:focus-visible {
+  outline: 2px solid var(--ex2-ink);
+  outline-offset: 3px;
+}
+
+/* ─── Polaroids ────────────────────────────────────────────────────────────── */
+
+/* The frame, torn edge and paperclip are baked into the artwork, so these only
+   need placing and tilting. */
+.ex2-polaroid {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ─── Gallery ──────────────────────────────────────────────────────────────── */
+
+.ex2-gallery-tile {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background-color: #d9d9d9;
+}
+
+.ex2-gallery-tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex2-btn {
+    transition: none;
+  }
+}
