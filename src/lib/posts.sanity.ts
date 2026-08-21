@@ -26,6 +26,11 @@ export interface Post {
   title: string
   publishedAt: string
   tag: string
+  storySeries?: {
+    title: string
+    seasonNumber: number
+  }
+  chapterNumber?: number
   excerpt?: string
   coverImage?: string
   readingTime: number
@@ -37,6 +42,11 @@ type RawPost = {
   excerpt: string | null
   readingTime: number | null
   tag: string
+  storySeries?: {
+    title: string | null
+    seasonNumber: number
+  } | null
+  chapterNumber?: number | null
   publishedAt: string
   coverImage?: unknown
 }
@@ -53,6 +63,13 @@ function toPost(raw: RawPost, locale: Locale): Post {
     title: raw.title ?? '',
     publishedAt: raw.publishedAt ?? '',
     tag: raw.tag,
+    storySeries: raw.storySeries
+      ? {
+          title: raw.storySeries.title ?? '',
+          seasonNumber: raw.storySeries.seasonNumber,
+        }
+      : undefined,
+    chapterNumber: raw.chapterNumber ?? undefined,
     excerpt: raw.excerpt?.trim() ? raw.excerpt : undefined,
     coverImage: coverUrl(raw.coverImage),
     readingTime: raw.readingTime ?? 1,

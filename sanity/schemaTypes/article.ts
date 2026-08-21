@@ -46,10 +46,41 @@ export const article = defineType({
           { title: 'Tutorial', value: 'tutorial' },
           { title: 'Note', value: 'note' },
           { title: 'Review', value: 'review' },
+          { title: 'Stories', value: 'stories' },
         ],
       },
       initialValue: 'essay',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'storySeries',
+      title: 'Story series',
+      type: 'reference',
+      description:
+        'Choose an existing season, or use “Create new” to add another one.',
+      to: [{ type: 'articleSeries' }],
+      hidden: ({ parent }) => parent?.tag !== 'stories',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { tag?: string } | undefined
+          return parent?.tag !== 'stories' || value
+            ? true
+            : 'A story series is required for Stories.'
+        }),
+    }),
+    defineField({
+      name: 'chapterNumber',
+      title: 'Chapter number',
+      type: 'number',
+      description: 'Controls the chapter order within this story series.',
+      hidden: ({ parent }) => parent?.tag !== 'stories',
+      validation: (Rule) =>
+        Rule.integer().positive().custom((value, context) => {
+          const parent = context.parent as { tag?: string } | undefined
+          return parent?.tag !== 'stories' || value !== undefined
+            ? true
+            : 'A chapter number is required for Stories.'
+        }),
     }),
     defineField({
       name: 'coverImage',
@@ -76,6 +107,20 @@ export const article = defineType({
     }),
   ],
   preview: {
-    select: { title: 'title.0.value', subtitle: 'tag', media: 'coverImage' },
+    select: {
+      title: 'title.0.value',
+      tag: 'tag',
+      seasonNumber: 'storySeries.seasonNumber',
+      chapterNumber: 'chapterNumber',
+      media: 'coverImage',
+    },
+    prepare: ({ title, tag, seasonNumber, chapterNumber, media }) => ({
+      title,
+      subtitle:
+        tag === 'stories'
+          ? `stories · Season ${seasonNumber ?? '?'} · Chapter ${chapterNumber ?? '?'}`
+          : tag,
+      media,
+    }),
   },
 })

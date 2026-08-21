@@ -48,6 +48,11 @@ export const articlesListQuery = groq`
     "excerpt": ${loc('excerpt')},
     "readingTime": ${loc('readingTime')},
     tag,
+    "storySeries": storySeries->{
+      "title": ${loc('title')},
+      seasonNumber
+    },
+    chapterNumber,
     publishedAt,
     coverImage
   }
@@ -61,6 +66,11 @@ export const articleBySlugQuery = groq`
     "excerpt": ${loc('excerpt')},
     "readingTime": ${loc('readingTime')},
     tag,
+    "storySeries": storySeries->{
+      "title": ${loc('title')},
+      seasonNumber
+    },
+    chapterNumber,
     publishedAt,
     coverImage
   }

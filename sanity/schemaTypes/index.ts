@@ -6,12 +6,14 @@ import { about } from './about'
 import { country, city, destination } from './place'
 import { itinerary } from './itinerary'
 import { story } from './story'
+import { articleSeries } from './articleSeries'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Objects
   blockContent,
   // Documents
   article,
+  articleSeries,
   about,
   country,
   city,

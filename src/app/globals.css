@@ -568,6 +568,14 @@ body > div {
   margin-bottom: 0;
 }
 
+.prose-body figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--color-smudge);
+}
+
 .font-display {
   font-family: var(--font-display);
 }
