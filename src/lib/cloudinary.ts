@@ -17,6 +17,7 @@ export interface CloudinaryAsset {
 interface CloudinaryResource {
   asset_id: string
   public_id: string
+  display_name?: string
   secure_url: string
   width: number
   height: number
@@ -105,8 +106,8 @@ export async function getCloudinaryImagesByTag(
         url: optimizedDeliveryUrl(asset.secure_url),
         width: asset.width,
         height: asset.height,
-        title: custom?.title || custom?.caption || fallbackTitle,
-        alt: custom?.alt || custom?.caption || fallbackTitle,
+        title: custom?.title || asset.display_name || custom?.caption || fallbackTitle,
+        alt: custom?.alt || custom?.caption || asset.display_name || fallbackTitle,
         caption: custom?.caption,
         location: custom?.location,
         takenAt: custom?.taken_at,
