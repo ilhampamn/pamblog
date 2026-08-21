@@ -108,17 +108,30 @@ export default async function TagPage({
                     <li key={post.slug}>
                       <Link
                         href={`/${locale}/blog/${post.slug}`}
-                        className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-5"
+                        className="group flex flex-col gap-2 py-6 sm:flex-row sm:items-start sm:gap-6"
                       >
-                        <span
-                          className="flex-1 font-bold leading-snug group-hover:underline"
-                          style={{
-                            fontFamily: 'var(--font-display)',
-                            color: 'var(--color-ink)',
-                            textDecorationColor: 'var(--color-torn)',
-                          }}
-                        >
-                          {post.title}
+                        <span className="min-w-0 flex-1">
+                          <span
+                            className="block font-bold leading-snug group-hover:underline"
+                            style={{
+                              fontFamily: 'var(--font-display)',
+                              color: 'var(--color-ink)',
+                              textDecorationColor: 'var(--color-torn)',
+                            }}
+                          >
+                            {post.title}
+                          </span>
+                          {post.excerpt ? (
+                            <span
+                              className="mt-1.5 block max-w-2xl text-sm leading-relaxed"
+                              style={{
+                                fontFamily: 'var(--font-body)',
+                                color: 'var(--color-smudge)',
+                              }}
+                            >
+                              {post.excerpt}
+                            </span>
+                          ) : null}
                         </span>
                         <span
                           className="label-stamped shrink-0 text-right"

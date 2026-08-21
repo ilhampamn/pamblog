@@ -6,8 +6,12 @@ export interface CloudinaryAsset {
   url: string
   width: number
   height: number
+  title: string
   alt: string
   caption?: string
+  location?: string
+  takenAt?: string
+  storySlug?: string
 }
 
 interface CloudinaryResource {
@@ -18,8 +22,12 @@ interface CloudinaryResource {
   height: number
   context?: {
     custom?: {
+      title?: string
       alt?: string
       caption?: string
+      location?: string
+      taken_at?: string
+      story_slug?: string
     }
   }
 }
@@ -40,11 +48,20 @@ function getCloudinaryCredentials() {
 
 function titleFromPublicId(publicId: string) {
   const filename = publicId.split('/').at(-1) ?? publicId
-  return filename.replace(/[-_]+/g, ' ').trim()
+  return filename
+    .replace(/[-_][a-z0-9]{6}$/i, '')
+    .replace(/[-_]+/g, ' ')
+    .trim()
 }
 
 function optimizedDeliveryUrl(url: string) {
   return url.replace('/image/upload/', '/image/upload/f_auto,q_auto/')
+}
+
+/** Accept either a bare slug or a copied /blog/<slug> URL from Cloudinary. */
+function storySlugFromContext(value?: string) {
+  const clean = value?.trim().split(/[?#]/)[0]
+  return clean?.split('/').filter(Boolean).at(-1) || undefined
 }
 
 export async function getCloudinaryImagesByTag(
@@ -78,6 +95,7 @@ export async function getCloudinaryImagesByTag(
 
     return (data.resources ?? []).map((asset) => {
       const fallbackTitle = titleFromPublicId(asset.public_id)
+      const custom = asset.context?.custom
       return {
         assetId: asset.asset_id,
         publicId: asset.public_id,
@@ -87,8 +105,12 @@ export async function getCloudinaryImagesByTag(
         url: optimizedDeliveryUrl(asset.secure_url),
         width: asset.width,
         height: asset.height,
-        alt: asset.context?.custom?.alt || asset.context?.custom?.caption || fallbackTitle,
-        caption: asset.context?.custom?.caption,
+        title: custom?.title || custom?.caption || fallbackTitle,
+        alt: custom?.alt || custom?.caption || fallbackTitle,
+        caption: custom?.caption,
+        location: custom?.location,
+        takenAt: custom?.taken_at,
+        storySlug: storySlugFromContext(custom?.story_slug),
       }
     })
   } catch (error) {

@@ -40,6 +40,22 @@ prefixed with `NEXT_PUBLIC_`. Organize uploads by passing a folder and tags:
 />
 ```
 
+Gallery images tagged `blog-gallery` can show curated metadata and link to a
+related Sanity article. In Cloudinary Media Library, add these contextual
+metadata keys to an asset:
+
+- `title` — short display title
+- `alt` — accessible image description
+- `caption` — optional longer description
+- `location` — where the photo was taken
+- `taken_at` — date in `YYYY-MM-DD` format
+- `story_slug` — the Sanity article slug, for example
+  `maybe-you-don-t-know-about-yourself`
+
+The gallery validates `story_slug` against published Sanity articles and uses
+the localized article title for the link. Updates appear after the gallery's
+five-minute revalidation window.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

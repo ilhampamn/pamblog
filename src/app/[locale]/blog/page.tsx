@@ -128,7 +128,7 @@ export default async function BlogIndexPage({
                   {/* Post list */}
                   <ul className="divide-y" style={{ borderColor: 'var(--color-torn)' }}>
                     {byYear[year].map((post) => (
-                      <li key={post.slug} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 py-5">
+                      <li key={post.slug} className="flex flex-col gap-2 py-6 sm:flex-row sm:items-start sm:gap-6">
                           {/* Cover thumbnail */}
                           {post.coverImage && (
                             // eslint-disable-next-line @next/next/no-img-element
@@ -149,18 +149,31 @@ export default async function BlogIndexPage({
                             {post.tag}
                           </Link>
 
-                          {/* Title */}
-                          <Link
-                            href={`/${locale}/blog/${post.slug}`}
-                            className="flex-1 text-base font-bold leading-snug hover:underline"
-                            style={{
-                              fontFamily: 'var(--font-display)',
-                              color: 'var(--color-ink)',
-                              textDecorationColor: 'var(--color-torn)',
-                            }}
-                          >
-                            {post.title}
-                          </Link>
+                          {/* Title + excerpt */}
+                          <div className="min-w-0 flex-1">
+                            <Link
+                              href={`/${locale}/blog/${post.slug}`}
+                              className="text-base font-bold leading-snug hover:underline"
+                              style={{
+                                fontFamily: 'var(--font-display)',
+                                color: 'var(--color-ink)',
+                                textDecorationColor: 'var(--color-torn)',
+                              }}
+                            >
+                              {post.title}
+                            </Link>
+                            {post.excerpt ? (
+                              <p
+                                className="mt-1.5 max-w-2xl text-sm leading-relaxed"
+                                style={{
+                                  fontFamily: 'var(--font-body)',
+                                  color: 'var(--color-smudge)',
+                                }}
+                              >
+                                {post.excerpt}
+                              </p>
+                            ) : null}
+                          </div>
 
                           {/* Meta */}
                           <span
