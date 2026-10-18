@@ -1,0 +1,4 @@
+{
+  "_about": "Words the studio's post-edit hook flags in code. Fill from brief.md Don'ts and voice.md 'Don't say'. Silence one line with a `studio-allow: words` comment. Brief Don'ts are still TBC (2026-10-18); add to this list once Ilham confirms them.",
+  "bannedWords": ["Learn more"]
+}
