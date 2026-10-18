@@ -1,0 +1,823 @@
+/* ─── /experiment-3 — "TRAVEL PAM" ───────────────────────────────────────────
+   A newspaper direction: a hard 12-column grid ruled with hairlines, a warm
+   paper ground, and a Javanese-script display face doing the identity work.
+
+   Everything is scoped under `.ex3` so it can neither leak into the live site
+   nor inherit from it — notably globals.css's blanket
+   `h1..h6 { font-family: Caveat !important }`, which is wrong here.
+
+   ── The grid engine ──────────────────────────────────────────────────────────
+   The rules between cells are NOT drawn as borders on the cells. Borders have
+   to be turned on and off with :nth-child() arithmetic that has to be redone at
+   every breakpoint, and it breaks the moment a row is short. Instead:
+
+     .ex3-grid  background: rule colour, gap: 1px, background-clip: content-box
+     .ex3-cell  background: paper
+
+   The grid's own background shows through the 1px gaps, so every rule is
+   automatically exactly where a gap is — including the horizontal ones — at any
+   column count, with any number of cells, with no arithmetic. `content-box`
+   clipping keeps that colour out of the container's own side padding, so the
+   page gutter stays paper-coloured and the rules stop cleanly at the margin.
+   Reflow is then free: change --ex3-cols and the ruling follows. */
+
+.ex3 {
+  /* ── Colour ──────────────────────────────────────────────────────────────
+     Ink is warm near-black rather than #000: on a cream ground a true black
+     reads as a hole punched in the paper. */
+  --ex3-paper: #f6f5f0;
+  --ex3-paper-sunk: #efeee7; /* one step down, for inset/quiet cells */
+  --ex3-ink: #14120e;
+  --ex3-body-ink: #35322a;
+  --ex3-muted: #7a7466;
+  /* Three rule weights, not one. `strong` marks the boundary between major
+     bands — the reader should feel a page turn there. Bare `rule` is the
+     grid's own structural hairline (the cell dividers). `soft` is for a
+     separator that lives inside one piece of content and only has to imply a
+     break, not draw a wall — a footer line under a card, a rule inside a
+     paragraph. Get the weight wrong in either direction and the page reads as
+     either fussy (everything strong) or shapeless (everything soft). */
+  --ex3-rule-strong: #14120e;
+  --ex3-rule: #d6d2c6;
+  --ex3-rule-soft: #e7e4db;
+
+  /* Two accents, both borrowed from batik dye rather than picked from a UI kit.
+     Nila (indigo) carries links and live state; terracotta is the spot colour
+     on kickers and markers. Nothing else gets to be coloured. */
+  --ex3-nila: #2c3a64;
+  --ex3-terra: #bf4722;
+
+  /* ── Rhythm ──────────────────────────────────────────────────────────────
+     --ex3-gutter is the page margin; --ex3-pad is the breathing room inside a
+     cell. Two cells side by side therefore read as a 2×pad gutter split by a
+     hairline, which is how a newspaper column actually works. */
+  --ex3-gutter: clamp(14px, 3vw, 44px);
+  --ex3-pad: clamp(14px, 1.5vw, 22px);
+  --ex3-cols: 12;
+
+  --ex3-dur: 220ms;
+  --ex3-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow-x: clip;
+  background-color: var(--ex3-paper);
+  color: var(--ex3-ink);
+  font-family: var(--ex3-body), 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The route paints its own full-bleed ground, so the site's global grid
+   wallpaper on <html> must not show through underneath it. */
+.ex3::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--ex3-paper);
+}
+
+/* ─── Type roles ───────────────────────────────────────────────────────────── */
+
+.ex3 h1,
+.ex3 h2,
+.ex3 h3,
+.ex3 h4,
+.ex3 h5,
+.ex3 h6 {
+  font-family: var(--ex3-heading), Georgia, 'Times New Roman', serif !important;
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.ex3 p {
+  margin: 0;
+}
+
+/* Headline scale. Every step is a clamp against vw, so the grid never has to
+   choose between a headline that overflows and one that looks orphaned. */
+.ex3-h-lead {
+  font-size: clamp(2.1rem, 4.4vw, 4rem);
+}
+.ex3-h-1 {
+  font-size: clamp(1.5rem, 2.3vw, 2.05rem);
+}
+.ex3-h-2 {
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+}
+.ex3-h-3 {
+  font-size: clamp(1.05rem, 1.25vw, 1.18rem);
+  letter-spacing: -0.012em;
+}
+.ex3-h-4 {
+  font-size: 0.98rem;
+  line-height: 1.2;
+  letter-spacing: -0.008em;
+}
+
+/* Section heads: the only place the display face appears outside the wordmark,
+   so the identity carries past the masthead without becoming decoration.
+   No trailing rule here — where one is needed it belongs to `.ex3-band`
+   instead, once per section rather than once per heading. */
+.ex3-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  padding-block: 0.5em 0.45em;
+}
+
+.ex3-section-head__num {
+  font-family: var(--ex3-logo), var(--ex3-heading), serif;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--ex3-terra);
+  flex: none;
+}
+
+.ex3-section-head__title {
+  font-family: var(--ex3-meta), system-ui, sans-serif !important;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* The one rule that marks a band boundary — the strong colour, because this is
+   the biggest structural break on the page short of the footer. Sits outside
+   `.ex3-grid` on purpose: a heading cell inside the grid takes its own row, and
+   the engine's 1px row-gap rule then draws a second line directly under it. */
+.ex3-band {
+  border-top: 1px solid var(--ex3-rule-strong);
+  margin-inline: var(--ex3-gutter);
+}
+
+/* Body copy. Tinos is a small-on-the-body face, so it runs a touch larger and
+   looser than a modern text serif would. */
+.ex3-copy {
+  font-size: 1rem;
+  line-height: 1.52;
+  color: var(--ex3-body-ink);
+  text-wrap: pretty;
+}
+
+.ex3-copy--lede {
+  font-size: clamp(1.05rem, 1.25vw, 1.2rem);
+  line-height: 1.46;
+}
+
+.ex3-copy--small {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+/* Meta: Inter, uppercase, letterspaced. Never used at a large size. */
+.ex3-meta,
+.ex3-kicker,
+.ex3-byline {
+  font-family: var(--ex3-meta), system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.66rem;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.ex3-kicker {
+  font-weight: 600;
+  color: var(--ex3-terra);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* The dot in front of a kicker — a live-marker borrowed from a wire service. */
+.ex3-kicker::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.ex3-byline {
+  color: var(--ex3-muted);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+/* Set in the news serif, not the display face. The Javanese-inspired faces draw
+   several capitals as hairline strokes — an `I` in Upakarti is a bare vertical
+   line — which is fine in a wordmark you read as a shape and useless as a drop
+   cap you read as a letter. The display face keeps the section numerals. */
+.ex3-dropcap::first-letter {
+  font-family: var(--ex3-heading), Georgia, serif;
+  float: left;
+  font-size: 3.2em;
+  font-weight: 500;
+  line-height: 0.86;
+  padding-right: 0.09em;
+  color: var(--ex3-ink);
+}
+
+/* ─── Grid engine ──────────────────────────────────────────────────────────── */
+
+.ex3-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ex3-cols), minmax(0, 1fr));
+  gap: 1px;
+  padding-inline: var(--ex3-gutter);
+  background-color: var(--ex3-rule);
+  background-clip: content-box;
+}
+
+.ex3-cell {
+  background-color: var(--ex3-paper);
+  padding: var(--ex3-pad);
+  min-width: 0; /* without this a long headline blows the column open */
+  grid-column: span var(--sp, 12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cells are flex columns so `.ex3-push` can pin footer meta to the bottom of a
+   card. Their children must not shrink: the grid stretches every cell in a row
+   to the tallest one, and a cell whose own content is taller than that
+   measurement would otherwise have its last line squeezed off. */
+.ex3-cell > * {
+  flex-shrink: 0;
+}
+
+/* Cells that are pure image get no padding — the picture goes edge to edge and
+   the hairline does the framing. */
+.ex3-cell--flush {
+  padding: 0;
+}
+
+.ex3-cell--sunk {
+  background-color: var(--ex3-paper-sunk);
+}
+
+/* ── Breakpoints ───────────────────────────────────────────────────────────
+   Three states, not five. 12 columns on a desktop sheet, 6 on a tablet where
+   a 12th of the width stops being a usable measure, 1 on a phone where the
+   grid becomes what a newspaper column always was: a single column. Each cell
+   declares --sp and --sp-md inline; --sp-sm exists only for the rare pair that
+   should stay side by side on a phone. */
+
+@media (max-width: 1179px) {
+  .ex3 {
+    --ex3-cols: 6;
+  }
+  .ex3-cell {
+    grid-column: span var(--sp-md, 6);
+  }
+}
+
+@media (max-width: 719px) {
+  .ex3 {
+    --ex3-cols: 2;
+  }
+  .ex3-cell {
+    grid-column: span var(--sp-sm, 2);
+  }
+  /* On a phone the vertical rules are gone, so the padding that was buying
+     space either side of a hairline is dead weight. */
+  .ex3-cell {
+    padding-inline: var(--ex3-pad);
+  }
+}
+
+/* ─── Masthead ─────────────────────────────────────────────────────────────
+   Transparent, no background, no border, not sticky — it scrolls away with the
+   page, like the reference. Nothing here paints. */
+
+.ex3-masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(16px, 4vw, 48px);
+  padding: clamp(16px, 2.2vw, 26px) var(--ex3-gutter);
+  background: transparent;
+  border: 0;
+}
+
+.ex3-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85em;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ex3-wordmark {
+  font-family: var(--ex3-logo), var(--ex3-heading), serif;
+  font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--ex3-ink);
+}
+
+/* The parenthetical descriptor beside the wordmark — the device from the
+   reference nav. Italic serif, quiet, and the first thing to go on a phone. */
+.ex3-tagline {
+  font-family: var(--ex3-heading), Georgia, serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ex3-muted);
+  white-space: nowrap;
+}
+
+.ex3-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 30px);
+}
+
+.ex3-nav__link {
+  font-family: var(--ex3-meta), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ex3-ink);
+  text-decoration: none;
+  position: relative;
+  padding-block: 4px;
+}
+
+/* Underline grows from the left rather than fading in — it reads as a rule
+   being drawn, which is the same language as the grid. */
+.ex3-nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--ex3-dur) var(--ex3-ease);
+}
+
+.ex3-nav__link:hover::after,
+.ex3-nav__link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.ex3-nav__link[aria-current='page'] {
+  color: var(--ex3-nila);
+}
+
+.ex3-nav__link[aria-current='page']::after {
+  transform: scaleX(1);
+  background: var(--ex3-nila);
+}
+
+/* The CTA. The reference sets it in a pill, but the brief says no borders in
+   the bar, so the emphasis comes from the terracotta dot and the weight. */
+.ex3-nav__cta {
+  color: var(--ex3-nila);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+}
+
+.ex3-nav__cta::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ex3-terra);
+  flex: none;
+}
+
+.ex3-nav__toggle {
+  display: none;
+  font-family: var(--ex3-meta), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 959px) {
+  .ex3-tagline {
+    display: none;
+  }
+  .ex3-nav {
+    display: none;
+  }
+  .ex3-nav__toggle {
+    display: block;
+  }
+  /* Drawer: still no chrome — it just pushes the page down, ruled like the
+     rest of the sheet. */
+  .ex3-nav--open {
+    display: flex;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 4px var(--ex3-gutter) 18px;
+    background: var(--ex3-paper);
+    z-index: 20;
+  }
+  .ex3-nav--open .ex3-nav__link {
+    width: 100%;
+    padding-block: 12px;
+    border-bottom: 1px solid var(--ex3-rule);
+    font-size: 0.8rem;
+  }
+}
+
+.ex3-masthead-wrap {
+  position: relative;
+}
+
+/* A little air under the masthead now that nothing else (a dateline, a rule)
+   separates it from the grid. */
+.ex3 main {
+  padding-top: clamp(8px, 1.4vw, 20px);
+}
+
+/* ─── Story cells ──────────────────────────────────────────────────────────── */
+
+/* No `height: 100%` here. A story nested inside a wrapper div would resolve it
+   against a parent whose own height is still being derived from this element,
+   and Chrome settles that circularity by clamping the story to a height its
+   content overflows — the last line of meta ends up sitting on the rule below.
+   The cell stretches its sole story with `flex` instead, which is well defined. */
+.ex3-story {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* A story that is the whole cell fills it, so `.ex3-push` has room to work. */
+.ex3-cell > .ex3-story {
+  flex: 1 1 auto;
+}
+
+.ex3-story__title {
+  transition: color var(--ex3-dur) var(--ex3-ease);
+}
+
+.ex3-story:hover .ex3-story__title,
+.ex3-story:focus-visible .ex3-story__title {
+  color: var(--ex3-nila);
+}
+
+.ex3-story__figure {
+  position: relative;
+  overflow: hidden;
+  background: var(--ex3-paper-sunk);
+  aspect-ratio: var(--ratio, 3 / 2);
+  /* The frame goes on the figure, not the <img>: the hover zoom scales the
+     image inside it, and a border on the image itself would scale — and blur —
+     right along with it. box-sizing keeps the border inside the aspect-ratio
+     box instead of adding to it. */
+  border: 1px solid var(--ex3-rule-strong);
+  box-sizing: border-box;
+}
+
+.ex3-story__figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 600ms var(--ex3-ease);
+}
+
+.ex3-story:hover .ex3-story__figure img {
+  transform: scale(1.03);
+}
+
+/* Push whatever follows to the bottom of the cell, so a row of cards keeps its
+   footer meta on one baseline even when the headlines differ in length. */
+.ex3-push {
+  margin-top: auto;
+}
+
+/* The lead's footer. A lead sits in the shortest column of the front page, so
+   without something pinned to the bottom the cell ends in a crater. Pinning the
+   continuation line there turns that dead space into the vertical measure of
+   the story — which is what the white space under a broadsheet lead is doing
+   anyway. */
+.ex3-story__foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  border-top: 1px solid var(--ex3-rule-soft);
+  padding-top: 0.75rem;
+}
+
+.ex3-story__cont {
+  color: var(--ex3-nila);
+  font-weight: 600;
+}
+
+.ex3-story:hover .ex3-story__cont {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.ex3-hr {
+  height: 1px;
+  background: var(--ex3-rule-soft);
+  border: 0;
+  margin-block: 0.85rem;
+}
+
+/* A numbered list — the right rail's "latest" column. */
+.ex3-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ex3-list li + li {
+  border-top: 1px solid var(--ex3-rule-soft);
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+}
+
+.ex3-list__row {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ex3-list__num {
+  font-family: var(--ex3-meta), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ex3-terra);
+  padding-top: 0.22em;
+}
+
+/* ─── Gallery strip ───────────────────────────────────────────────────────
+   Full-bleed and horizontally scrollable at every size — on a phone it is the
+   only part of the page that keeps its horizontal axis, which makes it read as
+   a contact sheet rather than a broken grid. */
+
+.ex3-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(200px, 22vw, 320px);
+  gap: 1px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  background-color: var(--ex3-rule);
+  scrollbar-width: none;
+
+  /* Deliberately full-bleed: no page gutter. It is the one element allowed to
+     break the margin, which is what makes it read as a contact sheet laid over
+     the page rather than another cell in the grid.
+
+     It also sidesteps a scroll-container quirk — a horizontal scroller with
+     `padding-inline` starts scrolled past its own start padding in Chrome, so
+     the gutter would silently vanish at rest and reappear once you scrolled
+     back. Better to not have asked for it. */
+}
+
+.ex3-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.ex3-strip__item {
+  scroll-snap-align: start;
+  background: var(--ex3-paper);
+  display: flex;
+  flex-direction: column;
+}
+
+.ex3-strip__item figure {
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--ex3-paper-sunk);
+  border: 1px solid var(--ex3-rule-strong);
+  box-sizing: border-box;
+}
+
+.ex3-strip__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.92);
+  transition:
+    filter var(--ex3-dur) var(--ex3-ease),
+    transform 600ms var(--ex3-ease);
+}
+
+.ex3-strip__item:hover img {
+  filter: saturate(1.05);
+  transform: scale(1.02);
+}
+
+.ex3-strip__cap {
+  padding: 0.6rem var(--ex3-pad) 0.9rem;
+}
+
+/* ─── Quote band ───────────────────────────────────────────────────────────── */
+
+.ex3-quote {
+  font-family: var(--ex3-heading), Georgia, serif;
+  font-size: clamp(1.4rem, 2.6vw, 2.35rem);
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.ex3-quote em {
+  font-style: italic;
+  color: var(--ex3-nila);
+}
+
+/* ─── Footer ───────────────────────────────────────────────────────────────── */
+
+.ex3-footer {
+  margin-top: clamp(48px, 6vw, 88px);
+  border-top: 1px solid var(--ex3-rule-strong);
+  margin-inline: var(--ex3-gutter);
+  padding-block: clamp(24px, 3vw, 40px) clamp(20px, 2.4vw, 32px);
+}
+
+/* The wordmark set as large as the sheet allows, cropped to its own line box.
+   It is the page's only piece of pure display, and it is the sign-off. */
+.ex3-footer__mark {
+  font-family: var(--ex3-logo), var(--ex3-heading), serif;
+  font-size: clamp(3rem, 15vw, 13rem);
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  color: var(--ex3-ink);
+  display: block;
+}
+
+/* ─── Logo lab ─────────────────────────────────────────────────────────────
+   Not part of the design — a tool for choosing the display face, so the
+   decision gets made against the real masthead at the real size instead of
+   against a specimen image. Print and small screens hide it. */
+
+.ex3-lab {
+  position: fixed;
+  right: clamp(12px, 2vw, 24px);
+  bottom: clamp(12px, 2vw, 24px);
+  z-index: 60;
+  background: var(--ex3-paper);
+  border: 1px solid var(--ex3-rule-strong);
+  max-width: min(300px, calc(100vw - 24px));
+  font-family: var(--ex3-meta), system-ui, sans-serif;
+}
+
+.ex3-lab__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ex3-lab__body {
+  border-top: 1px solid var(--ex3-rule);
+  padding: 6px;
+  display: grid;
+  gap: 2px;
+}
+
+.ex3-lab__option {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  transition: background var(--ex3-dur) var(--ex3-ease);
+}
+
+.ex3-lab__option:hover {
+  background: var(--ex3-paper-sunk);
+}
+
+.ex3-lab__option[aria-pressed='true'] {
+  background: var(--ex3-paper-sunk);
+  box-shadow: inset 2px 0 0 var(--ex3-terra);
+}
+
+.ex3-lab__specimen {
+  font-size: 1.1rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--ex3-ink);
+}
+
+.ex3-lab__note {
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--ex3-muted);
+  text-transform: none;
+}
+
+@media (max-width: 719px) {
+  .ex3-lab {
+    display: none;
+  }
+}
+
+/* ─── Logo face binding ────────────────────────────────────────────────────
+   The switcher sets `data-logo` on the page root; every consumer of the
+   display face reads --ex3-logo, so one attribute retypes the whole identity:
+   masthead, section numerals, drop cap and sign-off together. */
+
+.ex3[data-logo='upakarti'] {
+  --ex3-logo: var(--ex3-logo-upakarti);
+}
+.ex3[data-logo='upakarti-serong'] {
+  --ex3-logo: var(--ex3-logo-upakarti-serong);
+}
+.ex3[data-logo='kemasyuran'] {
+  --ex3-logo: var(--ex3-logo-kemasyuran);
+}
+.ex3[data-logo='jawadwipa'] {
+  --ex3-logo: var(--ex3-logo-jawadwipa);
+}
+
+/* Per-face optical correction. These four faces were drawn to different metrics
+   — Kemasyuran Jawa in particular is very wide and very light — so the wordmark
+   is re-tuned rather than left to whatever the file happens to do. */
+.ex3[data-logo='kemasyuran'] .ex3-wordmark {
+  font-size: clamp(1.1rem, 1.85vw, 1.55rem);
+  letter-spacing: 0.02em;
+}
+.ex3[data-logo='kemasyuran'] .ex3-footer__mark {
+  font-size: clamp(2.4rem, 12vw, 10.5rem);
+}
+.ex3[data-logo='jawadwipa'] .ex3-wordmark {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+}
+
+/* ─── Motion & print ───────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ex3 *,
+  .ex3 *::before,
+  .ex3 *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+  .ex3-story:hover .ex3-story__figure img,
+  .ex3-strip__item:hover img {
+    transform: none;
+  }
+}
+
+@media print {
+  .ex3-lab,
+  .ex3-nav__toggle {
+    display: none;
+  }
+}

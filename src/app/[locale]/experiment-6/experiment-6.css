@@ -1,0 +1,559 @@
+/* ─── /experiment-6 — "The postcard home" ────────────────────────────────────
+   The read-back proof as the back of a postcard. Message left, centre rule,
+   address side right — a structure every reader already knows — with the
+   stamp and postmark carrying the folio.
+
+   One ink: postmark violet, as if one stamp pad did the airmail border, the
+   cancellation, the handwriting and the links. Scoped under `.ex6`. */
+
+.ex6 {
+  --ex6-paper: #efe9dd;   /* postcard board */
+  --ex6-card: #f8f4ec;    /* the card itself, one step lighter than the desk */
+  --ex6-text: #1e1b18;
+  --ex6-muted: #5e584e;   /* 5.83:1 */
+  --ex6-hair: #d6cdbd;
+  --ex6-ink: #4a2c7a;     /* postmark violet — 8.99:1 */
+
+  --mark-ink: var(--ex6-ink);
+  --mark-stroke: 1.5;
+  --figure-measure: 64ch;
+  --figure-margin: 260px;
+  --figure-pin-bg: rgba(248, 244, 236, 0.92);
+
+  --ex6-gutter: clamp(16px, 4vw, 56px);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--ex6-paper);
+  color: var(--ex6-text);
+  font-family: var(--ex6-reading), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+.ex6::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--ex6-paper);
+}
+div:has(.ex6) > svg[aria-hidden] {
+  display: none;
+}
+.ex6 h1,
+.ex6 h2 {
+  font-family: var(--ex6-display), Georgia, serif !important;
+  font-weight: 400;
+  margin: 0;
+}
+.ex6 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Airmail border — the classic chevrons, but in the one ink. */
+.ex6-airmail {
+  height: 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ex6-ink) 0 14px,
+    transparent 14px 28px
+  );
+}
+
+/* ─── Type roles ───────────────────────────────────────────────────────────── */
+
+.ex6-type {
+  font-family: var(--ex6-type), 'Courier New', monospace;
+}
+.ex6-small {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ex6-muted);
+}
+.ex6-script,
+.ex6 .ex4-hand {
+  font-family: var(--ex6-script), cursive;
+  color: var(--ex6-ink);
+  font-size: 18px;
+  line-height: 1.9;
+  margin: 0;
+}
+.ex6 .ex4-label {
+  font-family: var(--ex6-type), monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ex6-muted);
+}
+.ex6 .ex4-num__n {
+  font-family: var(--ex6-type), monospace;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+}
+.ex6-link {
+  color: var(--ex6-ink) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+/* ─── Banner + masthead ───────────────────────────────────────────────────── */
+
+.ex6-proto {
+  margin: 0;
+  padding: 8px var(--ex6-gutter);
+  font-family: var(--ex6-type), monospace;
+  font-size: 12px;
+  color: var(--ex6-muted);
+}
+.ex6-proto-tag {
+  display: block;
+  margin-bottom: 20px;
+}
+.ex6-masthead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 32px;
+  padding: 18px var(--ex6-gutter) 22px;
+  border-bottom: 1px solid var(--ex6-text);
+}
+.ex6-masthead__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ex6-wordmark {
+  font-family: var(--ex6-display), serif;
+  font-size: clamp(30px, 3.4vw, 44px);
+  line-height: 1;
+}
+.ex6-postcard-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ex6-muted);
+}
+.ex6-nav {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+.ex6-nav a,
+.ex6-masthead__end a {
+  font-family: var(--ex6-type), monospace;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ex6-nav a:hover {
+  color: var(--ex6-ink);
+}
+.ex6-masthead__end {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.ex6-slot {
+  font-family: var(--ex6-type), monospace;
+  font-size: 11px;
+  color: var(--ex6-hair);
+  border: 1px dashed var(--ex6-hair);
+  padding: 2px 8px;
+}
+
+/* ─── Front page: card front + card back ──────────────────────────────────── */
+
+.ex6-front {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  padding: 48px var(--ex6-gutter) 56px;
+  align-items: stretch;
+}
+.ex6-card {
+  margin: 0;
+  background: var(--ex6-card);
+  box-shadow: 0 1px 0 rgba(30, 27, 24, 0.08), 0 10px 30px -18px rgba(30, 27, 24, 0.35);
+}
+/* The front: a photo with the white printer's border, shown whole. */
+.ex6-card--front {
+  position: relative;
+  padding: 14px;
+  align-self: start;
+}
+.ex6-card--front img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ex6-card__greeting {
+  position: absolute;
+  left: 30px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+  line-height: 1;
+}
+.ex6-card__greeting span {
+  font-family: var(--ex6-script), cursive;
+  font-size: 18px;
+}
+.ex6-card__greeting strong {
+  font-family: var(--ex6-display), serif;
+  font-weight: 400;
+  font-size: clamp(44px, 6vw, 88px);
+  text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+/* The back: message | centre rule | address side. */
+.ex6-card--back {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  padding: 28px;
+}
+.ex6-back__message {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 26px;
+  border-right: 1px solid var(--ex6-text);
+}
+.ex6-display {
+  font-size: clamp(32px, 3vw, 48px);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.ex6-display a:hover {
+  color: var(--ex6-ink);
+}
+.ex6-dek {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  font-style: italic;
+}
+.ex6-read {
+  margin-top: auto;
+  font-family: var(--ex6-type), monospace;
+  font-size: 15px;
+  color: var(--ex6-ink);
+}
+
+.ex6-back__address {
+  display: flex;
+  flex-direction: column;
+  padding-left: 26px;
+}
+.ex6-back__corner {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  min-height: 150px;
+}
+/* The cancellation lands across the stamp, a little crooked, as it does. */
+.ex6-back__postmark {
+  position: absolute;
+  right: 40px;
+  top: 30px;
+  transform: rotate(-9deg);
+}
+.ex6-address {
+  list-style: none;
+  margin: auto 0 0;
+  padding: 0;
+}
+.ex6-address li {
+  font-size: 15px;
+  padding: 8px 0 4px;
+  border-bottom: 1px solid var(--ex6-hair);
+}
+
+/* Stamp: the perforations are a dotted border in the card's colour over
+   the stamp's own white — the gaps between the dots read as the teeth. */
+.ex6-stamp {
+  width: 104px;
+  padding: 4px;
+  background: #fffdf8;
+  border: 5px dotted var(--ex6-card);
+  background-clip: border-box;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.18));
+}
+.ex6-stamp__inner {
+  position: relative;
+  display: grid;
+  border: 1px solid var(--ex6-ink);
+  padding: 4px;
+  gap: 2px;
+}
+.ex6-stamp__inner img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover; /* a stamp is a vignette, not the photograph */
+  filter: saturate(0.9);
+}
+.ex6-stamp__country {
+  font-family: var(--ex6-type), monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ex6-ink);
+}
+.ex6-stamp__value {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  font-family: var(--ex6-display), serif;
+  font-size: 15px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.ex6-stamp__season {
+  font-family: var(--ex6-type), monospace;
+  font-size: 8px;
+  color: var(--ex6-muted);
+}
+
+.ex6-postmark {
+  position: relative;
+  display: inline-block;
+}
+.ex6-postmark .ex4-ink,
+.ex6-postmark__type {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ex6-postmark__type {
+  overflow: visible;
+  fill: var(--ex6-ink);
+  font-family: var(--ex6-type), monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.2px;
+  opacity: 0.88;
+  pointer-events: none;
+}
+.ex6-postmark__center {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ─── Lower front page ─────────────────────────────────────────────────────── */
+
+.ex6-lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  padding: 0 var(--ex6-gutter);
+}
+.ex6-section-head {
+  font-size: 26px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ex6-text);
+  margin-bottom: 4px !important;
+}
+.ex6-register ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ex6-register li {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 14px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--ex6-hair);
+  font-size: 18px;
+}
+.ex6-register a:hover {
+  color: var(--ex6-ink);
+}
+.ex6-rack__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-top: 14px;
+}
+.ex6-mini {
+  margin: 0;
+  padding: 6px 6px 4px;
+  background: var(--ex6-card);
+  box-shadow: 0 1px 0 rgba(30, 27, 24, 0.08), 0 6px 16px -12px rgba(30, 27, 24, 0.4);
+}
+.ex6-mini img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  background: #e6dfd1;
+}
+.ex6-mini figcaption {
+  font-size: 11px;
+  line-height: 1.3;
+  padding-top: 5px;
+  color: var(--ex6-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ex6-wave {
+  display: flex;
+  justify-content: center;
+  margin: 72px auto;
+}
+.ex6-wave .ex4-ink {
+  position: static;
+}
+
+/* ─── Article ──────────────────────────────────────────────────────────────── */
+
+.ex6-article {
+  max-width: calc(64ch + 260px + 120px);
+  margin: 0 auto;
+  padding: 0 var(--ex6-gutter) 96px;
+}
+.ex6-article__front {
+  background: var(--ex6-card);
+  padding: 14px 14px 4px;
+  margin-bottom: 28px;
+  box-shadow: 0 1px 0 rgba(30, 27, 24, 0.08), 0 10px 30px -18px rgba(30, 27, 24, 0.35);
+}
+.ex6-article__front .ex4-figure {
+  margin-bottom: 8px;
+}
+.ex6-article__back {
+  display: grid;
+  grid-template-columns: minmax(0, 64ch) 260px;
+  gap: 0;
+  background: var(--ex6-card);
+  padding: 40px;
+  box-shadow: 0 1px 0 rgba(30, 27, 24, 0.08), 0 10px 30px -18px rgba(30, 27, 24, 0.35);
+}
+.ex6-article__message {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 40px;
+  border-right: 1px solid var(--ex6-text);
+}
+.ex6-article__title {
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.ex6-body {
+  margin: 0;
+}
+.ex6-signoff {
+  align-self: flex-end;
+  margin-top: 12px;
+}
+.ex6-article__address {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-left: 32px;
+}
+.ex6-article__address .ex6-address {
+  margin-top: 0;
+}
+.ex6-margin-note {
+  margin: 8px 0 0;
+  font-family: var(--ex6-script), cursive;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--ex6-ink);
+  transform: rotate(-4deg);
+}
+.ex6-next {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  font-family: var(--ex6-display), serif;
+  font-size: 24px;
+}
+
+/* ─── Narrow ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .ex6-front,
+  .ex6-lower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ex6-article__back {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 24px;
+  }
+  /* On a phone the card turns over: address side first, like reading the
+     stamp before the message. The centre rule becomes a top rule. */
+  .ex6-article__message {
+    padding-right: 0;
+    border-right: 0;
+    order: 2;
+    padding-top: 20px;
+    border-top: 1px solid var(--ex6-text);
+  }
+  .ex6-article__address {
+    padding-left: 0;
+    order: 1;
+    padding-bottom: 20px;
+  }
+  .ex6-next {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .ex6-card--back {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+  .ex6-back__message {
+    padding-right: 0;
+    border-right: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ex6-text);
+  }
+  .ex6-back__address {
+    padding-left: 0;
+    padding-top: 16px;
+  }
+  .ex6-back__postmark {
+    right: 20px;
+  }
+  .ex6-masthead {
+    grid-template-columns: 1fr auto;
+  }
+  .ex6-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .ex6-slot {
+    display: none;
+  }
+  .ex6-register li {
+    grid-template-columns: 70px 1fr;
+  }
+  .ex6-register li > span:last-child {
+    display: none;
+  }
+  .ex6-rack__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

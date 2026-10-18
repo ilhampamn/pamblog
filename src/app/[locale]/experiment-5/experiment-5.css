@@ -1,0 +1,465 @@
+/* ─── /experiment-5 — "The contact sheet" ────────────────────────────────────
+   The read-back proof on white: the sheet a photo lab hands back, every frame
+   of a roll printed on glossy white paper, marked in red grease pencil.
+
+   White is the RC paper itself, not an absence of colour, so it is pure
+   #fff. The film is the only black field; red is the only colour that isn't
+   in a photograph. Scoped under `.ex5`; overrides the globals.css Caveat rule. */
+
+.ex5 {
+  --ex5-paper: #ffffff;
+  --ex5-text: #111111;
+  --ex5-muted: #6b6b6b;  /* 5.33:1 */
+  --ex5-hair: #e3e3e3;
+  --ex5-film: #0e0e0e;
+  --ex5-red: #d0271d;    /* grease pencil — 5.26:1, links and marks only */
+
+  --mark-ink: var(--ex5-red);
+  --mark-stroke: 3;
+  --figure-measure: 680px;
+  --figure-margin: 220px;
+  --figure-pin-bg: rgba(255, 255, 255, 0.92);
+
+  --ex5-gutter: clamp(16px, 4vw, 56px);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+  padding-bottom: 0;
+  background: var(--ex5-paper);
+  color: var(--ex5-text);
+  font-family: var(--ex5-serif), Georgia, serif;
+  font-size: 20px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.ex5::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--ex5-paper);
+}
+div:has(.ex5) > svg[aria-hidden] {
+  display: none;
+}
+
+.ex5 h1,
+.ex5 h2,
+.ex5 h3 {
+  font-family: var(--ex5-grotesk), system-ui, sans-serif !important;
+  margin: 0;
+}
+.ex5 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Grease pencil on glossy paper sits on top of the print; multiply would
+   sink a red into a dark sky, so on photos the wax stays opaque. */
+.ex5 .ex4-ink {
+  mix-blend-mode: normal;
+}
+
+/* ─── Type roles ───────────────────────────────────────────────────────────── */
+
+.ex5-mono {
+  font-family: var(--ex5-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ex5-muted);
+}
+.ex5-marker,
+.ex5 .ex4-hand {
+  font-family: var(--ex5-marker), cursive;
+  font-size: 19px;
+  line-height: 1.15;
+  color: var(--ex5-red);
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+.ex5-link {
+  color: var(--ex5-red) !important;
+}
+.ex5 .ex4-num__n {
+  font-family: var(--ex5-marker), cursive;
+  font-style: normal;
+}
+
+/* ─── Banner + masthead ───────────────────────────────────────────────────── */
+
+.ex5-proto {
+  margin: 0;
+  padding: 10px var(--ex5-gutter);
+  font-family: var(--ex5-mono), monospace;
+  font-size: 12px;
+  color: var(--ex5-muted);
+  border-bottom: 1px solid var(--ex5-hair);
+}
+.ex5-proto-tag {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.ex5-masthead {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 32px;
+  padding: 26px var(--ex5-gutter) 22px;
+}
+.ex5-wordmark {
+  font-family: var(--ex5-grotesk), sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 3vw, 38px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.ex5-nav {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+.ex5-nav a,
+.ex5-masthead__end a {
+  font-family: var(--ex5-mono), monospace;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ex5-nav a:hover {
+  color: var(--ex5-red);
+}
+.ex5-masthead__end {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.ex5-slot {
+  font-family: var(--ex5-mono), monospace;
+  font-size: 11px;
+  color: #bbb;
+  border: 1px dashed #ccc;
+  padding: 2px 8px;
+}
+
+/* Film edge: the strip's own printing, carried as the page's rule. */
+.ex5-edge {
+  display: flex;
+  gap: 34px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 7px var(--ex5-gutter);
+  background: var(--ex5-film);
+  color: #f0b44c; /* the orange of edge-printed latent numbers — only on film */
+  font-family: var(--ex5-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+/* ─── Front page ───────────────────────────────────────────────────────────── */
+
+.ex5-front {
+  padding: 0 var(--ex5-gutter);
+}
+.ex5-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ex5-hair);
+}
+
+.ex5-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(28px, 4vw, 64px);
+  padding: 48px 0 56px;
+  align-items: start;
+}
+.ex5-lead__frame {
+  position: relative;
+  padding: 18px;
+}
+.ex5-keeper {
+  display: block;
+  white-space: normal;
+}
+.ex5-lead__star {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+}
+.ex5-star {
+  position: relative;
+  display: inline-block;
+}
+.ex5-star .ex4-ink {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* A frame on film: whole photo, black rebate around it, number underneath. */
+.ex5-film {
+  display: block;
+  background: var(--ex5-film);
+  padding: 14px 14px 6px;
+}
+.ex5-film img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ex5-film__no {
+  display: block;
+  padding-top: 6px;
+  font-family: var(--ex5-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #f0b44c;
+}
+.ex5-crop {
+  position: relative;
+}
+
+.ex5-lead__text {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 100%;
+  padding-top: 18px;
+}
+.ex5-display {
+  font-weight: 700;
+  font-size: clamp(40px, 4.8vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.ex5-display a:hover {
+  color: var(--ex5-red);
+}
+.ex5-dek {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.5;
+}
+.ex5-lead__note {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: -72px;
+}
+.ex5-lead__arrow {
+  width: 110px;
+  height: 60px;
+  flex: none;
+}
+.ex5-push {
+  margin-top: auto;
+}
+
+/* The roll: every frame whole, letterboxed in black — never cropped. */
+.ex5-strips {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  background: var(--ex5-film);
+  padding: 10px 10px 0;
+}
+.ex5-frame {
+  margin: 0;
+  padding: 0 4px 10px;
+}
+.ex5-frame__film {
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050505;
+}
+.ex5-frame__film img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.ex5-frame figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 6px;
+}
+.ex5-frame figcaption .ex5-mono {
+  flex: none;
+  white-space: nowrap;
+  color: #f0b44c;
+  font-size: 10px;
+}
+.ex5-frame__title {
+  min-width: 0;
+  font-family: var(--ex5-mono), monospace;
+  font-size: 10px;
+  color: #9a9a9a;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ex5-index {
+  padding: 56px 0 0;
+}
+.ex5-section-head {
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ex5-text);
+}
+.ex5-index table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+.ex5-index th {
+  text-align: left;
+  font-family: var(--ex5-mono), monospace;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ex5-muted);
+  padding: 12px 0 8px;
+}
+.ex5-index td {
+  padding: 12px 16px 12px 0;
+  border-top: 1px solid var(--ex5-hair);
+  vertical-align: baseline;
+}
+.ex5-index td:first-child {
+  width: 80px;
+}
+.ex5-index a:hover {
+  color: var(--ex5-red);
+}
+
+.ex5 .ex4-ticks {
+  margin: 80px auto;
+}
+
+/* ─── Article ──────────────────────────────────────────────────────────────── */
+
+.ex5-article {
+  max-width: calc(680px + 220px + 48px);
+  margin: 0 auto;
+  padding: 0 var(--ex5-gutter) 96px;
+}
+.ex5-article__head {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.ex5-article__title {
+  font-weight: 700;
+  font-size: clamp(38px, 4.4vw, 60px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.ex5-article__dek {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ex5-muted);
+}
+
+.ex5-body__row {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) 220px;
+  gap: 48px;
+  align-items: start;
+}
+.ex5-body p {
+  margin: 0 0 1.3em;
+}
+.ex5-sidenote {
+  padding-top: 4px;
+}
+
+.ex5-article__end {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  max-width: 680px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ex5-hair);
+}
+.ex5-next {
+  font-family: var(--ex5-grotesk), sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.ex5-signoff {
+  margin-left: auto;
+  font-size: 26px;
+}
+
+/* ─── Narrow ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1199px) {
+  .ex5-body__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .ex5-sidenote {
+    margin: -0.6em 0 1.4em;
+  }
+}
+
+@media (max-width: 900px) {
+  .ex5-lead {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 28px;
+  }
+  .ex5-lead__note {
+    margin-left: 0;
+  }
+  .ex5-strips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ex5-masthead {
+    grid-template-columns: 1fr auto;
+  }
+  .ex5-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .ex5-slot,
+  .ex5-sheet-head span:last-child {
+    display: none;
+  }
+  .ex5-index td:last-child,
+  .ex5-index th:last-child {
+    display: none;
+  }
+}
+
+/* Shared figure's plate label, in the lab's mono. */
+.ex5 .ex4-label {
+  font-family: var(--ex5-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ex5-muted);
+}

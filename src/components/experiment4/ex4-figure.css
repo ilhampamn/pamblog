@@ -1,0 +1,68 @@
+/* The cover photograph with numbered callouts (experiments 4–6). Layout
+   widths come from the page: --figure-measure, --figure-margin. */
+
+.ex4-figure {
+  margin: 0 0 48px;
+}
+.ex4-figure__frame {
+  position: relative;
+}
+.ex4-figure__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ex4-figure__pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: help;
+}
+/* On a photograph the numeral sits on a scrap of paper so it reads on any
+   tone; multiply would vanish into dark pixels. */
+.ex4-figure__pin .ex4-num {
+  background: var(--figure-pin-bg, rgba(246, 242, 234, 0.9));
+  border-radius: 50%;
+}
+.ex4-figure__pin .ex4-ink {
+  mix-blend-mode: normal;
+}
+.ex4-figure__pin:focus-visible {
+  outline: 1.25px solid var(--mark-ink, #2537a0);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+.ex4-figure__caption {
+  display: grid;
+  grid-template-columns: minmax(0, var(--figure-measure, 66ch)) var(--figure-margin, 240px);
+  gap: 48px;
+  padding-top: 12px;
+}
+.ex4-figure__notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ex4-figure__notes li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* "Point": the note under the photo answers its callout. */
+.ex4-figure__notes li.is-active .ex4-hand {
+  text-decoration: underline;
+  text-decoration-thickness: 1.25px;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 1199px) {
+  .ex4-figure__caption {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}

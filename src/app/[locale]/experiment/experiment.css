@@ -1,0 +1,301 @@
+/* ─── /experiment — style laboratory ──────────────────────────────────────────
+   A self-contained sandbox for a rough-raw-realism × modernity direction:
+   real cold-press paper (ambientCG Paper001, CC0) under a modern grotesque /
+   monospace type system, with hand-drawn annotation on top.
+
+   Everything is scoped under `.exp` so nothing leaks into the live site — and
+   so this file can override globals.css freely (notably its blanket
+   `h1..h6 { font-family: Caveat !important }` rule, which is wrong here). */
+
+.exp {
+  /* Ink + paper */
+  --exp-ink: #14140f;
+  --exp-ink-soft: #5c5a51;
+  --exp-ink-faint: #9a978c;
+  --exp-paper: #f4f2ed;
+  --exp-rule: #d8d4c9;
+
+  /* Accents. Blue is the constant; each section adds one more so the palette
+     shifts with context instead of being uniformly decorated. */
+  --exp-blue: #2029d9;
+  --exp-vermilion: #e0421f;
+  --exp-yellow: #f0b429;
+  --exp-green: #1a8f5f;
+
+  --exp-gutter: clamp(20px, 5vw, 72px);
+  --exp-measure: 1360px;
+
+  position: relative;
+  isolation: isolate;
+  background-color: var(--exp-paper);
+  color: var(--exp-ink);
+  font-family: var(--exp-mono), ui-monospace, monospace;
+  /* The site paints a grid on <html>; an opaque background here replaces it. */
+  overflow-x: clip;
+}
+
+/* Paper grain.
+   Source is ambientCG Paper001's *displacement* map, not its colour map — the
+   colour map of white paper is almost flat (grain σ≈3/255), which multiplied
+   down to a dull grey wash with no tooth. Displacement carries the fibre
+   structure (σ≈27). It was high-passed with a tight radius to strip the slow
+   brightness drift and mid-frequency blemishes that make a tile read as
+   repeating, then normalised to a fixed contrast and centred on mid-grey.
+   Mid-grey is the no-op value for `overlay`, so this adds tooth without
+   shifting the paper's brightness or hue.
+   Fixed, so the sheet stays put while the ink scrolls over it. */
+.exp::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/textures/paper-grain.png');
+  background-size: 384px auto;
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* The locale layout paints a procedural feTurbulence overlay over every page at
+   z-index 999 — above the photographs. Against real paper grain it reads as
+   digital dirt, so this page opts out. */
+/* Descendant, not child: the locale layout nests children inside a
+   template.tsx wrapper, so `.exp` is a grandchild of the div holding the svg. */
+div:has(.exp) > svg[aria-hidden] {
+  display: none;
+}
+
+/* ─── Type ─────────────────────────────────────────────────────────────────── */
+
+/* Headings: brush-pen hand. The `!important` overrides the site-wide Caveat
+   rule in globals.css. Handwriting needs looser leading than the machined type
+   it replaced — the ascenders and descenders are long and would otherwise
+   collide — and no negative tracking, which fights the connected strokes. */
+.exp h1,
+.exp h2,
+.exp h3,
+.exp h4 {
+  font-family: var(--exp-hand), var(--font-caveat), cursive !important;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.05;
+  text-transform: lowercase;
+  color: var(--exp-ink);
+}
+
+/* A brush hand has a smaller x-height than a mono at the same size, so each
+   step is set larger than its monospace equivalent to hold the same presence. */
+.exp-display {
+  font-size: clamp(3rem, 8.5vw, 6.5rem);
+}
+
+.exp-h2 {
+  font-size: clamp(2.1rem, 5vw, 3.75rem);
+}
+
+.exp-h3 {
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+}
+
+/* Micro-label — the small stamped caption that pins layouts to their edges. */
+.exp-label {
+  font-family: var(--exp-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--exp-ink-faint);
+  line-height: 1.4;
+}
+
+.exp-label--ink {
+  color: var(--exp-ink);
+}
+
+.exp-label--blue {
+  color: var(--exp-blue);
+}
+
+/* Column body copy.
+   Left-aligned rather than justified, unlike the magazine reference: every
+   glyph in a monospace face is the same width, so justifying it can only
+   stretch the word spaces, and the rivers that opens up are far uglier than a
+   ragged right edge. */
+.exp-body {
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: var(--exp-ink-soft);
+  hyphens: auto;
+}
+
+.exp-lede {
+  font-size: clamp(0.95rem, 1.3vw, 1.0625rem);
+  line-height: 1.7;
+  color: var(--exp-ink-soft);
+}
+
+/* ─── Rules ────────────────────────────────────────────────────────────────── */
+
+.exp-rule {
+  height: 1px;
+  background-color: var(--exp-rule);
+  border: 0;
+}
+
+.exp-rule--ink {
+  height: 2px;
+  background-color: var(--exp-ink);
+}
+
+/* ─── Plates (photographs) ─────────────────────────────────────────────────── */
+
+/* Desaturated by default so colour reads as an intentional accent rather than
+   competing with the photography; the true image returns on hover. */
+.exp-plate {
+  position: relative;
+  overflow: hidden;
+  background-color: #e8e5dd;
+  /* Hairline frame so a very bright photograph still reads as a placed object
+     on near-white paper instead of dissolving into it. */
+  box-shadow: inset 0 0 0 1px rgba(20, 20, 15, 0.14);
+}
+
+/* Left untreated — no desaturation, no contrast push. The photographs carry
+   their own colour, and hiding it behind a hover was a trick rather than a
+   decision. */
+.exp-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ─── Annotation wrapper ───────────────────────────────────────────────────── */
+
+/* Holds a word plus the rough SVG drawn over it. The SVG is absolutely
+   positioned and inflated past the text box so strokes can overshoot the way a
+   real pen does. Geometry differs per mark, so each variant sets its own box. */
+.exp-annotated {
+  position: relative;
+  display: inline-block;
+  /* Room for a mark to loop past the word without touching its neighbours. */
+  padding: 0 0.14em;
+}
+
+.exp-annotated > svg {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Wraps around the word. Kept wider than tall so it stays an ellipse a hand
+   would sweep, rather than collapsing into a ball around a short word — the
+   SVG stretches to this box, so the box controls the mark's proportions. */
+.exp-mark--circle {
+  left: -16%;
+  top: -12%;
+  width: 132%;
+  height: 122%;
+}
+
+/* Free-standing mark that fills whatever box its parent defines. */
+.exp-mark--fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Sits below the baseline rather than across the glyphs. */
+.exp-mark--underline {
+  left: -4%;
+  width: 108%;
+  top: auto;
+  bottom: -0.3em;
+  height: 0.44em;
+}
+
+/* ─── Float bar ────────────────────────────────────────────────────────────── */
+
+.exp-floatbar {
+  position: fixed;
+  left: 50%;
+  top: clamp(14px, 3vw, 26px);
+  translate: -50% 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px;
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 20, 15, 0.1);
+  background-color: rgba(250, 249, 245, 0.82);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow:
+    0 1px 2px rgba(20, 20, 15, 0.06),
+    0 8px 24px rgba(20, 20, 15, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.exp-floatbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sliding indicator — one shared pill that travels to the active item, rather
+   than each item carrying its own background. */
+.exp-floatbar__pill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  border-radius: 999px;
+  background-color: var(--exp-ink);
+  transition:
+    translate var(--duration-default, 220ms) var(--ease-out, ease),
+    width var(--duration-default, 220ms) var(--ease-out, ease),
+    opacity 160ms linear;
+  pointer-events: none;
+}
+
+.exp-floatbar__item {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  padding: 7px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--exp-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--exp-ink-soft);
+  white-space: nowrap;
+  transition: color var(--duration-fast, 140ms) linear;
+}
+
+.exp-floatbar__item:hover {
+  color: var(--exp-ink);
+}
+
+.exp-floatbar__item[aria-current='true'] {
+  color: var(--exp-paper);
+}
+
+.exp-floatbar__item:focus-visible {
+  outline: 2px solid var(--exp-blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exp-floatbar__pill {
+    transition: none;
+  }
+}
