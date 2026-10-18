@@ -2,7 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design Tokens ─────────────────────────────────────────── */
+/* ─── Design tokens: "The read-back proof" (see DESIGN.md) ─────────────────
+   The source of truth for values is DESIGN.md; names match. The older
+   --color-* / --font-* tokens further down serve the pages that haven't been
+   rebuilt yet (Explore, Gallery, About, Uses, Newsletter) and go when they do. */
+:root {
+  /* Colour */
+  --paper: #ffffff;
+  --paper-tooth: url('/textures/paper-white.png');
+  --text: #1a1915;
+  --muted: #5c5a51;
+  --ink: #0120b1;
+  --cream: #faf4e6;
+  --rule-strong: #1a1915;
+  --rule-medium: rgba(26, 25, 21, 0.38);
+  --rule-soft: rgba(26, 25, 21, 0.11);
+
+  /* Type (families come from next/font variables set in the locale layout) */
+  --font-serif: var(--font-newsreader), Georgia, 'Noto Serif SC', serif;
+  --font-hand: var(--font-nanum-pen), 'LXGW WenKai', cursive;
+
+  /* Spacing */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 72px;
+
+  /* Layout */
+  --gutter: clamp(16px, 4vw, 56px);
+  --pad: clamp(14px, 1.6vw, 24px);
+  --measure: 66ch;
+  --margin: 240px;
+  --topbar-h: 68px;
+  --rail1-w: 208px;
+  --rail2-w: 280px;
+
+  /* Motion (design/specs/motion.md) */
+  --m-write-ease: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --m-flick-ease: cubic-bezier(0.6, 0, 0.85, 0.5);
+  --m-press-out-ease: cubic-bezier(0.2, 0.6, 0.35, 1);
+  --m-press-in-ease: cubic-bezier(0.5, 0, 0.75, 0);
+  --m-press-hover-dur: 140ms;
+  --m-press-in-dur: 70ms;
+  --m-press-release-dur: 200ms;
+  --m-press-lift: -3px;
+  --m-press-sink: 1px;
+  --m-press-scale: 0.98;
+  --m-impression: 0.25;
+  --m-impression-pressed: 0.35;
+  --m-slide-ease: cubic-bezier(0.3, 0.1, 0.2, 1);
+  --m-slide-close-ease: cubic-bezier(0.4, 0, 0.9, 0.6);
+  --m-slide-rail1-dur: 280ms;
+  --m-slide-rail2-dur: 300ms;
+  --m-slide-both-dur: 340ms;
+  --m-slide-drawer-dur: 280ms;
+  --m-slide-drawer2-dur: 260ms;
+  --m-slide-close-dur: 200ms;
+  --m-rm-fade: 120ms;
+
+  /* The pen's colour and weight (read by the mark components) */
+  --mark-ink: var(--ink);
+  --mark-stroke: 1.25;
+}
+@media (max-width: 900px) {
+  :root {
+    --topbar-h: 60px;
+  }
+}
+
+/* ─── Legacy tokens (pages not yet rebuilt) ─────────────────────────────── */
 :root {
   /* Color */
   --color-paper: #FFFFFF;
@@ -46,52 +118,50 @@
   --radius-input: 2px;
 }
 
-/* ─── Dark Mode ──────────────────────────────────────────────── */
-.dark {
-  --color-paper: #1A1915;
-  --color-ink: #EDE8DF;
-  --color-smudge: #A09070;
-  --color-torn: #302E29;
-  --color-ghost: #221F1A;
-  --color-grid: rgba(237, 232, 223, 0.035);
-  --color-grid-home: rgba(237, 232, 223, 0.07);
-  /* --color-blush stays identical in dark mode */
-}
-
 /* ─── Base ───────────────────────────────────────────────────── */
+/* White paper with a soft tooth from a real scan — no grid wallpaper, no
+   generated noise (art direction, Layers). */
 html {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
+  background: var(--paper) var(--paper-tooth) 0 0 / 384px auto fixed;
+  color: var(--text);
   height: 100%;
-  background-image:
-    linear-gradient(var(--color-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-  background-position: -1px -1px;
-  background-attachment: fixed;
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-serif);
   font-size: var(--text-body);
   line-height: var(--leading-body);
   background-color: transparent;
-  color: var(--color-ink);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-/* Headings use the hand-lettered Caveat face throughout the site. Inline
-   display-font declarations remain available for non-heading UI elements. */
+/* Headings are typeset in the serif. (The old forced-Caveat rule is gone:
+   the hand only ever appears in pen notes — DESIGN.md, Type.) */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-caveat), var(--font-reenie), cursive !important;
+  font-family: var(--font-serif);
+}
+
+/* next/font sets --font-newsreader / --font-nanum-pen on the locale wrapper,
+   not on :root, so the font tokens are resolved again there. */
+.tp-root {
+  --font-serif: var(--font-newsreader), Georgia, 'Noto Serif SC', serif;
+  --font-hand: var(--font-nanum-pen), 'LXGW WenKai', cursive;
+  font-family: var(--font-serif);
+}
+
+:lang(zh) em {
+  font-style: normal;
+  text-emphasis: filled dot;
+  text-emphasis-position: under right;
 }
 
 /* ─── Sticky footer ──────────────────────────────────────────── */

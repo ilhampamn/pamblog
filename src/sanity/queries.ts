@@ -48,13 +48,24 @@ export const articlesListQuery = groq`
     "excerpt": ${loc('excerpt')},
     "readingTime": ${loc('readingTime')},
     tag,
-    "storySeries": storySeries->{
+    "storyChapter": storyChapter->{
       "title": ${loc('title')},
-      seasonNumber
+      chapterNumber,
+      "season": storySeries->{
+        "title": ${loc('title')},
+        seasonNumber
+      }
     },
-    chapterNumber,
     publishedAt,
-    coverImage
+    coverImage,
+    "pen": {
+      "word": ${loc('penWord')},
+      "leadNote": ${loc('penLeadNote')},
+      "photoNotes": photoNotes[]{ x, y, "note": ${loc('note')} },
+      "marginNotes": marginNotes[]{ paragraph, "note": ${loc('note')} },
+      "place": ${loc('readBackPlace')},
+      readBackDate
+    }
   }
 `
 
@@ -66,13 +77,24 @@ export const articleBySlugQuery = groq`
     "excerpt": ${loc('excerpt')},
     "readingTime": ${loc('readingTime')},
     tag,
-    "storySeries": storySeries->{
+    "storyChapter": storyChapter->{
       "title": ${loc('title')},
-      seasonNumber
+      chapterNumber,
+      "season": storySeries->{
+        "title": ${loc('title')},
+        seasonNumber
+      }
     },
-    chapterNumber,
     publishedAt,
-    coverImage
+    coverImage,
+    "pen": {
+      "word": ${loc('penWord')},
+      "leadNote": ${loc('penLeadNote')},
+      "photoNotes": photoNotes[]{ x, y, "note": ${loc('note')} },
+      "marginNotes": marginNotes[]{ paragraph, "note": ${loc('note')} },
+      "place": ${loc('readBackPlace')},
+      readBackDate
+    }
   }
 `
 

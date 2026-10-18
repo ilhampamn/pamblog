@@ -1,0 +1,1316 @@
+/* The read-back proof — production styles for the proof components and the
+   rebuilt pages (DESIGN.md). Tokens come from :root in globals.css.
+   Promoted from the /experiment-4 prototype on 2026-10-18. */
+
+/* Shared ink layer for the mark components (experiments 4–6). Colour and
+   weight come from the page: --mark-ink, --mark-stroke. */
+
+/* One pen: even 1.25px, round ends, no fills. Drawn 1:1 with its target, so
+   non-scaling-stroke is a guard, not a fix. Multiply so ink darkens like ink. */
+.tp-ink {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--mark-ink, #2537a0);
+  mix-blend-mode: multiply;
+}
+.tp-ink path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--mark-stroke, 1.25);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tp-mark {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tp-arrow {
+  position: relative;
+  display: block;
+}
+.tp-arrow .tp-ink {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tp-ticks {
+  display: flex;
+  justify-content: center;
+  margin: 72px auto;
+}
+.tp-ticks .tp-ink {
+  position: static;
+}
+
+.tp-num {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 30px;
+  flex: none;
+}
+.tp-num__n {
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--mark-ink, #2537a0);
+}
+.tp-num .tp-ink {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Proofreader's marks and the p. monogram (Proof.tsx). */
+.tp-glyph {
+  position: relative;
+  display: inline-block;
+  flex: none;
+}
+.tp-glyph .tp-ink {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* The caret hangs below the baseline, pointing up into the gap. */
+.tp-caret {
+  vertical-align: -0.35em;
+  margin: 0 1px;
+}
+.tp-pilcrow {
+  vertical-align: -0.15em;
+}
+
+/* Multi-line marks (Line in Pen.tsx): the svg covers the containing block and draws
+   one stroke per line box, so the span itself stays an ordinary inline. */
+.tp-line .tp-ink {
+  overflow: visible;
+}
+
+/* Margin bracket beside a passage (Bracket in Pen.tsx). */
+.tp-bracket {
+  position: relative;
+}
+.tp-bracket > .tp-ink {
+  top: 0;
+}
+.tp-bracket--right > .tp-ink {
+  right: -22px;
+}
+.tp-bracket--left > .tp-ink {
+  left: -22px;
+}
+
+/* Secondary button: the pen underlines it on hover/focus. pathLength="1"
+   lets CSS write it on (0.38s) and lift it off without measuring. */
+.tp-penlink {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--mark-ink, #0120b1) !important;
+  text-decoration: none !important;
+}
+.tp-penlink .tp-ink {
+  position: relative;
+  display: block;
+  margin-top: -1px;
+}
+.tp-penlink .tp-ink path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /* Leaving: gone in one frame. Ink never un-writes (motion.md, Never 1). */
+  transition: none;
+}
+.tp-penlink:hover .tp-ink path,
+.tp-penlink:focus-visible .tp-ink path {
+  stroke-dashoffset: 0;
+  /* Arriving: written left to right at hand speed. */
+  transition: stroke-dashoffset 280ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+.tp-penlink:active .tp-ink path {
+  /* A click always shows the whole line. */
+  stroke-dashoffset: 0;
+  transition: none;
+}
+.tp-penlink:focus-visible {
+  outline: none;
+}
+
+/* Save: typeset label; when saved, the pen ticks it. */
+.tp-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mark-ink, #0120b1);
+  cursor: pointer;
+}
+.tp-save__box {
+  position: relative;
+  width: 20px;
+  height: 16px;
+}
+.tp-save__box .tp-ink {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.tp-save .tp-ink path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: none; /* unsave: gone at once */
+}
+.tp-save.is-saved .tp-ink path {
+  stroke-dashoffset: 0;
+  /* One stroke — short down leg, then the flick off the paper. */
+  transition: stroke-dashoffset 180ms cubic-bezier(0.6, 0, 0.85, 0.5);
+}
+.tp-save:focus-visible {
+  outline: 1.25px solid var(--mark-ink, #0120b1);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-penlink .tp-ink path,
+  .tp-save .tp-ink path {
+    transition: none;
+  }
+}
+
+
+/* The cover photograph with numbered callouts (experiments 4–6). Layout
+   widths come from the page: --figure-measure, --figure-margin. */
+
+.tp-figure {
+  margin: 0 0 48px;
+}
+.tp-figure__frame {
+  position: relative;
+}
+.tp-figure__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tp-figure__pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: help;
+}
+/* On a photograph the numeral sits on a scrap of paper so it reads on any
+   tone; multiply would vanish into dark pixels. */
+.tp-figure__pin .tp-num {
+  background: var(--figure-pin-bg, rgba(246, 242, 234, 0.9));
+  border-radius: 50%;
+}
+.tp-figure__pin .tp-ink {
+  mix-blend-mode: normal;
+}
+.tp-figure__pin:focus-visible {
+  outline: 1.25px solid var(--mark-ink, #2537a0);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+.tp-figure__caption {
+  display: grid;
+  grid-template-columns: minmax(0, var(--figure-measure, 66ch)) var(--figure-margin, 240px);
+  gap: 48px;
+  padding-top: 12px;
+}
+.tp-figure__notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tp-figure__notes li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* "Point": the note under the photo answers its callout. */
+.tp-figure__notes li.is-active .tp-hand {
+  text-decoration: underline;
+  text-decoration-thickness: 1.25px;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 1199px) {
+  .tp-figure__caption {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+/* ─── Type roles ───────────────────────────────────────────────────────────── */
+
+/* Labels and folios: the proof's typeset caps. Never hand-drawn. */
+.tp-label {
+  font-size: 12px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.tp-meta {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* The hand: notes written in the ink. Placeholder face until "Pam Hand". */
+.tp-hand {
+  font-family: var(--font-hand), cursive;
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.tp-link {
+  color: var(--ink) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px;
+}
+
+/* ─── Masthead ─────────────────────────────────────────────────────────────── */
+
+/* With the nav in the rail, the dateline is the top of the sheet and takes
+   the one strong rule. */
+.tp-dateline {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 var(--gutter);
+  padding: var(--s5) 0 var(--s3);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+/* ─── Front page grid ──────────────────────────────────────────────────────── */
+
+/* exp3's engine: the grid's background is the rule colour, cells are paper,
+   so every 1px gap is a hairline at any column count. */
+.tp-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 var(--gutter);
+  background: var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.tp-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--pad);
+  /* Same fixed tooth as the page, so cells and gutters read as one sheet.
+     (iOS Safari ignores `fixed` here; the grain just scrolls with the cell.) */
+  background: var(--paper) var(--paper-tooth) 0 0 / 384px auto fixed;
+  min-width: 0;
+}
+.tp-cell--photo {
+  padding: var(--pad) var(--pad) var(--pad) 0;
+}
+.tp-push {
+  margin-top: auto;
+}
+
+/* Covers are shown whole — never cropped (decisions 2026-08-11). */
+.tp-lead-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tp-lead {
+  gap: var(--s7);
+}
+.tp-lead__story {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.tp-lead__story .tp-meta {
+  margin-top: var(--s1);
+}
+.tp-latest-rail {
+  margin-top: auto;
+}
+.tp-display {
+  /* The sidebar is closed by default and pushes the page when open, so the
+     lead column is usually the full grid's 5/12. */
+  font-size: clamp(38px, 4vw, 64px);
+  line-height: 1.02;
+  font-variation-settings: 'opsz' 72;
+  text-wrap: balance;
+}
+.tp-display em {
+  font-style: italic;
+}
+.tp-display a:hover {
+  color: var(--ink);
+}
+.tp-dek {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* The one ink moment above the fold: a note, and an arrow back to the photo. */
+.tp-lead__note {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  margin-left: calc(var(--pad) * -3);
+}
+.tp-lead__arrow {
+  width: 120px;
+  height: 56px;
+  flex: none;
+}
+
+.tp-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 22px;
+  line-height: 1.2;
+  padding-bottom: var(--s3);
+  margin-bottom: var(--s1) !important;
+  border-bottom: 1px solid var(--rule-medium);
+}
+
+.tp-latest {
+  list-style: none;
+  counter-reset: latest;
+  margin: 0;
+  padding: 0;
+}
+.tp-latest li {
+  counter-increment: latest;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 18px;
+  line-height: 1.3;
+}
+.tp-latest li::before {
+  content: counter(latest);
+  grid-row: span 2;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.tp-latest a:hover {
+  color: var(--ink);
+}
+
+.tp-seasons {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+.tp-seasons th,
+.tp-seasons td {
+  text-align: left;
+  font-weight: 400;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: baseline;
+}
+.tp-seasons th {
+  width: 34%;
+}
+.tp-seasons .is-planned {
+  color: var(--muted);
+}
+
+/* Whole photographs at one height, widths following each photo's own shape
+   — a contact strip, never cropped to squares. Rows end where they end. */
+.tp-sheet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.tp-sheet img {
+  display: block;
+  height: clamp(110px, 11vw, 168px);
+  width: auto;
+  max-width: 100%;
+}
+
+/* ─── Article ──────────────────────────────────────────────────────────────── */
+
+.tp-article {
+  max-width: calc(var(--measure) + var(--margin) + 48px);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.tp-article__head {
+  max-width: var(--measure);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.tp-article__title {
+  font-size: clamp(38px, 4.4vw, 60px);
+  line-height: 1.05;
+  font-variation-settings: 'opsz' 72;
+  text-wrap: balance;
+}
+.tp-article__dek {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.tp-body__row {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure)) var(--margin);
+  gap: 48px;
+  align-items: start;
+}
+.tp-body p {
+  margin: 0 0 1.3em;
+}
+.tp-sidenote {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tp-article__end {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  max-width: var(--measure);
+}
+.tp-next {
+  font-size: 22px;
+}
+.tp-readback {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+/* Pressed on slightly crooked, as a rubber stamp is. Same printed mark as the
+   logo, so never recoloured; 44px keeps the grain readable. */
+.tp-readback__stamp {
+  display: block;
+  height: 44px;
+  width: auto;
+  transform: rotate(-4deg);
+}
+.tp-readback .tp-mark {
+  transform: rotate(-1.5deg);
+}
+
+/* The logo is a printed object on the proof: shown at a size where its
+   grain still reads, never recoloured, never redrawn. */
+.tp-logo {
+  display: block;
+  line-height: 0;
+}
+.tp-logo img {
+  display: block;
+  height: clamp(52px, 5.4vw, 76px);
+  width: auto;
+}
+
+/* Section break: a pilcrow, the proofreader's "new paragraph". */
+.tp-break {
+  display: flex;
+  justify-content: center;
+  margin: 72px auto;
+}
+
+/* ─── Navigation: top bar + rails (Medium's structure) ───────────────────────
+   The top bar is always there (menu + logo, primary action). The menu opens
+   rail 1 under it; Stories opens rail 2 beside rail 1. On desktop the rails
+   push the page; on phones rail 1 is a drawer and rail 2 slides over it. */
+
+.tp-page {
+  --topbar-h: 68px;
+}
+.tp-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+.tp-shell.is-open {
+  grid-template-columns: 208px minmax(0, 1fr);
+}
+/* Rail 2 pushes the page too (Ilham, 2026-10-18): its own column. */
+.tp-shell.is-open.has-l2 {
+  grid-template-columns: 208px 280px minmax(0, 1fr);
+}
+.tp-main {
+  grid-column: -2 / -1;
+  min-width: 0;
+}
+
+.tp-topbar {
+  grid-column: 1 / -1;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-h);
+  padding: 0 var(--gutter);
+  background: var(--paper) var(--paper-tooth) 0 0 / 384px auto fixed;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.tp-topbar__start,
+.tp-topbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+}
+.tp-topbar .tp-logo img {
+  height: 44px;
+}
+.tp-topbar__menu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: -9px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.tp-topbar__menu:focus-visible {
+  outline: 1.25px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.tp-rail,
+.tp-rail2 {
+  position: sticky;
+  top: var(--topbar-h);
+  height: calc(100vh - var(--topbar-h));
+  /* The column clips; its sheet slides inside it, so a rail never crosses
+     the other rail or the page while it moves (Ilham's recording, frame 7). */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.tp-rail[hidden],
+.tp-rail2[hidden] {
+  display: none;
+}
+/* The sheet is what you see and what moves: paper, edge and content. */
+.tp-rail__sheet {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border-right: 1px solid var(--rule-soft);
+  background: var(--paper) var(--paper-tooth) 0 0 / 384px auto fixed;
+}
+.tp-rail .tp-rail__sheet {
+  gap: var(--s6);
+  padding: var(--s5) var(--s4) var(--s5) var(--s5);
+}
+.tp-rail2 .tp-rail__sheet {
+  gap: var(--s5);
+  padding: var(--s5) var(--s5) var(--s6);
+}
+.tp-rail__hide {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  cursor: pointer;
+}
+.tp-rail__hide:hover {
+  color: var(--ink);
+}
+
+/* Rail 1 items: sentence-case serif, like a book's part titles. */
+.tp-rail__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tp-rail__l1 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 19px;
+  line-height: 1.25;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+a.tp-rail__l1:hover,
+button.tp-rail__l1:hover,
+.tp-rail__l1[aria-current='page'],
+.tp-rail__l1.is-open {
+  color: var(--ink);
+}
+.tp-rail__l1:focus-visible {
+  outline: 1.25px solid var(--ink);
+  outline-offset: 3px;
+}
+.tp-rail__chev {
+  font-size: 18px;
+  color: var(--muted);
+}
+/* Type never moves relative to its sheet: colour only (motion.md). */
+.tp-rail__l1.is-open .tp-rail__chev {
+  color: var(--ink);
+}
+/* The current page carries a pen bracket in the left margin. */
+.tp-rail__current.tp-bracket--left > .tp-ink {
+  left: -16px;
+}
+.tp-rail__l1.is-later {
+  font-size: 16px;
+  padding: 4px 0;
+  color: var(--rule-medium);
+  cursor: default;
+}
+.tp-rail__you {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--s4);
+  border-top: 1px solid var(--rule-soft);
+}
+.tp-rail__you .tp-label {
+  margin-bottom: var(--s1);
+}
+.tp-rail__foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s3);
+}
+.tp-rail__foot .tp-label {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Rail 2: the directory. Intercom's grammar — small-caps section labels with
+   counts — set in the proof's type. */
+.tp-rail2__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.tp-rail2__title {
+  font-size: 26px;
+  line-height: 1.1;
+  font-style: italic;
+  font-variation-settings: 'opsz' 72;
+}
+.tp-rail2__back {
+  display: none;
+}
+/* A plain folder tree: folders and their pages. Indent and a caret carry
+   the hierarchy; no rules, counts or labels. */
+.tp-tree,
+.tp-tree__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tp-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+.tp-tree__folder {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  width: 100%;
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+.tp-tree__folder:hover {
+  color: var(--ink);
+}
+.tp-tree__folder:focus-visible,
+.tp-tree__items a:focus-visible {
+  outline: 1.25px solid var(--ink);
+  outline-offset: 3px;
+}
+.tp-tree__caret {
+  flex: none;
+  width: 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.tp-tree__items li {
+  padding: 5px 0 5px 20px;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.tp-tree__items a {
+  color: var(--muted);
+}
+.tp-tree__items a:hover,
+.tp-tree__items a[aria-current='page'] {
+  color: var(--ink);
+}
+
+/* The scrim only exists for the phone drawer. */
+.tp-rail__scrim {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .tp-page {
+    --topbar-h: 60px;
+  }
+  .tp-shell.is-open,
+  .tp-shell.is-open.has-l2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tp-topbar .tp-logo img {
+    height: 38px;
+  }
+  /* Rail 1 is a drawer under the top bar; rail 2 slides over it. */
+  .tp-rail,
+  .tp-rail2 {
+    position: fixed;
+    top: var(--drawer-top, var(--topbar-h));
+    bottom: 0;
+    left: 0;
+    height: auto;
+    width: min(320px, 86vw);
+    border-right: 1px solid var(--rule-medium); /* strong is used once, under the masthead */
+  }
+  .tp-rail {
+    z-index: 50;
+  }
+  /* On phones the column is the drawer and carries the edge. */
+  .tp-rail__sheet {
+    border-right: 0;
+  }
+  .tp-rail2 {
+    z-index: 51;
+  }
+  .tp-rail2__back {
+    display: inline;
+  }
+  .tp-rail2__close {
+    display: none;
+  }
+  .tp-rail__scrim {
+    display: block;
+    position: fixed;
+    inset: var(--drawer-top, var(--topbar-h)) 0 0 0;
+    z-index: 40;
+    border: 0;
+    background: rgba(26, 25, 21, 0.28);
+  }
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────────
+   Three kinds, nothing else (decisions 2026-10-18):
+   1. Primary — the printed block (BlockButton): hand-cut, the logo's grain.
+   2. Secondary — the pen link (PenLink): typeset in the ink, underlined
+      by the pen on hover/focus. The signature interaction.
+   3. Quiet — small caps in text colour, for navigation and filters.
+   No hand-drawn boxes around controls; the pen only ever ticks "save". */
+
+.tp-quiet {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+.tp-quiet:hover {
+  color: var(--text);
+}
+.tp-quiet.is-current {
+  color: var(--text);
+  border-bottom-color: var(--rule-medium);
+}
+
+/* ─── Primary: the printed block, with PRESS ────────────────────────────────
+   (design/specs/motion.md → printed-block-button.) The block and its
+   impression share one cell: the impression — same cut, same grain, 25% —
+   sits exactly under the block, invisible at rest, and shows as a band only
+   when the block lifts. The focus ring is on the outer element so the clip
+   can't swallow it. */
+.tp-block {
+  display: inline-grid;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-decoration: none !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  --lift: var(--m-press-lift);
+  --sink: var(--m-press-sink);
+  --squash: var(--m-press-scale);
+}
+.tp-block--small {
+  /* The always-visible top-bar button stays quiet (AD review, issue 5). */
+  --lift: -2px;
+  --squash: 0.985;
+}
+.tp-block__impression,
+.tp-block__ink {
+  grid-area: 1 / 1;
+}
+.tp-block__impression {
+  background: var(--ink) url('/brand/ink-grain.webp') 0 0 / 200px 60px;
+  opacity: var(--m-impression);
+}
+.tp-block.was-pressed .tp-block__impression {
+  opacity: var(--m-impression-pressed); /* the press left a mark */
+}
+.tp-block__ink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  /* Newsreader's ascent is taller than its descent, so a geometrically
+     centred line sits its capitals ~2px high. 0.2em of top padding moves the
+     cap-height midpoint onto the block's centre (measured: off by < 0.3px). */
+  padding: 0.2em var(--s5) 0;
+  line-height: 1;
+  background: var(--ink) url('/brand/ink-grain.webp') 0 0 / 200px 60px;
+  color: #faf4e6; /* the logo's cream, 10.4:1 */
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  transform: translateY(0);
+  transition: transform var(--m-press-release-dur) var(--m-press-out-ease);
+}
+.tp-block--small .tp-block__ink {
+  min-height: 38px;
+  padding: 0.2em var(--s4) 0;
+  font-size: 16px;
+}
+/* Lift: only where a hover is real (fine pointer). */
+@media (hover: hover) and (pointer: fine) {
+  .tp-block:hover .tp-block__ink {
+    transform: translateY(var(--lift));
+    transition: transform var(--m-press-hover-dur) var(--m-press-out-ease);
+  }
+}
+/* Contact: arrives at speed; the grain jumps to a second impression and the
+   ink is denser — both at contact, not tweened. Held ≥100ms by JS. */
+.tp-block.is-pressed .tp-block__ink,
+.tp-block:active .tp-block__ink {
+  transform: translateY(var(--sink)) scale(var(--squash));
+  background-position: 37px 11px;
+  filter: brightness(0.92);
+  transition: transform var(--m-press-in-dur) var(--m-press-in-ease);
+}
+.tp-block:focus-visible {
+  outline: 1.25px solid var(--ink);
+  outline-offset: 4px;
+}
+.tp-block:disabled .tp-block__ink {
+  background: var(--rule-medium);
+}
+.tp-block:disabled .tp-block__impression {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-block__impression {
+    display: none;
+  }
+  .tp-block__ink,
+  .tp-block:hover .tp-block__ink {
+    transform: none !important;
+    transition: none !important;
+  }
+  .tp-block:hover .tp-block__ink {
+    filter: brightness(0.94);
+  }
+  .tp-block.is-pressed .tp-block__ink,
+  .tp-block:active .tp-block__ink {
+    filter: brightness(0.88);
+  }
+}
+
+/* ─── Inputs: the printed form ─────────────────────────────────── */
+.tp-printform {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  max-width: 460px;
+}
+.tp-printform__prompt {
+  font-size: 24px;
+  line-height: 1.2;
+  font-style: italic;
+}
+.tp-printform__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.tp-printform input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--s2) 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 18px;
+  color: var(--text);
+}
+.tp-printform input::placeholder {
+  color: var(--muted);
+  font-style: italic;
+}
+.tp-printform input:focus {
+  outline: none;
+}
+.tp-printform__line:focus-within {
+  border-bottom-color: var(--ink);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.tp-printform__send {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 18px;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Multi-line marks position against their paragraph. */
+.tp-dek,
+.tp-body p,
+.tp-spec p,
+.tp-page td,
+.tp-page th {
+  position: relative;
+}
+
+/* ─── Narrow ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1199px) {
+  .tp-body__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .tp-sidenote {
+    margin: -0.6em 0 1.4em;
+  }
+}
+
+@media (max-width: 900px) {
+  .tp-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tp-grid > .tp-cell {
+    grid-column: auto !important;
+  }
+  .tp-cell--photo {
+    padding: var(--pad) 0;
+  }
+  .tp-lead__note {
+    margin-left: 0;
+  }
+  .tp-dateline span:last-child {
+    display: none;
+  }
+}
+
+/* ─── Pages (production) ───────────────────────────────────────────────────── */
+
+.tp-empty {
+  margin: var(--s7) var(--gutter);
+}
+.tp-push {
+  align-self: flex-start;
+}
+a.tp-sheet {
+  text-decoration: none;
+}
+
+/* Stories index: one reading column, Medium's list. Soft rule per entry. */
+.tp-index {
+  max-width: calc(var(--measure) + 200px);
+  margin: 0 auto;
+  padding: var(--s7) var(--gutter) 0;
+}
+.tp-index__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.tp-index__title {
+  font-size: clamp(38px, 4vw, 56px);
+  line-height: 1.05;
+  font-variation-settings: 'opsz' 72;
+}
+.tp-index__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+  padding: var(--s4) 0;
+  border-bottom: 1px solid var(--rule-medium);
+}
+.tp-entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tp-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s5);
+  align-items: start;
+  padding: var(--s5) 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.tp-entry__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  min-width: 0;
+}
+.tp-entry__title {
+  font-size: 24px;
+  line-height: 1.25;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.tp-entry__title a:hover {
+  color: var(--ink);
+}
+.tp-entry__dek {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text);
+}
+/* Covers whole, at one height: the width follows the photo. */
+.tp-entry__thumb img {
+  display: block;
+  height: 112px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+/* Article extras */
+.tp-article {
+  padding-top: var(--s7);
+}
+a.tp-folio {
+  align-self: flex-start;
+  text-decoration: none;
+}
+a.tp-folio:hover {
+  color: var(--ink);
+}
+.tp-article .tp-figure {
+  margin: 0 0 var(--s7);
+}
+.tp-article .tp-figure__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+.tp-article__subscribe {
+  max-width: var(--measure);
+  margin: var(--s8) 0 0;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--rule-soft);
+}
+.tp-related {
+  max-width: var(--measure);
+  margin-top: var(--s8);
+}
+
+/* Portable Text inside the reading column. */
+.tp-body {
+  font-size: 20px;
+  line-height: 1.6;
+}
+.tp-body h2,
+.tp-body h3,
+.tp-body h4 {
+  margin: 1.6em 0 0.5em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.tp-body h2 {
+  font-size: 30px;
+}
+.tp-body h3 {
+  font-size: 24px;
+}
+.tp-body h4 {
+  font-size: 20px;
+  font-style: italic;
+}
+.tp-body ul,
+.tp-body ol {
+  margin: 0 0 1.3em;
+  padding-left: 1.4em;
+}
+.tp-body ul {
+  list-style: disc;
+}
+.tp-body ol {
+  list-style: decimal;
+}
+.tp-body li {
+  margin-bottom: 0.3em;
+}
+.tp-body blockquote {
+  margin: 0 0 1.3em;
+  padding-left: var(--s5);
+  border-left: 1px solid var(--rule-medium);
+  font-style: italic;
+}
+.tp-body a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.tp-body figure {
+  margin: var(--s6) 0;
+}
+.tp-body figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tp-body figcaption {
+  margin-top: var(--s2);
+  font-size: 15px;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .tp-entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tp-entry__thumb {
+    grid-row: 1;
+  }
+  .tp-entry__thumb img {
+    height: auto;
+    width: 100%;
+    max-width: none;
+  }
+  .tp-article__end {
+    flex-wrap: wrap;
+  }
+  .tp-readback {
+    margin-left: 0;
+  }
+}
+
+/* ─── Footer and language links ─────────────────────────────────────────── */
+.tp-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  margin: var(--s8) var(--gutter) 0;
+  padding: var(--s6) 0 var(--s7);
+  border-top: 1px solid var(--rule-soft);
+}
+.tp-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+}
+.tp-footer__quote {
+  margin: 0;
+  max-width: 36rem;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tp-langs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s1);
+}
+.tp-langs .tp-quiet[aria-current] {
+  color: var(--text);
+  border-bottom-color: var(--rule-medium);
+}
+.tp-quiet {
+  text-decoration: none;
+}
+
+/* Short labels never break mid-phrase ("1 chapter", "— Dorothea Lange"). */
+.tp-seasons td.tp-label,
+.tp-footer__quote .tp-label {
+  white-space: nowrap;
+}

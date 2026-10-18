@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import {
+  Newsreader,
+  Nanum_Pen_Script,
   Inter,
   Playfair_Display,
   Lora,
@@ -10,6 +12,23 @@ import {
 import { LOCALES, isLocale } from '@/lib/i18n'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
+
+/* The read-back proof (DESIGN.md → Type): one serif for everything typeset,
+   one hand for pen notes. The fonts below them serve pages not yet rebuilt. */
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  axes: ['opsz'],
+  variable: '--font-newsreader',
+  display: 'swap',
+})
+
+const nanumPen = Nanum_Pen_Script({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-nanum-pen',
+  display: 'swap',
+})
 
 const inter = Inter({
   subsets: ['latin'],
@@ -67,22 +86,13 @@ export default function LocaleLayout({
   if (!isLocale(locale)) notFound()
 
   return (
-    <div className={`${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable} ${caveat.variable}`}>
-      <ThemeProvider>
-        {/* Global paper noise texture — fixed overlay, applies on all pages & screen sizes */}
-        <svg
-          aria-hidden
-          className="pointer-events-none fixed inset-0 w-full h-full z-[999]"
-          style={{ opacity: 0.04 }}
-        >
-          <filter id="global-paper-noise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch" />
-            <feColorMatrix type="saturate" values="0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#global-paper-noise)" />
-        </svg>
-        {children}
-      </ThemeProvider>
+    <div
+      lang={locale}
+      className={`tp-root ${newsreader.variable} ${nanumPen.variable} ${inter.variable} ${playfair.variable} ${lora.variable} ${jetbrains.variable} ${reenieBeanie.variable} ${caveat.variable}`}
+    >
+      {/* No generated noise overlay: the paper's tooth is a real scan, under
+          content, never over photographs (DESIGN.md → Layers). */}
+      <ThemeProvider>{children}</ThemeProvider>
     </div>
   )
 }

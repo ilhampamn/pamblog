@@ -8,7 +8,7 @@ import { defineField, defineType } from 'sanity'
  */
 export const articleSeries = defineType({
   name: 'articleSeries',
-  title: 'Story series',
+  title: 'Story season',
   type: 'document',
   fields: [
     defineField({
@@ -19,7 +19,7 @@ export const articleSeries = defineType({
     }),
     defineField({
       name: 'title',
-      title: 'Story title',
+      title: 'Season title',
       type: 'internationalizedArrayString',
       description: 'For example: First time going abroad or Lost in Central Asia.',
       validation: (Rule) => Rule.required(),

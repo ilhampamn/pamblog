@@ -4,29 +4,18 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s — Ilham Pamungkas',
-    default: 'Ilham Pamungkas',
+    template: '%s — Travel Pam',
+    default: 'Travel Pam',
   },
-  description: 'Writing about photography, building things, and the space between.',
+  description: 'Travel stories, itineraries and photographs by Ilham Pamungkas.',
+  // The favicon is src/app/icon.png: the logo's "Pam." block (decisions 2026-10-18).
+  icons: { apple: [{ url: '/brand/favicon-pam-180.png', sizes: '180x180' }] },
 }
-
-// Runs before React hydration — prevents flash of wrong theme
-const themeScript = `
-(function() {
-  try {
-    var saved = localStorage.getItem('theme');
-    var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var dark = saved === 'dark' || (!saved && systemDark) || (saved === 'system' && systemDark);
-    if (dark) document.documentElement.classList.add('dark');
-  } catch(e) {}
-})();
-`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {children}
         <Analytics />
       </body>

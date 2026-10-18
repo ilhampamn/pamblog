@@ -1,33 +1,25 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { getPostsByLocale } from '@/lib/posts.sanity'
-import { t, type Locale } from '@/lib/i18n'
-import { formatDate } from '@/lib/date'
-
-const LOCALES = ['en', 'id', 'zh'] as const
+import { SiteFrame } from '@/components/proof/SiteFrame'
+import { count, dateline, folio, tagLabel } from '@/components/proof/content'
+import { getPostsByLocale, type Post } from '@/lib/posts.sanity'
+import { LOCALES, isLocale, t } from '@/lib/i18n'
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string }
-}): Promise<Metadata> {
-  const locale = params.locale as Locale
-  return {
-    title: locale === 'id' ? 'Tulisan' : 'Writing',
-    description:
-      locale === 'id'
-        ? 'Semua tulisan — esai, catatan, ulasan, dan tutorial.'
-        : 'All writing — essays, notes, reviews, and tutorials.',
-  }
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  if (!isLocale(params.locale)) return {}
+  return { title: t(params.locale).proof.stories }
 }
 
+/**
+ * The Stories index: one reading column, like Medium's list — folio, title,
+ * excerpt, meta, and the cover whole beside it. Tags filter with quiet links
+ * (?tag=…); the current one carries the soft rule.
+ */
 export default async function BlogIndexPage({
   params,
   searchParams,
@@ -35,166 +27,69 @@ export default async function BlogIndexPage({
   params: { locale: string }
   searchParams: { tag?: string }
 }) {
-  const locale = params.locale as Locale
-  if (!LOCALES.includes(locale as Locale)) notFound()
+  if (!isLocale(params.locale)) notFound()
+  const locale = params.locale
+  const ui = t(locale).proof
+  const base = `/${locale}`
 
-  const ui = t(locale)
-  const activeTag = searchParams.tag ?? null
-
-  const allPosts = await getPostsByLocale(locale)
-  const posts = activeTag
-    ? allPosts.filter((p) => p.tag === activeTag)
-    : allPosts
-
-  // Group by year
-  const byYear = posts.reduce<Record<string, typeof posts>>((acc, post) => {
-    const year = new Date(post.publishedAt).getFullYear().toString()
-    if (!acc[year]) acc[year] = []
-    acc[year].push(post)
-    return acc
-  }, {})
-
-  const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a))
-
-  // Unique tags for filter
-  const allTags = Array.from(new Set(allPosts.map((p) => p.tag))).sort()
+  const all = await getPostsByLocale(locale).catch(() => [] as Post[])
+  const tags = Array.from(new Set(all.map((p) => p.tag))).sort()
+  const active = searchParams.tag && tags.includes(searchParams.tag) ? searchParams.tag : null
+  const posts = active ? all.filter((p) => p.tag === active) : all
 
   return (
-    <div className="page-shell">
-      <Nav locale={locale} ui={ui.nav} />
+    <SiteFrame locale={locale} current="stories" path="/blog">
+      <div className="tp-index">
+        <header className="tp-index__head">
+          <h1 className="tp-index__title">{ui.stories}</h1>
+          <span className="tp-label">{count(posts.length, ui.storiesOne, ui.storiesCount)}</span>
+        </header>
 
-      <main
-        className="pt-32 pb-0 px-8 min-h-screen"
-       
-      >
-        <div className="max-w-[var(--layout-width)] mx-auto">
-
-          {/* ── Page header ── */}
-          <div className="mb-16 max-w-[var(--prose-width)]">
-            <h1
-              className="text-5xl md:text-6xl font-black mb-4 leading-none"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-            >
-              {ui.nav.blog}
-            </h1>
-            <p className="label-stamped">
-              {posts.length} {locale === 'id' ? 'tulisan' : 'posts'}
-              {activeTag ? ` · ${activeTag}` : ''}
-            </p>
-          </div>
-
-          {/* ── Tag filter ── */}
-          <div className="flex flex-wrap gap-3 mb-16">
-            <Link
-              href={`/${locale}/blog`}
-              className="label-stamped transition-colors"
-              style={{ color: !activeTag ? 'var(--color-ink)' : 'var(--color-smudge)' }}
-            >
-              {locale === 'id' ? 'Semua' : 'All'}
+        {tags.length > 1 && (
+          <nav className="tp-index__tags" aria-label="Tags">
+            <Link href={`${base}/blog`} className={`tp-quiet ${active ? '' : 'is-current'}`}>
+              {ui.all}
             </Link>
-            {allTags.map((tag) => (
+            {tags.map((tag) => (
               <Link
                 key={tag}
-                href={`/${locale}/blog?tag=${tag}`}
-                className="label-stamped transition-colors hover:text-[var(--color-ink)]"
-                style={{ color: activeTag === tag ? 'var(--color-ink)' : 'var(--color-smudge)' }}
+                href={`${base}/blog?tag=${encodeURIComponent(tag)}`}
+                className={`tp-quiet ${active === tag ? 'is-current' : ''}`}
               >
-                {tag}
+                {tagLabel(tag, locale)}
               </Link>
             ))}
-          </div>
+          </nav>
+        )}
 
-          {/* ── Posts by year ── */}
-          {years.length === 0 ? (
-            <p className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-              {locale === 'id' ? 'Belum ada tulisan.' : 'No posts yet.'}
-            </p>
-          ) : (
-            <div className="space-y-16">
-              {years.map((year) => (
-                <section key={year}>
-                  {/* Year label */}
-                  <p
-                    className="text-6xl font-black mb-8 leading-none select-none"
-                    aria-hidden="true"
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      color: 'var(--color-torn)',
-                    }}
-                  >
-                    {year}
-                  </p>
-
-                  {/* Post list */}
-                  <ul className="divide-y" style={{ borderColor: 'var(--color-torn)' }}>
-                    {byYear[year].map((post) => (
-                      <li key={post.slug} className="flex flex-col gap-2 py-6 sm:flex-row sm:items-start sm:gap-6">
-                          {/* Cover thumbnail */}
-                          {post.coverImage && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={post.coverImage}
-                              alt=""
-                              className="shrink-0 w-14 h-14 object-cover rounded"
-                              style={{ border: '1px solid var(--color-torn)' }}
-                            />
-                          )}
-
-                          {/* Tag — separate link, not nested */}
-                          <Link
-                            href={`/${locale}/blog/tag/${post.tag}`}
-                            className="label-stamped shrink-0 w-20 hover:text-[var(--color-ink)] transition-colors"
-                            style={{ color: 'var(--color-smudge)' }}
-                          >
-                            {post.tag}
-                          </Link>
-
-                          {/* Title + excerpt */}
-                          <div className="min-w-0 flex-1">
-                            <Link
-                              href={`/${locale}/blog/${post.slug}`}
-                              className="text-base font-bold leading-snug hover:underline"
-                              style={{
-                                fontFamily: 'var(--font-display)',
-                                color: 'var(--color-ink)',
-                                textDecorationColor: 'var(--color-torn)',
-                              }}
-                            >
-                              {post.title}
-                            </Link>
-                            {post.excerpt ? (
-                              <p
-                                className="mt-1.5 max-w-2xl text-sm leading-relaxed"
-                                style={{
-                                  fontFamily: 'var(--font-body)',
-                                  color: 'var(--color-smudge)',
-                                }}
-                              >
-                                {post.excerpt}
-                              </p>
-                            ) : null}
-                          </div>
-
-                          {/* Meta */}
-                          <span
-                            className="label-stamped shrink-0 sm:text-right"
-                            style={{ color: 'var(--color-smudge)' }}
-                          >
-                            {formatDate(post.publishedAt, locale)}
-                            <span className="mx-2" aria-hidden="true">·</span>
-                            {post.readingTime} {ui.post.readingTime}
-                          </span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
-
-      <Footer locale={locale} />
-    </div>
+        {posts.length === 0 ? (
+          <p className="tp-meta">{ui.noStories}</p>
+        ) : (
+          <ol className="tp-entries">
+            {posts.map((p) => (
+              <li key={p.slug} className="tp-entry">
+                <div className="tp-entry__text">
+                  <span className="tp-label">{folio(p, locale)}</span>
+                  <h2 className="tp-entry__title">
+                    <Link href={`${base}/blog/${p.slug}`}>{p.title}</Link>
+                  </h2>
+                  {p.excerpt && <p className="tp-entry__dek">{p.excerpt}</p>}
+                  <span className="tp-meta">
+                    {dateline(p.publishedAt, locale)} · {p.readingTime} {ui.minRead}
+                  </span>
+                </div>
+                {p.coverImage && (
+                  <Link href={`${base}/blog/${p.slug}`} className="tp-entry__thumb" tabIndex={-1}>
+                    {/* Shown whole (DESIGN.md → Layers), at one height. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.coverImage} alt="" loading="lazy" />
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+    </SiteFrame>
   )
 }

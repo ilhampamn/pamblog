@@ -7,6 +7,7 @@ import { country, city, destination } from './place'
 import { itinerary } from './itinerary'
 import { story } from './story'
 import { articleSeries } from './articleSeries'
+import { articleChapter } from './articleChapter'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Objects
@@ -14,6 +15,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // Documents
   article,
   articleSeries,
+  articleChapter,
   about,
   country,
   city,

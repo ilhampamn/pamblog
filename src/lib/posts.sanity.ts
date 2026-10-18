@@ -9,6 +9,14 @@ import {
 } from '@/sanity/queries'
 import type { Locale } from '@/lib/i18n'
 
+// Next.js may retain Sanity fetches in its development data cache. Bypass that
+// cache locally so newly published Studio changes appear on refresh; production
+// continues to use the existing ISR/webhook behavior.
+const developmentFetchOptions =
+  process.env.NODE_ENV === 'development'
+    ? ({ cache: 'no-store' } as const)
+    : undefined
+
 /**
  * Sanity-backed replacement for src/lib/posts.ts.
  *
@@ -26,14 +34,53 @@ export interface Post {
   title: string
   publishedAt: string
   tag: string
-  storySeries?: {
+  storyChapter?: {
     title: string
-    seasonNumber: number
+    chapterNumber: number
+    season?: {
+      title: string
+      seasonNumber: number
+    }
   }
-  chapterNumber?: number
   excerpt?: string
   coverImage?: string
   readingTime: number
+  /** The hand-written layer, as Ilham wrote it in Sanity (all optional). */
+  pen: PenNotes
+}
+
+export interface PenNotes {
+  word?: string
+  leadNote?: string
+  photoNotes: { x: number; y: number; note: string }[]
+  marginNotes: { paragraph: number; note: string }[]
+  place?: string
+  readBackDate?: string
+}
+
+type RawPen = {
+  word?: string | null
+  leadNote?: string | null
+  photoNotes?: { x?: number | null; y?: number | null; note?: string | null }[] | null
+  marginNotes?: { paragraph?: number | null; note?: string | null }[] | null
+  place?: string | null
+  readBackDate?: string | null
+} | null
+
+function toPen(raw: RawPen | undefined): PenNotes {
+  const clean = (s?: string | null) => (s?.trim() ? s.trim() : undefined)
+  return {
+    word: clean(raw?.word),
+    leadNote: clean(raw?.leadNote),
+    photoNotes: (raw?.photoNotes ?? [])
+      .filter((n) => n?.note?.trim() && typeof n.x === 'number' && typeof n.y === 'number')
+      .map((n) => ({ x: n.x as number, y: n.y as number, note: (n.note as string).trim() })),
+    marginNotes: (raw?.marginNotes ?? [])
+      .filter((n) => n?.note?.trim() && typeof n.paragraph === 'number')
+      .map((n) => ({ paragraph: n.paragraph as number, note: (n.note as string).trim() })),
+    place: clean(raw?.place),
+    readBackDate: clean(raw?.readBackDate),
+  }
 }
 
 type RawPost = {
@@ -42,13 +89,17 @@ type RawPost = {
   excerpt: string | null
   readingTime: number | null
   tag: string
-  storySeries?: {
+  storyChapter?: {
     title: string | null
-    seasonNumber: number
+    chapterNumber: number
+    season?: {
+      title: string | null
+      seasonNumber: number
+    } | null
   } | null
-  chapterNumber?: number | null
   publishedAt: string
   coverImage?: unknown
+  pen?: RawPen
 }
 
 function coverUrl(cover: unknown): string | undefined {
@@ -63,22 +114,32 @@ function toPost(raw: RawPost, locale: Locale): Post {
     title: raw.title ?? '',
     publishedAt: raw.publishedAt ?? '',
     tag: raw.tag,
-    storySeries: raw.storySeries
+    storyChapter: raw.storyChapter
       ? {
-          title: raw.storySeries.title ?? '',
-          seasonNumber: raw.storySeries.seasonNumber,
+          title: raw.storyChapter.title ?? '',
+          chapterNumber: raw.storyChapter.chapterNumber,
+          season: raw.storyChapter.season
+            ? {
+                title: raw.storyChapter.season.title ?? '',
+                seasonNumber: raw.storyChapter.season.seasonNumber,
+              }
+            : undefined,
         }
       : undefined,
-    chapterNumber: raw.chapterNumber ?? undefined,
     excerpt: raw.excerpt?.trim() ? raw.excerpt : undefined,
     coverImage: coverUrl(raw.coverImage),
     readingTime: raw.readingTime ?? 1,
+    pen: toPen(raw.pen),
   }
 }
 
 /** All articles for one locale, newest first. Already sorted in GROQ. */
 export async function getPostsByLocale(locale: Locale): Promise<Post[]> {
-  const raw = await sanityClient.fetch<RawPost[]>(articlesListQuery, { locale })
+  const raw = await sanityClient.fetch<RawPost[]>(
+    articlesListQuery,
+    { locale },
+    developmentFetchOptions
+  )
   return raw.map((r) => toPost(r, locale))
 }
 
@@ -90,7 +151,7 @@ export async function getPostBySlug(
   const raw = await sanityClient.fetch<RawPost | null>(articleBySlugQuery, {
     locale,
     slug,
-  })
+  }, developmentFetchOptions)
   return raw ? toPost(raw, locale) : undefined
 }
 
@@ -103,7 +164,7 @@ export async function getAlternatePost(
   const raw = await sanityClient.fetch<RawPost | null>(articleBySlugQuery, {
     locale: other,
     slug,
-  })
+  }, developmentFetchOptions)
   return raw ? toPost(raw, other) : null
 }
 
@@ -116,10 +177,14 @@ export async function getArticleBody(
   slug: string
 ): Promise<PortableTextBlock[] | null> {
   const res = await sanityClient.fetch<{
-    body?: PortableTextBlock[]
-    bodyFallback?: PortableTextBlock[]
-    bodyFallback2?: PortableTextBlock[]
-  } | null>(articleBodyBySlugQuery, { locale, slug })
+      body?: PortableTextBlock[]
+      bodyFallback?: PortableTextBlock[]
+      bodyFallback2?: PortableTextBlock[]
+    } | null>(
+      articleBodyBySlugQuery,
+      { locale, slug },
+      developmentFetchOptions
+    )
   if (!res) return null
   return res.body?.length
     ? res.body
@@ -136,7 +201,7 @@ export async function getArticlePreview(
   const raw = await sanityClient.fetch<RawPost | null>(articlePreviewQuery, {
     locale,
     slug,
-  })
+  }, developmentFetchOptions)
   if (!raw) return null
   return {
     title: raw.title ?? '',

@@ -1,17 +1,16 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { ProgressBar } from '@/components/ProgressBar'
-import { PostBody } from '@/components/PostBody'
-import { NewsletterWidget } from '@/components/NewsletterWidget'
-import { getPostBySlug, getPostsByLocale, getArticleBody } from '@/lib/posts.sanity'
-import { renderPortableText } from '@/lib/portableText'
-import { t, type Locale } from '@/lib/i18n'
-import { formatDate } from '@/lib/date'
-
-const LOCALES = ['en', 'id', 'zh'] as const
+import { SiteFrame } from '@/components/proof/SiteFrame'
+import { Figure } from '@/components/proof/Figure'
+import { Mark } from '@/components/proof/Mark'
+import { Pilcrow } from '@/components/proof/Proof'
+import { PenLink } from '@/components/proof/Pen'
+import { PrintedForm } from '@/components/proof/PrintedForm'
+import { ArticleBody } from '@/components/proof/Prose'
+import { dateline, folio, handDate, nextChapter, tagLabel } from '@/components/proof/content'
+import { getPostBySlug, getPostsByLocale, getArticleBody, type Post } from '@/lib/posts.sanity'
+import { LOCALES, isLocale, t } from '@/lib/i18n'
 
 export async function generateStaticParams() {
   const results = await Promise.all(
@@ -28,7 +27,8 @@ export async function generateMetadata({
 }: {
   params: { locale: string; slug: string }
 }): Promise<Metadata> {
-  const post = await getPostBySlug(params.locale as Locale, params.slug)
+  if (!isLocale(params.locale)) return {}
+  const post = await getPostBySlug(params.locale, params.slug)
   if (!post) return {}
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
@@ -59,206 +59,114 @@ export async function generateMetadata({
   }
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { locale: string; slug: string }
-}) {
-  const locale = params.locale as Locale
-  if (!LOCALES.includes(locale as Locale)) notFound()
+/**
+ * The article (DESIGN.md → Layout, Components): folio, title, dek, meta; the
+ * cover whole, with Ilham's numbered photo notes if he wrote any; the body in
+ * a 66ch column with his margin notes beside their paragraphs; then the next
+ * chapter, the read-back stamp, the newsletter line and related stories.
+ */
+export default async function PostPage({ params }: { params: { locale: string; slug: string } }) {
+  if (!isLocale(params.locale)) notFound()
+  const locale = params.locale
+  const ui = t(locale).proof
+  const base = `/${locale}`
 
   const post = await getPostBySlug(locale, params.slug)
   if (!post) notFound()
+  const [blocks, all] = await Promise.all([
+    getArticleBody(locale, params.slug),
+    getPostsByLocale(locale).catch(() => [] as Post[]),
+  ])
 
-  const blocks = await getArticleBody(locale, params.slug)
-  const body = renderPortableText(blocks, locale)
-
-  const ui = t(locale)
-  const allPosts = await getPostsByLocale(locale)
-
-  // Related posts: same tag, exclude current
-  const related = allPosts
-    .filter((p) => p.tag === post.tag && p.slug !== post.slug)
-    .slice(0, 3)
-
-  const isLongPost = post.readingTime > 8 // placeholder for word-count gate
+  const id = `article:${post.slug}`
+  const next = nextChapter(post, all)
+  const related = all.filter((p) => p.tag === post.tag && p.slug !== post.slug && p !== next).slice(0, 3)
+  const { pen } = post
 
   return (
-    <div className="page-shell">
-      <ProgressBar />
-      <Nav locale={locale} ui={ui.nav} />
-
-      <main
-        className="pt-32 pb-0"
-       
-      >
-        {/* ── Post header ── */}
-        <header className="px-8 mb-16">
-          <div className="max-w-[var(--prose-width)] mx-auto">
-            <div className="flex items-center gap-4 mb-6">
-              <Link
-                href={`/${locale}/blog/tag/${post.tag}`}
-                className="label-stamped hover:opacity-70 transition-opacity"
-                style={{ color: 'var(--color-blush)' }}
-              >
-                {post.tag}
-              </Link>
-              <span style={{ color: 'var(--color-torn)' }} aria-hidden="true">·</span>
-              <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-                {formatDate(post.publishedAt, locale)}
-              </span>
-              <span style={{ color: 'var(--color-torn)' }} aria-hidden="true">·</span>
-              <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-                {post.readingTime} {ui.post.readingTime}
-              </span>
-            </div>
-
-            <h1
-              className="text-4xl md:text-5xl font-black leading-tight text-balance"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-            >
-              {post.title}
-            </h1>
-
-            {post.excerpt && (
-              <p
-                className="mt-4 text-lg"
-                style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}
-              >
-                {post.excerpt}
-              </p>
-            )}
-
-            {/* Divider */}
-            <div
-              className="mt-10 h-px"
-              style={{ backgroundColor: 'var(--color-torn)' }}
-            />
-          </div>
-
-          {post.coverImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={post.coverImage}
-              alt=""
-              className="mt-10 w-full md:w-1/2 max-w-[var(--layout-width)] max-h-[70vh] mx-auto block object-contain rounded"
-              style={{ border: '1px solid var(--color-torn)' }}
-            />
-          )}
+    <SiteFrame locale={locale} current="stories" path={`/blog/${post.slug}`}>
+      <article className="tp-article">
+        <header className="tp-article__head">
+          <Link href={`${base}/blog?tag=${encodeURIComponent(post.tag)}`} className="tp-label tp-folio">
+            {folio(post, locale)}
+          </Link>
+          <h1 className="tp-article__title">{post.title}</h1>
+          {post.excerpt && <p className="tp-article__dek">{post.excerpt}</p>}
+          <p className="tp-meta">
+            Ilham Pamungkas · {dateline(post.publishedAt, locale)} · {post.readingTime} {ui.minRead}
+          </p>
         </header>
 
-        <div className="relative px-8">
-          {/* Optional sticky ToC placeholder (visible ≥ 1280px on long posts) */}
-          {isLongPost && (
-            <aside
-              className="hidden xl:block absolute left-8 top-0 w-48"
-              style={{ color: 'var(--color-smudge)' }}
-            >
-              <p className="label-stamped mb-3">Contents</p>
-              <nav className="space-y-2">
-                <a
-                  href="#exposure-is-a-decision"
-                  className="block text-sm hover:text-[var(--color-ink)] transition-colors"
-                  style={{ fontFamily: 'var(--font-ui)' }}
-                >
-                  Exposure is a decision
-                </a>
-                <a
-                  href="#shadow-is-not-the-absence-of-light"
-                  className="block text-sm hover:text-[var(--color-ink)] transition-colors"
-                  style={{ fontFamily: 'var(--font-ui)' }}
-                >
-                  Shadow &amp; light
-                </a>
-                <a
-                  href="#what-i-actually-learned"
-                  className="block text-sm hover:text-[var(--color-ink)] transition-colors"
-                  style={{ fontFamily: 'var(--font-ui)' }}
-                >
-                  What I learned
-                </a>
-              </nav>
-            </aside>
-          )}
+        {post.coverImage &&
+          (pen.photoNotes.length > 0 ? (
+            <Figure
+              id={id}
+              src={post.coverImage}
+              alt={post.title}
+              plate={post.title}
+              callouts={pen.photoNotes.map((n) => ({ x: n.x / 100, y: n.y / 100, note: n.note }))}
+            />
+          ) : (
+            <figure className="tp-figure">
+              <div className="tp-figure__frame">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={post.coverImage} alt={post.title} />
+              </div>
+            </figure>
+          ))}
 
-          {/* ── Post body ── */}
-          <PostBody>
-            {/* CTA 1: after intro — compact newsletter */}
-            <div
-              className="my-10 py-6 border-y"
-              style={{ borderColor: 'var(--color-torn)' }}
-            >
-              <NewsletterWidget
-                cta={ui.newsletter.cta}
-                placeholder={ui.newsletter.placeholder}
-                button={ui.newsletter.button}
-                variant="inline"
-              />
-            </div>
+        <ArticleBody blocks={blocks} notes={pen.marginNotes} locale={locale} id={id} />
 
-            {body}
-
-            {/* CTA 3: end of post — full newsletter card */}
-            <div className="mt-16">
-              <NewsletterWidget
-                cta={ui.newsletter.cta}
-                placeholder={ui.newsletter.placeholder}
-                button={ui.newsletter.button}
-                variant="card"
-              />
-            </div>
-          </PostBody>
+        <div className="tp-break" role="separator">
+          <Pilcrow id={`${id}:break`} size={1.5} />
         </div>
 
-        {/* ── Related posts ── */}
-        {related.length > 0 && (
-          <section className="px-8 mt-24 pt-12 border-t" style={{ borderColor: 'var(--color-torn)' }}>
-            <div className="max-w-[var(--prose-width)] mx-auto">
-              <p className="label-stamped mb-8">{ui.post.relatedPosts}</p>
-              <ul className="space-y-6">
-                {related.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      href={`/${locale}/blog/${p.slug}`}
-                      className="group flex items-baseline gap-4"
-                    >
-                      <span className="label-stamped shrink-0" style={{ color: 'var(--color-smudge)' }}>
-                        {p.tag}
-                      </span>
-                      <span
-                        className="font-bold group-hover:underline"
-                        style={{
-                          fontFamily: 'var(--font-display)',
-                          color: 'var(--color-ink)',
-                          textDecorationColor: 'var(--color-torn)',
-                        }}
-                      >
-                        {p.title}
-                      </span>
-                      <span className="label-stamped ml-auto shrink-0" style={{ color: 'var(--color-smudge)' }}>
-                        {p.readingTime} {ui.post.readingTime}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+        {(next || pen.place) && (
+          <footer className="tp-article__end">
+            {next && (
+              <>
+                <span className="tp-label">{ui.next}</span>
+                <PenLink id={`${id}:next`} href={`${base}/blog/${next.slug}`} className="tp-next">
+                  {next.title} →
+                </PenLink>
+              </>
+            )}
+            {pen.place && (
+              // The read-back stamp: the logo's "Pam." block pressed on like a
+              // rubber stamp, then where and when Ilham read it back, in the pen.
+              <span className="tp-readback">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/pam-block-360.webp" width={360} height={121} alt="Pam." className="tp-readback__stamp" />
+                <Mark id={`${id}:readback`} kind="underline">
+                  <span className="tp-hand">
+                    {ui.readBack} · {pen.place} · {handDate(pen.readBackDate ?? post.publishedAt)}
+                  </span>
+                </Mark>
+              </span>
+            )}
+          </footer>
+        )}
 
-              {/* Back to all posts */}
-              <div className="mt-12">
-                <Link
-                  href={`/${locale}/blog`}
-                  className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  ← {locale === 'id' ? 'Semua tulisan' : 'All posts'}
-                </Link>
-              </div>
-            </div>
+        <div className="tp-article__subscribe">
+          <PrintedForm id={`${id}:newsletter`} prompt={ui.newsletterPrompt} field={ui.emailField} action={ui.send} />
+        </div>
+
+        {related.length > 0 && (
+          <section className="tp-related" aria-labelledby={`${id}-related`}>
+            <h2 id={`${id}-related`} className="tp-section-head">
+              {ui.related}
+            </h2>
+            <ol className="tp-latest">
+              {related.map((p) => (
+                <li key={p.slug}>
+                  <span className="tp-label">{tagLabel(p.tag, locale)}</span>
+                  <Link href={`${base}/blog/${p.slug}`}>{p.title}</Link>
+                </li>
+              ))}
+            </ol>
           </section>
         )}
-      </main>
-
-      <Footer locale={locale} />
-    </div>
+      </article>
+    </SiteFrame>
   )
 }
