@@ -71,7 +71,6 @@
     "all": "All",
     "latest": "Latest",
     "seasons": "Seasons",
-    "contactSheet": "Contact sheet",
     "inProgress": "in progress",
     "readStory": "Read the story →",
     "minRead": "min read",
@@ -87,7 +86,13 @@
     "chapters": "{n} chapters",
     "related": "More like this",
     "storiesOne": "1 story",
-    "chaptersOne": "1 chapter"
+    "chaptersOne": "1 chapter",
+    "allPhotos": "All photos →",
+    "seasonsNote": "A season is one long journey, written in chapters, in the order it happened. Start at chapter 1 and read on.",
+    "footRead": "Read",
+    "footMore": "More",
+    "footFollow": "Follow",
+    "footDrawing": "Son-Kul, Kyrgyzstan, drawn from my photo"
   },
   "pages": {
     "galleryIntro": "Photos from travels and everyday life.",

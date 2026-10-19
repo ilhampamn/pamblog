@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { PortableTextBlock } from '@portabletext/react'
 import { renderPortableText } from '@/lib/portableText'
 import { Mark } from './Mark'
@@ -9,20 +10,50 @@ import type { Locale } from '@/lib/i18n'
  * Sanity (article → Pen notes); with nothing written, these render plain type.
  */
 
-/** The excerpt with Ilham's chosen word circled — only if it appears exactly. */
-export function DekWithWord({ text, word, id }: { text: string; word?: string; id: string }) {
-  if (!word) return <>{text}</>
-  const at = text.indexOf(word)
-  if (at < 0) return <>{text}</>
-  return (
-    <>
-      {text.slice(0, at)}
-      <Mark id={`${id}:word`} kind="circle">
-        {word}
-      </Mark>
-      {text.slice(at + word.length)}
-    </>
-  )
+/**
+ * The excerpt with Ilham's marks, only where he wrote them in Sanity: the
+ * circled word (pen) and the highlighted phrase (highlighter). Each must
+ * match the excerpt exactly; if they overlap, the highlight wins.
+ */
+export function DekWithWord({
+  text,
+  word,
+  highlight,
+  id,
+}: {
+  text: string
+  word?: string
+  highlight?: string
+  id: string
+}) {
+  type Span = { at: number; len: number; kind: 'hl' | 'word' }
+  const spans: Span[] = []
+  const hAt = highlight ? text.indexOf(highlight) : -1
+  if (highlight && hAt >= 0) spans.push({ at: hAt, len: highlight.length, kind: 'hl' })
+  const wAt = word ? text.indexOf(word) : -1
+  if (word && wAt >= 0 && !spans.some((s) => wAt < s.at + s.len && wAt + word.length > s.at))
+    spans.push({ at: wAt, len: word.length, kind: 'word' })
+  spans.sort((a, b) => a.at - b.at)
+  const out: ReactNode[] = []
+  let i = 0
+  for (const s of spans) {
+    out.push(text.slice(i, s.at))
+    const part = text.slice(s.at, s.at + s.len)
+    out.push(
+      s.kind === 'hl' ? (
+        <mark key={`hl-${s.at}`} className="tp-hl">
+          {part}
+        </mark>
+      ) : (
+        <Mark key={`w-${s.at}`} id={`${id}:word`} kind="circle">
+          {part}
+        </Mark>
+      )
+    )
+    i = s.at + s.len
+  }
+  out.push(text.slice(i))
+  return <>{out}</>
 }
 
 function isEmptyBlock(block: PortableTextBlock) {

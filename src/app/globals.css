@@ -14,6 +14,14 @@
   --muted: #5c5a51;
   --ink: #0120b1;
   --cream: #faf4e6;
+  /* Second plate and highlighter (Ilham, 2026-10-19: "press proof" + "highlighter").
+     The pen is blue (Ilham, links); the press is orange (printed structure);
+     the highlighter is yellow ("now / where I am"). */
+  --plate: #ff6c2f; /* fills only, never text (2.8:1) */
+  --plate-text: #a33a0a; /* the only orange allowed as text (6.6:1) */
+  --rust: #a33a0a; /* the same rust as a printed block (the email form); cream on it 6.0:1 */
+  --on-plate: #1a1915; /* text on --plate (6.2:1) */
+  --highlight: #ffe45c; /* never text; #1A1915 on it is 13.8:1 */
   --rule-strong: #1a1915;
   --rule-medium: rgba(26, 25, 21, 0.38);
   --rule-soft: rgba(26, 25, 21, 0.11);

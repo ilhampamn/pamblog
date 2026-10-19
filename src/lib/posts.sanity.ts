@@ -39,6 +39,8 @@ export interface Post {
     chapterNumber: number
     season?: {
       title: string
+      /** Ilham's line about the journey this season covers (optional). */
+      description?: string
       seasonNumber: number
     }
   }
@@ -51,6 +53,8 @@ export interface Post {
 
 export interface PenNotes {
   word?: string
+  /** A phrase of the excerpt to highlight in yellow. */
+  highlight?: string
   leadNote?: string
   photoNotes: { x: number; y: number; note: string }[]
   marginNotes: { paragraph: number; note: string }[]
@@ -60,6 +64,7 @@ export interface PenNotes {
 
 type RawPen = {
   word?: string | null
+  highlight?: string | null
   leadNote?: string | null
   photoNotes?: { x?: number | null; y?: number | null; note?: string | null }[] | null
   marginNotes?: { paragraph?: number | null; note?: string | null }[] | null
@@ -71,6 +76,7 @@ function toPen(raw: RawPen | undefined): PenNotes {
   const clean = (s?: string | null) => (s?.trim() ? s.trim() : undefined)
   return {
     word: clean(raw?.word),
+    highlight: clean(raw?.highlight),
     leadNote: clean(raw?.leadNote),
     photoNotes: (raw?.photoNotes ?? [])
       .filter((n) => n?.note?.trim() && typeof n.x === 'number' && typeof n.y === 'number')
@@ -94,6 +100,7 @@ type RawPost = {
     chapterNumber: number
     season?: {
       title: string | null
+      description?: string | null
       seasonNumber: number
     } | null
   } | null
@@ -121,6 +128,7 @@ function toPost(raw: RawPost, locale: Locale): Post {
           season: raw.storyChapter.season
             ? {
                 title: raw.storyChapter.season.title ?? '',
+                description: raw.storyChapter.season.description?.trim() || undefined,
                 seasonNumber: raw.storyChapter.season.seasonNumber,
               }
             : undefined,

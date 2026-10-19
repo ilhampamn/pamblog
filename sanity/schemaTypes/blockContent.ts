@@ -33,6 +33,8 @@ export const blockContent = defineType({
           { title: 'Strong', value: 'strong' },
           { title: 'Emphasis', value: 'em' },
           { title: 'Code', value: 'code' },
+          // The highlighter: one line per screen that matters most right now.
+          { title: 'Highlight', value: 'highlight' },
         ],
         annotations: [
           {

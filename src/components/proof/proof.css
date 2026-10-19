@@ -301,40 +301,41 @@
 
 /* ─── Masthead ─────────────────────────────────────────────────────────────── */
 
-/* With the nav in the rail, the dateline is the top of the sheet and takes
-   the one strong rule. */
+/* The dateline is metadata, not a section: it sits on a soft rule
+   (Ilham, 2026-10-19). Strong rules only ever open a section. */
 .tp-dateline {
   display: flex;
   justify-content: space-between;
   margin: 0 var(--gutter);
   padding: var(--s5) 0 var(--s3);
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-soft);
 }
 
 /* ─── Front page grid ──────────────────────────────────────────────────────── */
 
-/* exp3's engine: the grid's background is the rule colour, cells are paper,
-   so every 1px gap is a hairline at any column count. */
+/* Two columns, 7 and 5, with one soft vertical rule between them. No
+   horizontal lattice: each section opens with its own strong rule, so a
+   heading always reads as the top of what follows it, never the bottom of
+   what came before. */
 .tp-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 1px;
   margin: 0 var(--gutter);
-  background: var(--rule-soft);
-  border-bottom: 1px solid var(--rule-soft);
+  padding-bottom: var(--s5);
 }
 .tp-cell {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: var(--pad);
-  /* Same fixed tooth as the page, so cells and gutters read as one sheet.
-     (iOS Safari ignores `fixed` here; the grain just scrolls with the cell.) */
-  background: var(--paper) var(--paper-tooth) 0 0 / 384px auto fixed;
+  gap: var(--s3);
+  padding: var(--s5) var(--pad) var(--s5) 0;
   min-width: 0;
 }
+.tp-cell--side {
+  padding: var(--s5) 0 var(--s5) var(--pad);
+  border-left: 1px solid var(--rule-soft);
+}
 .tp-cell--photo {
-  padding: var(--pad) var(--pad) var(--pad) 0;
+  padding-top: var(--s5);
 }
 .tp-push {
   margin-top: auto;
@@ -402,9 +403,10 @@
   gap: 8px;
   font-size: 22px;
   line-height: 1.2;
-  padding-bottom: var(--s3);
+  /* The section's top edge: the one place a strong rule is used. */
+  padding-top: var(--s3);
   margin-bottom: var(--s1) !important;
-  border-bottom: 1px solid var(--rule-medium);
+  border-top: 1px solid var(--rule-strong);
 }
 
 .tp-latest {
@@ -423,12 +425,14 @@
   font-size: 18px;
   line-height: 1.3;
 }
+/* The number is printed in the second colour: type only, no block
+   (Ilham, 2026-10-19: the chip and the plate bar were too much). */
 .tp-latest li::before {
   content: counter(latest);
   grid-row: span 2;
   font-style: italic;
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
+  color: var(--plate-text);
 }
 .tp-latest a:hover {
   color: var(--ink);
@@ -454,6 +458,25 @@
   color: var(--muted);
 }
 
+/* A short explanation under a section head (what a season is). */
+.tp-section-note {
+  margin: var(--s1) 0 var(--s2);
+  max-width: 34rem;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tp-index__note {
+  margin: var(--s3) 0 0;
+}
+.tp-seasons__about {
+  display: block;
+  margin-top: var(--s1);
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
 /* Whole photographs at one height, widths following each photo's own shape
    — a contact strip, never cropped to squares. Rows end where they end. */
 .tp-sheet {
@@ -463,7 +486,8 @@
 }
 .tp-sheet img {
   display: block;
-  height: clamp(110px, 11vw, 168px);
+  /* About twice the old strip: this is where the colour of the trips lives. */
+  height: clamp(150px, 17vw, 280px);
   width: auto;
   max-width: 100%;
 }
@@ -562,24 +586,37 @@
    rail 1 under it; Stories opens rail 2 beside rail 1. On desktop the rails
    push the page; on phones rail 1 is a drawer and rail 2 slides over it. */
 
-.tp-page {
-  --topbar-h: 68px;
-}
+/* The page never changes width when a rail opens: it slides as one sheet
+   (Ilham, 2026-10-19). `data-slide` picks the duration of the move in play. */
 .tp-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
+  /* The pushed page runs off the right edge; never let it scroll sideways.
+     `clip` makes no scroll container, so the sticky top bar still works. */
+  overflow-x: clip;
+  --slide-dur: var(--m-slide-rail1-dur);
+  --slide-ease: var(--m-slide-ease);
 }
-.tp-shell.is-open {
-  grid-template-columns: 208px minmax(0, 1fr);
+.tp-shell[data-slide='rail2'] {
+  --slide-dur: var(--m-slide-rail2-dur);
 }
-/* Rail 2 pushes the page too (Ilham, 2026-10-18): its own column. */
-.tp-shell.is-open.has-l2 {
-  grid-template-columns: 208px 280px minmax(0, 1fr);
+.tp-shell[data-slide='both'] {
+  --slide-dur: var(--m-slide-both-dur);
+}
+.tp-shell[data-slide='close'] {
+  --slide-dur: var(--m-slide-close-dur);
 }
 .tp-main {
-  grid-column: -2 / -1;
+  grid-column: 1 / -1;
   min-width: 0;
+  transition: transform var(--slide-dur) var(--slide-ease);
+}
+.tp-shell.is-open .tp-main {
+  transform: translateX(var(--rail1-w));
+}
+.tp-shell.is-open.has-l2 .tp-main {
+  transform: translateX(calc(var(--rail1-w) + var(--rail2-w)));
 }
 
 .tp-topbar {
@@ -621,19 +658,44 @@
   outline-offset: 2px;
 }
 
+/* Rails are sheets pinned under the top bar. Closed, they wait off-screen
+   to the left (rail 2 tucked under rail 1) and are hidden once their slide
+   ends; open, they slide in at the same speed as the page, so the page's
+   left edge and the rail's right edge travel together and never cross. */
 .tp-rail,
 .tp-rail2 {
-  position: sticky;
-  top: var(--topbar-h);
-  height: calc(100vh - var(--topbar-h));
-  /* The column clips; its sheet slides inside it, so a rail never crosses
-     the other rail or the page while it moves (Ilham's recording, frame 7). */
+  position: fixed;
+  top: var(--drawer-top, var(--topbar-h));
+  bottom: 0;
+  left: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  visibility: hidden;
+  transition:
+    transform var(--slide-dur) var(--slide-ease),
+    visibility 0s linear var(--slide-dur);
 }
-.tp-rail[hidden],
-.tp-rail2[hidden] {
-  display: none;
+.tp-rail {
+  z-index: 21;
+  width: var(--rail1-w);
+  transform: translateX(-100%);
+}
+.tp-rail2 {
+  z-index: 20;
+  left: var(--rail1-w);
+  width: var(--rail2-w);
+  transform: translateX(calc(-100% - var(--rail1-w)));
+}
+.tp-shell.is-open:not(.has-l2) .tp-rail2 {
+  transform: translateX(-100%);
+}
+.tp-shell.is-open .tp-rail,
+.tp-shell.has-l2 .tp-rail2 {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform var(--slide-dur) var(--slide-ease),
+    visibility 0s;
 }
 /* The sheet is what you see and what moves: paper, edge and content. */
 .tp-rail__sheet {
@@ -814,36 +876,45 @@ button.tp-rail__l1:hover,
 }
 
 @media (max-width: 900px) {
-  .tp-page {
-    --topbar-h: 60px;
+  /* Phones: the page stays put; the rails are drawers over a scrim. */
+  .tp-shell[data-slide='rail1'],
+  .tp-shell[data-slide='both'] {
+    --slide-dur: var(--m-slide-drawer-dur);
   }
-  .tp-shell.is-open,
-  .tp-shell.is-open.has-l2 {
-    grid-template-columns: minmax(0, 1fr);
+  .tp-shell[data-slide='rail2'] {
+    --slide-dur: var(--m-slide-drawer2-dur);
+  }
+  .tp-shell[data-slide='close'] {
+    --slide-ease: var(--m-slide-close-ease);
+  }
+  .tp-shell.is-open .tp-main,
+  .tp-shell.is-open.has-l2 .tp-main {
+    transform: none;
   }
   .tp-topbar .tp-logo img {
     height: 38px;
   }
-  /* Rail 1 is a drawer under the top bar; rail 2 slides over it. */
   .tp-rail,
   .tp-rail2 {
-    position: fixed;
-    top: var(--drawer-top, var(--topbar-h));
-    bottom: 0;
     left: 0;
-    height: auto;
     width: min(320px, 86vw);
-    border-right: 1px solid var(--rule-medium); /* strong is used once, under the masthead */
+    border-right: 1px solid var(--rule-medium);
   }
   .tp-rail {
     z-index: 50;
+    transform: translateX(-102%);
   }
-  /* On phones the column is the drawer and carries the edge. */
-  .tp-rail__sheet {
-    border-right: 0;
-  }
+  /* Rail 2 slides in over rail 1 from the right, and leaves with it. */
   .tp-rail2 {
     z-index: 51;
+    transform: translateX(-102%);
+  }
+  .tp-shell.is-open:not(.has-l2) .tp-rail2 {
+    transform: translateX(100%);
+  }
+  /* On phones the drawer carries the edge. */
+  .tp-rail__sheet {
+    border-right: 0;
   }
   .tp-rail2__back {
     display: inline;
@@ -858,6 +929,26 @@ button.tp-rail__l1:hover,
     z-index: 40;
     border: 0;
     background: rgba(26, 25, 21, 0.28);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--slide-dur) linear,
+      visibility 0s linear var(--slide-dur);
+  }
+  .tp-shell.is-open .tp-rail__scrim {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity var(--slide-dur) linear,
+      visibility 0s;
+  }
+}
+
+/* Reduced motion: the sheets cut instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .tp-shell,
+  .tp-shell[data-slide] {
+    --slide-dur: 0ms;
   }
 }
 
@@ -992,51 +1083,83 @@ button.tp-rail__l1:hover,
 
 /* ─── Inputs: the printed form ─────────────────────────────────── */
 .tp-printform {
+  max-width: 520px;
+}
+/* The printed block: rust with the logo's print grain, cut by hand
+   (Ilham, 2026-10-19: rust instead of blue, for the form only). */
+.tp-printform__block {
   display: flex;
   flex-direction: column;
-  gap: var(--s2);
-  max-width: 460px;
+  gap: var(--s4);
+  padding: var(--s6) var(--s6) var(--s6);
+  background: var(--rust) url('/brand/rust-grain.webp') 0 0 / 200px 60px;
+  color: var(--cream);
 }
 .tp-printform__prompt {
   font-size: 24px;
   line-height: 1.2;
   font-style: italic;
+  color: var(--cream);
 }
-.tp-printform__line {
+/* An outlined field with the send square set into its right end. */
+.tp-printform__field {
   display: flex;
-  align-items: baseline;
-  gap: var(--s3);
-  border-bottom: 1px solid var(--rule-strong);
+  align-items: stretch;
+  border: 1px solid var(--cream);
+  min-height: 52px;
+}
+.tp-printform__field:focus-within {
+  outline: 1px solid var(--cream);
+  outline-offset: 2px;
 }
 .tp-printform input {
   flex: 1;
   min-width: 0;
-  padding: var(--s2) 0;
+  padding: 0 var(--s4);
   border: 0;
   background: transparent;
   font: inherit;
   font-size: 18px;
-  color: var(--text);
+  color: var(--cream);
 }
 .tp-printform input::placeholder {
-  color: var(--muted);
+  color: var(--cream);
+  opacity: 0.72;
   font-style: italic;
 }
 .tp-printform input:focus {
   outline: none;
 }
-.tp-printform__line:focus-within {
-  border-bottom-color: var(--ink);
-  box-shadow: 0 1px 0 var(--ink);
-}
+/* The send square: cream, the arrow in rust. It presses like a block. */
 .tp-printform__send {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
   border: 0;
-  background: none;
-  font: inherit;
-  font-size: 18px;
-  color: var(--ink);
+  background: var(--cream);
+  color: var(--rust);
   cursor: pointer;
-  white-space: nowrap;
+  transition: transform var(--m-press-release-dur) var(--m-press-out-ease);
+}
+.tp-printform__send:active {
+  transform: translateY(var(--m-press-sink)) scale(var(--m-press-scale));
+  transition-duration: var(--m-press-in-dur);
+  transition-timing-function: var(--m-press-in-ease);
+}
+.tp-printform__send:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: -5px;
+  box-shadow: inset 0 0 0 3px var(--rust);
+}
+@media (max-width: 640px) {
+  .tp-printform__block {
+    padding: var(--s5);
+  }
+  .tp-printform__prompt {
+    font-size: 21px;
+  }
 }
 
 /* Multi-line marks position against their paragraph. */
@@ -1061,14 +1184,32 @@ button.tp-rail__l1:hover,
 }
 
 @media (max-width: 900px) {
+  /* One column: every section flush to the gutters, separated by space
+     and opened by its strong rule. */
   .tp-grid {
     grid-template-columns: minmax(0, 1fr);
   }
   .tp-grid > .tp-cell {
     grid-column: auto !important;
   }
+  .tp-cell,
+  .tp-cell--side,
   .tp-cell--photo {
-    padding: var(--pad) 0;
+    padding: 0;
+    border-left: 0;
+  }
+  .tp-cell--photo {
+    padding-top: var(--s5);
+  }
+  .tp-lead {
+    gap: var(--s7);
+  }
+  .tp-grid > .tp-cell + .tp-cell {
+    margin-top: var(--s7);
+  }
+  /* The lead story belongs to its photo: closer than the next section. */
+  .tp-grid > .tp-cell--photo + .tp-cell {
+    margin-top: var(--s5);
   }
   .tp-lead__note {
     margin-left: 0;
@@ -1102,7 +1243,7 @@ a.tp-sheet {
   justify-content: space-between;
   gap: var(--s4);
   padding-bottom: var(--s3);
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-medium);
 }
 .tp-index__title {
   font-size: clamp(38px, 4vw, 56px);
@@ -1114,7 +1255,7 @@ a.tp-sheet {
   flex-wrap: wrap;
   gap: var(--s2) var(--s5);
   padding: var(--s4) 0;
-  border-bottom: 1px solid var(--rule-medium);
+  border-bottom: 1px solid var(--rule-soft);
 }
 .tp-entries {
   list-style: none;
@@ -1286,7 +1427,7 @@ a.tp-folio:hover {
   gap: var(--s3);
   padding-bottom: var(--s5);
   margin-bottom: var(--s6);
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-medium);
 }
 .tp-pagetitle {
   font-size: clamp(38px, 4vw, 56px);
@@ -1477,28 +1618,102 @@ a.tp-folio:hover {
   }
 }
 
-/* ─── Footer and language links ─────────────────────────────────────────── */
+/* ─── Footer ─────────────────────────────────────────────────────────────────
+   Typeset columns on the paper, then the drawing along the bottom edge. */
 .tp-footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s4);
-  margin: var(--s8) var(--gutter) 0;
-  padding: var(--s6) 0 var(--s7);
+  margin-top: var(--s8);
   border-top: 1px solid var(--rule-soft);
 }
-.tp-footer__links {
+.tp-footer__top {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s7);
+  margin: 0 var(--gutter);
+  padding: var(--s7) 0 var(--s6);
+}
+.tp-footer__brand {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2) var(--s5);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s4);
+}
+.tp-footer__brand .tp-logo img {
+  height: 56px;
 }
 .tp-footer__quote {
   margin: 0;
-  max-width: 36rem;
+  max-width: 26rem;
   font-size: 17px;
   font-style: italic;
   line-height: 1.5;
   color: var(--muted);
 }
+.tp-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s5);
+}
+.tp-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+.tp-footer__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.tp-footer__col a {
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--text);
+}
+.tp-footer__col a:hover {
+  color: var(--ink);
+}
+.tp-footer__legal {
+  margin: 0 var(--gutter);
+  padding: var(--s3) 0;
+  border-top: 1px solid var(--rule-soft);
+}
+/* The drawing runs edge to edge and rises out of the paper at its top. */
+.tp-footer__art {
+  position: relative;
+  margin: var(--s5) 0 0;
+}
+.tp-footer__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tp-footer__art figcaption {
+  position: absolute;
+  right: var(--gutter);
+  bottom: var(--s3);
+  padding: 2px 6px;
+  background: var(--paper);
+}
+
+@media (max-width: 900px) {
+  .tp-footer__top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s6);
+  }
+  .tp-footer__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--s6);
+  }
+  /* Phones: keep the rider and the valley; the sides give way. */
+  .tp-footer__art img {
+    aspect-ratio: 1.2 / 1;
+    object-fit: cover;
+    object-position: 64% 100%;
+  }
+}
+
 .tp-langs {
   display: flex;
   flex-direction: column;
@@ -1532,4 +1747,44 @@ a.tp-folio:hover {
 :lang(zh) .tp-printform input::placeholder,
 :lang(zh) .tp-footer__quote {
   font-style: normal;
+}
+
+
+/* ─── Second plate and highlighter (Ilham, 2026-10-19) ──────────────────────
+   Three tools, three meanings: the PEN is blue (Ilham's marks, and anything
+   you can click); the PRESS is orange (printed type — folios, numbers,
+   labels — and the drawing's light); the HIGHLIGHTER is yellow,
+   and only ever inside running text — a phrase of an excerpt or a line of
+   an article, never a title, name or label (Ilham, 2026-10-19). Orange as
+   text is only ever --plate-text. */
+
+/* Folios, kickers and the dateline are printed in the second colour. */
+.tp-dateline,
+.tp-lead__story > .tp-label,
+a.tp-folio,
+.tp-entry__text > .tp-label:first-child,
+.tp-latest .tp-label,
+.tp-plate__caption > .tp-label,
+.tp-footer__col > .tp-label {
+  color: var(--plate-text);
+}
+
+/* The highlighter: a flat chisel swipe behind the words, square ends,
+   multiplied so it darkens where it overlaps. Never on photos or links'
+   own colour; the text keeps its colour. */
+mark.tp-hl {
+  color: inherit;
+  background: linear-gradient(
+    transparent 0 14%,
+    var(--highlight) 14% 94%,
+    transparent 94%
+  );
+  padding: 0 0.12em;
+  margin: 0 -0.04em;
+  mix-blend-mode: multiply;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.tp-tree__items a[aria-current='page'] {
+  color: var(--ink);
 }

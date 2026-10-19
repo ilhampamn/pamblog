@@ -59,13 +59,13 @@ export function nextChapter(post: Post, posts: Post[]) {
   )
 }
 
-/** Seasons that have chapters, in order: number, title, how many chapters. */
+/** Seasons that have chapters, in order: number, title, description, how many chapters. */
 export function seasonsOf(posts: Post[]) {
-  const map = new Map<number, { n: number; title: string; count: number }>()
+  const map = new Map<number, { n: number; title: string; description?: string; count: number }>()
   for (const p of posts) {
     const s = p.storyChapter?.season
     if (!s) continue
-    const row = map.get(s.seasonNumber) ?? { n: s.seasonNumber, title: s.title, count: 0 }
+    const row = map.get(s.seasonNumber) ?? { n: s.seasonNumber, title: s.title, description: s.description, count: 0 }
     row.count += 1
     map.set(s.seasonNumber, row)
   }

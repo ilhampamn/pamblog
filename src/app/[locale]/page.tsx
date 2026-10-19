@@ -60,7 +60,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
             )}
           </div>
 
-          <div className="tp-cell tp-lead" style={{ gridColumn: 'span 5' }}>
+          <div className="tp-cell tp-cell--side tp-lead" style={{ gridColumn: 'span 5' }}>
             <div className="tp-lead__story">
               <span className="tp-label">{folio(lead, locale)}</span>
               <h1 className="tp-display">
@@ -68,7 +68,12 @@ export default async function HomePage({ params }: { params: { locale: string } 
               </h1>
               {lead.excerpt && (
                 <p className="tp-dek">
-                  <DekWithWord text={lead.excerpt} word={lead.pen.word} id={`home:${lead.slug}`} />
+                  <DekWithWord
+                    text={lead.excerpt}
+                    word={lead.pen.word}
+                    highlight={lead.pen.highlight}
+                    id={`home:${lead.slug}`}
+                  />
                   {lead.pen.leadNote && <Caret id={`home:${lead.slug}:caret`} />}
                 </p>
               )}
@@ -112,8 +117,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
           {sheet.length > 0 && (
             <div className="tp-cell" style={{ gridColumn: seasons.length ? 'span 7' : 'span 12' }}>
               <h2 className="tp-section-head">
-                <Pilcrow id="home:contact-sheet:pilcrow" />
-                {ui.contactSheet}
+                <Pilcrow id="home:gallery:pilcrow" />
+                {ui.gallery}
               </h2>
               <Link href={`${base}/gallery`} className="tp-sheet" aria-label={ui.gallery}>
                 {sheet.map((ph) => (
@@ -121,20 +126,27 @@ export default async function HomePage({ params }: { params: { locale: string } 
                   <img key={ph.url} src={ph.url} alt={ph.alt} loading="lazy" />
                 ))}
               </Link>
+              <PenLink id="home:gallery:all" href={`${base}/gallery`} className="tp-push">
+                {ui.allPhotos}
+              </PenLink>
             </div>
           )}
           {seasons.length > 0 && (
-            <div className="tp-cell" style={{ gridColumn: sheet.length ? 'span 5' : 'span 12' }}>
+            <div className={`tp-cell ${sheet.length ? 'tp-cell--side' : ''}`} style={{ gridColumn: sheet.length ? 'span 5' : 'span 12' }}>
               <h2 className="tp-section-head">
                 <Pilcrow id="home:seasons:pilcrow" />
                 {ui.seasons}
               </h2>
+              <p className="tp-section-note">{ui.seasonsNote}</p>
               <table className="tp-seasons">
                 <tbody>
                   {seasons.map((s) => (
                     <tr key={s.n}>
                       <th scope="row">{fmt(ui.season, { n: s.n })}</th>
-                      <td>{s.title}</td>
+                      <td>
+                        {s.title}
+                        {s.description && <span className="tp-seasons__about">{s.description}</span>}
+                      </td>
                       <td className="tp-label">{count(s.count, ui.chaptersOne, ui.chapters)}</td>
                     </tr>
                   ))}

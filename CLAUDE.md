@@ -16,6 +16,7 @@ see what is in progress, and keep it current (see "Organization" below).
 | Lint | `npm run lint` (`<img>` warnings in `HomeList.tsx` are known) |
 | Production build | `npm run build` |
 | Deploy Sanity Studio | `npm run sanity:deploy` — outward-facing, ask first |
+| Redraw the footer landscape | `python3 scripts/ink-drawing.py <photo> public/brand/footer-sonkul.webp --width 2400 --crop-top 0.36 --fade 0.3 --plates` (and `--width 1200` → `footer-sonkul-1200.webp`; needs `numpy pillow opencv-python-headless`) |
 | Rebuild experiment-3 fonts | `python3 scripts/build-experiment3-fonts.py` (needs `fonttools brotli`) |
 
 There is no test suite. "Verified" means typecheck passes, lint has no errors,

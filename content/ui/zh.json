@@ -71,7 +71,6 @@
     "all": "全部",
     "latest": "最新",
     "seasons": "季",
-    "contactSheet": "底片小样",
     "inProgress": "进行中",
     "readStory": "阅读全文 →",
     "minRead": "分钟阅读",
@@ -87,7 +86,13 @@
     "chapters": "{n} 章",
     "related": "相关文章",
     "storiesOne": "1 篇故事",
-    "chaptersOne": "1 章"
+    "chaptersOne": "1 章",
+    "allPhotos": "全部照片 →",
+    "seasonsNote": "每一季是一段长途旅程，按发生的顺序分章写成。从第一章开始，一章章读下去。",
+    "footRead": "阅读",
+    "footMore": "更多",
+    "footFollow": "关注",
+    "footDrawing": "吉尔吉斯斯坦，颂湖，依据我的照片绘制"
   },
   "pages": {
     "galleryIntro": "旅途与日常的照片。",

@@ -53,13 +53,14 @@ export const articlesListQuery = groq`
       chapterNumber,
       "season": storySeries->{
         "title": ${loc('title')},
+        "description": ${loc('description')},
         seasonNumber
       }
     },
     publishedAt,
     coverImage,
     "pen": {
-      "word": ${loc('penWord')},
+      "word": ${loc('penWord')}, "highlight": ${loc('penHighlight')},
       "leadNote": ${loc('penLeadNote')},
       "photoNotes": photoNotes[]{ x, y, "note": ${loc('note')} },
       "marginNotes": marginNotes[]{ paragraph, "note": ${loc('note')} },
@@ -82,13 +83,14 @@ export const articleBySlugQuery = groq`
       chapterNumber,
       "season": storySeries->{
         "title": ${loc('title')},
+        "description": ${loc('description')},
         seasonNumber
       }
     },
     publishedAt,
     coverImage,
     "pen": {
-      "word": ${loc('penWord')},
+      "word": ${loc('penWord')}, "highlight": ${loc('penHighlight')},
       "leadNote": ${loc('penLeadNote')},
       "photoNotes": photoNotes[]{ x, y, "note": ${loc('note')} },
       "marginNotes": marginNotes[]{ paragraph, "note": ${loc('note')} },

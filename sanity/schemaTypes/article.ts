@@ -106,6 +106,14 @@ export const article = defineType({
         'A word or short phrase from the excerpt to circle in pen. Must match the excerpt exactly; leave empty for no circle.',
     }),
     defineField({
+      name: 'penHighlight',
+      title: 'Highlighted phrase',
+      type: 'internationalizedArrayString',
+      fieldset: 'pen',
+      description:
+        'A phrase from the excerpt to mark with the yellow highlighter — the line that matters most. Must match the excerpt exactly; leave empty for none.',
+    }),
+    defineField({
       name: 'penLeadNote',
       title: 'Home page note',
       type: 'internationalizedArrayString',

@@ -104,34 +104,80 @@ export async function SiteFrame({
   )
 }
 
-/** The footer: typeset links, the Lange line, the name. One soft rule above. */
+/**
+ * The footer (Ilham's references, 2026-10-19): the logo and the Lange line,
+ * typeset link columns, the copyright line, then a ballpoint drawing of a
+ * real place running edge to edge along the bottom — Son-Kul, drawn in the
+ * one ink from Ilham's own photograph (`scripts/ink-drawing.py`). Links stay
+ * typeset; the hand is only ever for notes.
+ */
 function SiteFooter({ locale }: { locale: Locale }) {
   const ui = t(locale).proof
   const base = `/${locale}`
+  const col = (label: string, links: { href: string; label: string; external?: boolean }[]) => (
+    <div className="tp-footer__col">
+      <span className="tp-label">{label}</span>
+      <ul>
+        {links.map((l) => (
+          <li key={l.href}>
+            {l.external ? <a href={l.href}>{l.label}</a> : <Link href={l.href}>{l.label}</Link>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
   return (
     <footer className="tp-footer">
-      <nav className="tp-footer__links" aria-label="Footer">
-        <Link href={`${base}/blog`} className="tp-quiet">
-          {ui.stories}
-        </Link>
-        <Link href={`${base}/about`} className="tp-quiet">
-          {ui.about}
-        </Link>
-        <Link href={`${base}/uses`} className="tp-quiet">
-          {ui.uses}
-        </Link>
-        <Link href={`${base}/newsletter`} className="tp-quiet">
-          {ui.newsletter}
-        </Link>
-        <a href="/rss.xml" className="tp-quiet">
-          RSS
-        </a>
-      </nav>
-      <p className="tp-footer__quote">
-        &ldquo;The camera is an instrument that teaches people how to see without a camera.&rdquo;
-        <span className="tp-label"> — Dorothea Lange</span>
-      </p>
-      <p className="tp-label">© {new Date().getFullYear()} Travel Pam · Ilham Pamungkas</p>
+      <div className="tp-footer__top">
+        <div className="tp-footer__brand">
+          <Link href={base} className="tp-logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/travel-pam-logo-480.webp"
+              srcSet="/brand/travel-pam-logo-480.webp 1x, /brand/travel-pam-logo-960.webp 2x"
+              width={480}
+              height={231}
+              alt="Travel Pam"
+            />
+          </Link>
+          <p className="tp-footer__quote">
+            &ldquo;The camera is an instrument that teaches people how to see without a camera.&rdquo;
+            <span className="tp-label"> — Dorothea Lange</span>
+          </p>
+        </div>
+        <nav className="tp-footer__cols" aria-label="Footer">
+          {col(ui.footRead, [
+            { href: `${base}/blog`, label: ui.stories },
+            { href: `${base}/gallery`, label: ui.gallery },
+          ])}
+          {col(ui.footMore, [
+            { href: `${base}/about`, label: ui.about },
+            { href: `${base}/uses`, label: ui.uses },
+          ])}
+          {col(ui.footFollow, [
+            { href: `${base}/newsletter`, label: ui.newsletter },
+            { href: '/rss.xml', label: 'RSS', external: true },
+          ])}
+          {col(
+            ui.languages,
+            LANGUAGES.map((l) => ({ href: `/${l.id}`, label: l.title }))
+          )}
+        </nav>
+      </div>
+      <p className="tp-footer__legal tp-label">© {new Date().getFullYear()} Travel Pam · Ilham Pamungkas</p>
+      <figure className="tp-footer__art">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/footer-sonkul.webp"
+          srcSet="/brand/footer-sonkul-1200.webp 1200w, /brand/footer-sonkul.webp 2400w"
+          sizes="100vw"
+          width={2400}
+          height={1152}
+          alt=""
+          loading="lazy"
+        />
+        <figcaption className="tp-label">{ui.footDrawing}</figcaption>
+      </figure>
     </footer>
   )
 }

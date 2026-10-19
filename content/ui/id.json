@@ -71,7 +71,6 @@
     "all": "Semua",
     "latest": "Terbaru",
     "seasons": "Musim",
-    "contactSheet": "Lembar kontak",
     "inProgress": "sedang berjalan",
     "readStory": "Baca ceritanya →",
     "minRead": "menit baca",
@@ -87,7 +86,13 @@
     "chapters": "{n} bab",
     "related": "Tulisan serupa",
     "storiesOne": "1 cerita",
-    "chaptersOne": "1 bab"
+    "chaptersOne": "1 bab",
+    "allPhotos": "Semua foto →",
+    "seasonsNote": "Satu musim adalah satu perjalanan panjang, ditulis dalam beberapa bab, sesuai urutan kejadiannya. Mulai dari bab 1, lalu lanjutkan.",
+    "footRead": "Baca",
+    "footMore": "Lainnya",
+    "footFollow": "Ikuti",
+    "footDrawing": "Son-Kul, Kirgistan, digambar dari foto saya"
   },
   "pages": {
     "galleryIntro": "Foto-foto dari perjalanan dan keseharian.",

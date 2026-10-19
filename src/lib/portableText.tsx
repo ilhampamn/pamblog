@@ -42,6 +42,8 @@ function components(locale: Locale): PortableTextComponents {
       ),
     },
     marks: {
+      // The highlighter (DESIGN.md → Colour): a yellow swipe behind the words.
+      highlight: ({ children }) => <mark className="tp-hl">{children}</mark>,
       link: ({ value, children }) => {
         const href: string = value?.href ?? '#'
         const external = /^https?:\/\//.test(href)

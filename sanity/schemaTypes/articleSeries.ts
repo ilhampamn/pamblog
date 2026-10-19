@@ -24,6 +24,13 @@ export const articleSeries = defineType({
       description: 'For example: First time going abroad or Lost in Central Asia.',
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: 'description',
+      title: 'About this season',
+      type: 'internationalizedArrayText',
+      description:
+        'One or two sentences on the journey this season covers: where, when, why. Shown under the season on the home page and the Stories page. Optional.',
+    }),
   ],
   preview: {
     select: {

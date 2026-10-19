@@ -44,6 +44,7 @@ export default async function BlogIndexPage({
           <h1 className="tp-index__title">{ui.stories}</h1>
           <span className="tp-label">{count(posts.length, ui.storiesOne, ui.storiesCount)}</span>
         </header>
+        {all.some((p) => p.storyChapter?.season) && <p className="tp-section-note tp-index__note">{ui.seasonsNote}</p>}
 
         {tags.length > 1 && (
           <nav className="tp-index__tags" aria-label="Tags">

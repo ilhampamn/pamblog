@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { holdInk } from './Mark'
 import { Bracket } from './Pen'
 import { Burger } from './Proof'
@@ -23,35 +24,26 @@ import './proof.css'
  * focus to the button that opened it.
  *
  * Motion — the SLIDE verb (design/specs/motion.md → desktop-sidebar,
- * phone-drawer): paper on paper. Opening commits the new layout at frame 0,
- * then FLIPs the page's children from where they were (one shared Δ, so a
- * sheet never tears). Both rails push the page (Ilham, 2026-10-18): each is
- * a clipping column whose sheet slides inside it by the same Δ as the page,
- * so the page and the sheets move as one and never cross (the overlay
- * version let rail 2 slide across rail 1's text, and the page slide over
- * the rail). Closing runs the reverse, then commits. On phones the rails are drawers
- * that slide in from the side. Ink in a rail waits for the sheet to stop.
- * Only transform, clip-path and opacity move; layout never animates.
+ * phone-drawer): paper on paper. The page never changes size when a rail
+ * opens (Ilham's recording, 2026-10-19: a narrower column re-wrapped the
+ * headline and resized the photo in one frame, which no slide can hide).
+ * Instead the page is one sheet that slides right by the open rails' width
+ * (anything past the right edge waits off-screen), and the rails slide out
+ * from under the top bar alongside it, at the same speed, so nothing crosses.
+ * Everything is a CSS transition on `transform`, timed by `data-slide` on the
+ * shell. On phones the page stays put and the rails are drawers. Ink in a
+ * rail waits for the sheet to stop.
  */
 
-type Anim = Animation
+/** Which slide is playing; picks its duration and curve in CSS. */
+type Slide = 'rail1' | 'rail2' | 'both' | 'close'
 
 /** Motion tokens from CSS (`--m-*` on `:root`), with the spec's values as fallback. */
-function token(el: Element, name: string, fallback: string) {
-  return getComputedStyle(el).getPropertyValue(name).trim() || fallback
-}
-function ms(el: Element, name: string, fallback: number) {
-  return parseFloat(token(el, name, `${fallback}ms`)) || fallback
-}
-/** The page's direct children: the parts of the sheet that slide. */
-function partsOf(main: HTMLElement | null) {
-  return Array.from(main?.children ?? []) as HTMLElement[]
-}
-function leftsOf(main: HTMLElement | null) {
-  return partsOf(main).map((c) => c.getBoundingClientRect().left)
+function ms(name: string, fallback: number) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  return parseFloat(v) || fallback
 }
 const isPhone = () => window.matchMedia('(max-width: 900px)').matches
-const isReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /** UI strings for the shell, per locale (content/ui/*.json → proof). */
 export interface ShellLabels {
@@ -101,248 +93,57 @@ export function SiteShell({
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(folders.map((f) => [f.key, true]))
   )
+  const [slide, setSlide] = useState<Slide>('close')
+  const pathname = usePathname()
   const topbar = useRef<HTMLElement>(null)
   // On phones the rails are drawers pinned under the top bar. The bar is
   // sticky, so where its bottom edge sits depends on scroll; measure it.
   const [drawerTop, setDrawerTop] = useState<number | null>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
   const storiesButton = useRef<HTMLButtonElement>(null)
+  const rail1Ref = useRef<HTMLElement>(null)
+  const rail2Ref = useRef<HTMLElement>(null)
   const railId = useId()
   const dirId = useId()
 
-  const shellRef = useRef<HTMLDivElement>(null)
-  const mainRef = useRef<HTMLDivElement>(null)
-  const rail1Ref = useRef<HTMLElement>(null)
-  const rail2Ref = useRef<HTMLElement>(null)
-  const scrimRef = useRef<HTMLButtonElement>(null)
-  const sheet1Ref = useRef<HTMLDivElement>(null)
-  const sheet2Ref = useRef<HTMLDivElement>(null)
-  const running = useRef<Anim[]>([])
-  /** Set before an open: where the page's children were, and what to reveal. */
-  const flip = useRef<{
-    first: number[]
-    reveal: ('rail1' | 'rail2')[]
-    dur: number
-  } | null>(null)
-  /** Close animations held at their end until the layout commits. */
-  const settling = useRef<Anim[]>([])
+  const rail1Shown = menuOpen
+  const rail2Shown = menuOpen && storiesOpen
+  // A closed rail stays mounted (so it can slide), but out of the tab order
+  // and the accessibility tree. CSS hides it once its slide has finished.
+  useEffect(() => {
+    if (rail1Ref.current) rail1Ref.current.inert = !rail1Shown
+    if (rail2Ref.current) rail2Ref.current.inert = !rail2Shown
+  }, [rail1Shown, rail2Shown])
 
-  const stopAll = () => {
-    running.current.forEach((a) => a.cancel())
-    running.current = []
+  /** Ink in a rail waits until its sheet has stopped. */
+  const waitInk = (kind: Slide) => {
+    const dur = isPhone()
+      ? ms(kind === 'rail2' ? '--m-slide-drawer2-dur' : '--m-slide-drawer-dur', 280)
+      : ms(kind === 'both' ? '--m-slide-both-dur' : kind === 'rail2' ? '--m-slide-rail2-dur' : '--m-slide-rail1-dur', 300)
+    holdInk(dur + 120)
   }
-  const pageParts = () => partsOf(mainRef.current)
-  const lefts = () => leftsOf(mainRef.current)
-  /** The child nearest the middle of the viewport sets the shared Δ. */
-  const anchorIndex = (els: HTMLElement[]) => {
-    const mid = window.innerHeight / 2
-    let best = 0
-    let bestDist = Infinity
-    els.forEach((c, i) => {
-      const r = c.getBoundingClientRect()
-      const d = r.bottom < mid ? mid - r.bottom : r.top > mid ? r.top - mid : 0
-      if (d < bestDist) {
-        bestDist = d
-        best = i
-      }
-    })
-    return best
-  }
-  const onScreen = (el: Element) => {
-    const r = el.getBoundingClientRect()
-    return r.bottom > 0 && r.top < window.innerHeight
-  }
-
-  /** Start an open: record "first", commit the state change. */
-  const beginOpen = (
-    reveal: ('rail1' | 'rail2')[],
-    durToken: string,
-    durFallback: number,
-    commit: () => void
-  ) => {
-    stopAll()
-    const shell = shellRef.current
-    const dur = shell ? ms(shell, durToken, durFallback) : durFallback
-    flip.current = { first: lefts(), reveal, dur }
-    commit()
-  }
-
-  /** Run a close, then commit it once the sheets are where they'll end up. */
-  const runClose = (which: ('rail1' | 'rail2')[], commit: () => void) => {
-    stopAll()
-    const shell = shellRef.current
-    if (!shell || isReduced()) {
-      commit()
-      return
-    }
-    const anims: Anim[] = []
-    if (isPhone()) {
-      const dur = ms(shell, '--m-slide-close-dur', 200)
-      const ease = token(shell, '--m-slide-close-ease', 'cubic-bezier(.4,0,.9,.6)')
-      const opts: KeyframeAnimationOptions = {
-        duration: dur,
-        easing: ease,
-        fill: 'forwards',
-      }
-      if (which.includes('rail2') && rail2Ref.current)
-        anims.push(
-          rail2Ref.current.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(100%)' }], opts)
-        )
-      if (which.includes('rail1')) {
-        if (rail1Ref.current)
-          anims.push(
-            rail1Ref.current.animate(
-              [{ transform: 'translateX(0)' }, { transform: 'translateX(-102%)' }],
-              opts
-            )
-          )
-        if (scrimRef.current)
-          anims.push(
-            scrimRef.current.animate([{ opacity: 1 }, { opacity: 0 }], {
-              ...opts,
-              easing: 'linear',
-            })
-          )
-      }
-    } else {
-      // The proof is coming back to rest, so it decelerates (slide ease).
-      const dur = ms(shell, '--m-slide-close-dur', 200)
-      const ease = token(shell, '--m-slide-ease', 'cubic-bezier(.3,.1,.2,1)')
-      const opts: KeyframeAnimationOptions = {
-        duration: dur,
-        easing: ease,
-        fill: 'forwards',
-      }
-      // Push (Ilham, 2026-10-18): the page and the closing sheets move left
-      // together by the closing columns' width, then the layout commits.
-      const cols = which
-        .map((w) => (w === 'rail1' ? rail1Ref.current : rail2Ref.current))
-        .filter(Boolean) as HTMLElement[]
-      const width = cols.reduce((sum, r) => sum + r.getBoundingClientRect().width, 0)
-      const to = [{ transform: 'translateX(0)' }, { transform: `translateX(${-width}px)` }]
-      which.forEach((w) => {
-        const sh = w === 'rail1' ? sheet1Ref.current : sheet2Ref.current
-        if (sh) anims.push(sh.animate(to, opts))
-      })
-      pageParts()
-        .filter(onScreen)
-        .forEach((c) => anims.push(c.animate(to, opts)))
-    }
-    running.current = anims
-    const last = anims[anims.length - 1]
-    if (!last) {
-      commit()
-      return
-    }
-    // Commit when the slide ends — or after its duration regardless, since a
-    // hidden or backgrounded tab can pause animations and never finish them.
-    let done = false
-    const finish = () => {
-      if (done) return
-      done = true
-      settling.current = anims
-      commit()
-    }
-    last.onfinish = finish
-    const total = Number(last.effect?.getComputedTiming().endTime ?? 200)
-    window.setTimeout(finish, total + 80)
-  }
-
-  // After every commit: release held close animations (the layout now matches
-  // their end state), or play the FLIP + reveal for an open.
-  useLayoutEffect(() => {
-    if (settling.current.length) {
-      settling.current.forEach((a) => a.cancel())
-      settling.current = []
-      running.current = []
-    }
-    const f = flip.current
-    flip.current = null
-    const shell = shellRef.current
-    if (!f || !shell) return
-    if (isReduced()) {
-      f.reveal.forEach((w) => {
-        const el = w === 'rail1' ? rail1Ref.current : rail2Ref.current
-        const dur = ms(shell, '--m-rm-fade', 120)
-        el?.animate([{ opacity: 0 }, { opacity: 1 }], {
-          duration: dur,
-          easing: 'linear',
-        })
-      })
-      return
-    }
-    const anims: Anim[] = []
-    const ease = token(shell, '--m-slide-ease', 'cubic-bezier(.3,.1,.2,1)')
-    const opts: KeyframeAnimationOptions = { duration: f.dur, easing: ease }
-    if (isPhone()) {
-      if (f.reveal.includes('rail1')) {
-        if (rail1Ref.current)
-          anims.push(
-            rail1Ref.current.animate(
-              [{ transform: 'translateX(-102%)' }, { transform: 'translateX(0)' }],
-              opts
-            )
-          )
-        if (scrimRef.current)
-          anims.push(
-            scrimRef.current.animate([{ opacity: 0 }, { opacity: 1 }], {
-              ...opts,
-              easing: 'linear',
-            })
-          )
-      }
-      if (f.reveal.includes('rail2') && rail2Ref.current)
-        anims.push(
-          rail2Ref.current.animate([{ transform: 'translateX(100%)' }, { transform: 'translateX(0)' }], opts)
-        )
-    } else {
-      // FLIP: one shared Δ from the child nearest the viewport's middle.
-      const els = partsOf(mainRef.current)
-      const last = leftsOf(mainRef.current)
-      const k = anchorIndex(els)
-      const dx = (f.first[k] ?? last[k]) - last[k]
-      // The revealed sheets start the same Δ to the left, inside their
-      // clipping columns, so the page and the sheets arrive as one move and
-      // never cross each other.
-      if (dx) {
-        const from = [{ transform: `translateX(${dx}px)` }, { transform: 'translateX(0)' }]
-        els.filter(onScreen).forEach((c) => anims.push(c.animate(from, opts)))
-        f.reveal.forEach((w) => {
-          const sh = w === 'rail1' ? sheet1Ref.current : sheet2Ref.current
-          if (sh) anims.push(sh.animate(from, opts))
-        })
-      }
-    }
-    running.current = anims
-    holdInk(f.dur + 120)
-  }, [menuOpen, storiesOpen])
 
   const openMenu = () => {
-    const both = storiesOpen
-    beginOpen(
-      both ? ['rail1', 'rail2'] : ['rail1'],
-      isPhone() ? '--m-slide-drawer-dur' : both ? '--m-slide-both-dur' : '--m-slide-rail1-dur',
-      isPhone() ? 280 : both ? 340 : 280,
-      () => setMenuOpen(true)
-    )
+    const kind: Slide = storiesOpen ? 'both' : 'rail1'
+    setSlide(kind)
+    setMenuOpen(true)
+    waitInk(kind)
   }
-  const closeMenu = (focus = false) =>
-    runClose(storiesOpen ? ['rail1', 'rail2'] : ['rail1'], () => {
-      setMenuOpen(false)
-      if (focus) menuButton.current?.focus()
-    })
-  const openStories = () =>
-    beginOpen(
-      ['rail2'],
-      isPhone() ? '--m-slide-drawer2-dur' : '--m-slide-rail2-dur',
-      isPhone() ? 260 : 300,
-      () => setStoriesOpen(true)
-    )
-  const closeStories = (focus = false) =>
-    runClose(['rail2'], () => {
-      setStoriesOpen(false)
-      if (focus) storiesButton.current?.focus()
-    })
+  const closeMenu = (focus = false) => {
+    setSlide('close')
+    setMenuOpen(false)
+    if (focus) menuButton.current?.focus()
+  }
+  const openStories = () => {
+    setSlide('rail2')
+    setStoriesOpen(true)
+    waitInk('rail2')
+  }
+  const closeStories = (focus = false) => {
+    setSlide('close')
+    setStoriesOpen(false)
+    if (focus) storiesButton.current?.focus()
+  }
 
   // The Escape listener always calls the current closers.
   const closers = useRef({ closeMenu, closeStories })
@@ -387,14 +188,14 @@ export function SiteShell({
     )
   }
 
-  const shell = ['tp-shell', menuOpen && 'is-open', menuOpen && storiesOpen && 'has-l2']
+  const shell = ['tp-shell', rail1Shown && 'is-open', rail2Shown && 'has-l2']
     .filter(Boolean)
     .join(' ')
 
   return (
     <div
-      ref={shellRef}
       className={shell}
+      data-slide={slide}
       style={drawerTop !== null ? ({ '--drawer-top': `${drawerTop}px` } as React.CSSProperties) : undefined}
     >
       {/* ── Top bar: always there ───────────────────────────────────── */}
@@ -417,8 +218,8 @@ export function SiteShell({
       </header>
 
       {/* ── Rail 1: main navigation ─────────────────────────────────── */}
-      <aside ref={rail1Ref} id={railId} className="tp-rail" aria-label="Site" hidden={!menuOpen}>
-        <div ref={sheet1Ref} className="tp-rail__sheet">
+      <aside ref={rail1Ref} id={railId} className="tp-rail" aria-label="Site">
+        <div className="tp-rail__sheet">
           <nav aria-label="Primary" className="tp-rail__nav">
             {item('home', base, labels.home)}
             <button
@@ -457,9 +258,8 @@ export function SiteShell({
         id={dirId}
         className="tp-rail2"
         aria-label={labels.stories}
-        hidden={!(menuOpen && storiesOpen)}
       >
-        <div ref={sheet2Ref} className="tp-rail__sheet">
+        <div className="tp-rail__sheet">
           <div className="tp-rail2__top">
             <button
               type="button"
@@ -497,7 +297,9 @@ export function SiteShell({
                     <ul className="tp-tree__items">
                       {f.items.map((it) => (
                         <li key={it.href}>
-                          <Link href={it.href}>{it.title}</Link>
+                          <Link href={it.href} aria-current={pathname === it.href ? 'page' : undefined}>
+                            {it.title}
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -509,17 +311,16 @@ export function SiteShell({
         </div>
       </aside>
 
-      {menuOpen && (
-        <button
-          ref={scrimRef}
-          type="button"
-          className="tp-rail__scrim"
-          aria-label="Close menu"
-          onClick={() => closeMenu()}
-        />
-      )}
+      {/* Phones only: the page dims under the drawer; a tap closes it. */}
+      <button
+        type="button"
+        className="tp-rail__scrim"
+        aria-label={labels.closeMenu}
+        tabIndex={-1}
+        onClick={() => closeMenu()}
+      />
 
-      <div ref={mainRef} className="tp-main">
+      <div className="tp-main">
         {children}
       </div>
     </div>
