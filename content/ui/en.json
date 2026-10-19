@@ -88,5 +88,35 @@
     "related": "More like this",
     "storiesOne": "1 story",
     "chaptersOne": "1 chapter"
+  },
+  "pages": {
+    "galleryIntro": "Photos from travels and everyday life.",
+    "galleryEmpty": "No gallery photos yet.",
+    "relatedStory": "Read the related story →",
+    "seeUses": "See the tools I use →",
+    "usesTitle": "Uses",
+    "usesDisclosure": "Some links on this page are affiliate links. If you buy something through them, I earn a small commission at no extra cost to you. I only list things I actually use.",
+    "usesSee": "See →",
+    "newsletterSub": "New posts in your inbox.",
+    "newsletterBody": [
+      "When I publish something new — an essay, a note, a tutorial — it goes here first.",
+      "No algorithmic feed. No notifications. Just a quiet email when there is something worth reading.",
+      "Roughly once or twice a month. Unsubscribe any time."
+    ],
+    "newsletterExpect": "What you’ll get",
+    "newsletterItems": [
+      "New posts — essays, notes, reviews, tutorials",
+      "Occasional short observations that do not make it to the blog",
+      "Nothing else"
+    ],
+    "notFoundLabel": "404",
+    "notFoundTitle": "This page isn’t in the proof.",
+    "notFoundBody": "It may have moved, or it was never written.",
+    "backHome": "Back to the front page →",
+    "errorLabel": "Error",
+    "errorTitle": "Something went wrong.",
+    "tryAgain": "Try again",
+    "contact": "Contact",
+    "currently": "Currently"
   }
 }

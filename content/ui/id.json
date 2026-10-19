@@ -88,5 +88,35 @@
     "related": "Tulisan serupa",
     "storiesOne": "1 cerita",
     "chaptersOne": "1 bab"
+  },
+  "pages": {
+    "galleryIntro": "Foto-foto dari perjalanan dan keseharian.",
+    "galleryEmpty": "Belum ada foto di galeri.",
+    "relatedStory": "Baca tulisan terkait →",
+    "seeUses": "Lihat perkakas yang saya gunakan →",
+    "usesTitle": "Perkakas",
+    "usesDisclosure": "Beberapa tautan di halaman ini adalah tautan afiliasi. Jika Anda membeli sesuatu melalui tautan ini, saya mendapatkan komisi kecil tanpa biaya tambahan untuk Anda. Saya hanya mencantumkan hal-hal yang benar-benar saya gunakan.",
+    "usesSee": "Lihat →",
+    "newsletterSub": "Tulisan baru langsung ke inbox kamu.",
+    "newsletterBody": [
+      "Ketika saya menerbitkan sesuatu yang baru — esai, catatan, tutorial — itu masuk ke sini dulu.",
+      "Tidak ada algoritma. Tidak ada notifikasi. Hanya email yang tenang ketika ada sesuatu yang layak dibaca.",
+      "Kira-kira satu atau dua kali sebulan. Berhenti langganan kapan saja."
+    ],
+    "newsletterExpect": "Apa yang akan kamu dapatkan",
+    "newsletterItems": [
+      "Tulisan baru — esai, catatan, ulasan, tutorial",
+      "Sesekali observasi singkat yang tidak masuk ke blog",
+      "Tidak ada yang lain"
+    ],
+    "notFoundLabel": "404",
+    "notFoundTitle": "Halaman ini tidak ada di naskah.",
+    "notFoundBody": "Mungkin sudah dipindahkan, atau memang belum pernah ditulis.",
+    "backHome": "Kembali ke halaman depan →",
+    "errorLabel": "Galat",
+    "errorTitle": "Ada yang tidak beres.",
+    "tryAgain": "Coba lagi",
+    "contact": "Kontak",
+    "currently": "Saat ini"
   }
 }

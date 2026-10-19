@@ -1,538 +1,142 @@
-'use client'
-
+import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import type { Locale } from '@/lib/i18n'
-import { useTheme as useThemeProvider } from '@/components/ThemeProvider'
-import { RoughCard } from '@/components/RoughCard'
+import type { Metadata } from 'next'
+import { SiteFrame } from '@/components/proof/SiteFrame'
+import { Arrow, Mark } from '@/components/proof/Mark'
+import { Caret, Pilcrow } from '@/components/proof/Proof'
+import { Bracket, Line, PenLink, Save } from '@/components/proof/Pen'
+import { BlockButton } from '@/components/proof/BlockButton'
+import { PrintedForm } from '@/components/proof/PrintedForm'
+import { Figure } from '@/components/proof/Figure'
+import { getCloudinaryImagesByTag, type CloudinaryAsset } from '@/lib/cloudinary'
+import { LOCALES, isLocale } from '@/lib/i18n'
 
-interface ComponentShowcaseProps {
-  params: { locale: Locale }
+export const revalidate = 300
+
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }))
 }
 
-const componentConfig = {
-  en: {
-    title: 'Component Gallery',
-    description: 'Visual reference for all button & link components',
-    sections: {
-      links: 'Link Components',
-      buttons: 'Button Components',
-      states: 'Interactive States',
-      cards: 'Card Variants',
-    },
-  },
-  id: {
-    title: 'Galeri Komponen',
-    description: 'Referensi visual untuk semua komponen tombol & tautan',
-    sections: {
-      links: 'Komponen Tautan',
-      buttons: 'Komponen Tombol',
-      states: 'Status Interaktif',
-      cards: 'Varian Kartu',
-    },
-  },
+export const metadata: Metadata = {
+  title: 'Components',
+  robots: { index: false, follow: false },
 }
 
-export default function ComponentsPage({ params }: ComponentShowcaseProps) {
-  const { locale } = params
-  const config = componentConfig[locale as keyof typeof componentConfig] || componentConfig.en
-  const { resolvedTheme } = useThemeProvider()
+/**
+ * Internal specimen of the read-back proof library (`src/components/proof/`),
+ * the live counterpart of DESIGN.md → Components. Not linked from the site and
+ * not indexed. The sample notes here are labelled as samples; on real pages
+ * every note is written by Ilham in Sanity.
+ */
+export default async function ComponentsPage({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) notFound()
+  const locale = params.locale
+  const base = `/${locale}`
+  const photo = (await getCloudinaryImagesByTag('blog-gallery').catch(() => [] as CloudinaryAsset[]))[0]
 
   return (
-    <main className="min-h-screen pt-24 pb-16 px-6 md:px-8" style={{ color: 'var(--color-ink)' }}>
-      <div className="max-w-[1200px] mx-auto">
-        {/* Header */}
-        <header className="mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-            {config.title}
-          </h1>
-          <p className="text-lg" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-smudge)' }}>
-            {config.description}
-          </p>
-          <p className="text-sm mt-4" style={{ color: 'var(--color-smudge)' }}>
-            Theme: <strong>{resolvedTheme}</strong>
+    <SiteFrame locale={locale} current="none" path="/components">
+      <article className="tp-article tp-spec">
+        <header className="tp-article__head">
+          <span className="tp-label">Internal · not indexed</span>
+          <h1 className="tp-article__title">Components</h1>
+          <p className="tp-article__dek">
+            Every part of the read-back proof, as built. Values and rules are in DESIGN.md.
           </p>
         </header>
 
-        {/* Links Section */}
-        <section className="mb-20">
-          <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-            {config.sections.links}
+        <section className="tp-section">
+          <h2 className="tp-section-head">Buttons and inputs</h2>
+          <div className="tp-spec__row">
+            <BlockButton id="spec:block" href={`${base}/newsletter`}>
+              Subscribe
+            </BlockButton>
+            <BlockButton id="spec:block-small" href={`${base}/newsletter`} small>
+              Subscribe
+            </BlockButton>
+          </div>
+          <p className="tp-meta">Printed block, the primary action. One per screen; the small one is the top bar&apos;s.</p>
+          <PrintedForm id="spec:form" prompt="Get the next chapter by email" field="your email" action="Send →" />
+          <p className="tp-meta">Printed form: a sentence and a line to fill in.</p>
+          <div className="tp-spec__row">
+            <PenLink id="spec:pen" href={`${base}/blog`}>
+              Read the story →
+            </PenLink>
+            <Link href={`${base}/blog`} className="tp-quiet">
+              Quiet link
+            </Link>
+            <Link href={`${base}/blog`} className="tp-quiet is-current">
+              Current
+            </Link>
+            <Save id="spec:save" />
+          </div>
+          <p className="tp-meta">Pen link (hover it), quiet links, and Save (platform phase; nothing is stored).</p>
+        </section>
+
+        <section className="tp-section">
+          <h2 className="tp-section-head">
+            <Pilcrow id="spec:pilcrow" />
+            Marks
           </h2>
-
-          <div className="space-y-12">
-            {/* Navigation Links */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Navigation Links</h3>
-              <div className="flex flex-wrap gap-6 items-center">
-                <Link
-                  href={`/${locale}`}
-                  className="font-bold text-base tracking-tight"
-                  style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-display)' }}
-                >
-                  Logo / Home
-                </Link>
-                <Link
-                  href={`/${locale}/blog`}
-                  className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  Blog
-                </Link>
-                <Link
-                  href={`/${locale}/about`}
-                  className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  About
-                </Link>
-                <Link
-                  href={`/${locale}/uses`}
-                  className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  Uses
-                </Link>
+          <div className="tp-body tp-measure">
+            <p>
+              A <Mark id="spec:circle" kind="circle">circled</Mark> word, an{' '}
+              <Mark id="spec:underline" kind="underline">underlined phrase</Mark>, and a caret for an
+              insertion
+              <Caret id="spec:caret" />.
+            </p>
+            <p>
+              A phrase that wraps:{' '}
+              <Line id="spec:multiline">
+                every line it runs across gets its own stroke, so long Indonesian phrases and narrow
+                phones work too
+              </Line>
+              .
+            </p>
+            <p>
+              The proofreader&apos;s delete:{' '}
+              <Line id="spec:strike" kind="strike">
+                a line I nearly cut
+              </Line>{' '}
+              and planned, not yet travelled:{' '}
+              <Line id="spec:dashed" kind="dashed">
+                Season 2
+              </Line>
+              .
+            </p>
+          </div>
+          <div className="tp-body__row">
+            <Bracket id="spec:bracket" className="tp-body__text">
+              <div className="tp-body">
+                <p>A bracket beside a whole paragraph, with a margin note beside it. On narrow screens the note drops under the paragraph.</p>
               </div>
-            </div>
-
-            {/* Breadcrumb Links */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Breadcrumb Trail</h3>
-              <nav className="flex items-center gap-2">
-                <Link href="/" className="label-stamped hover:text-[var(--color-ink)] transition-colors" style={{ color: 'var(--color-smudge)' }}>
-                  Home
-                </Link>
-                <span style={{ color: 'var(--color-torn)' }}>/</span>
-                <Link href="/blog" className="label-stamped hover:text-[var(--color-ink)] transition-colors" style={{ color: 'var(--color-smudge)' }}>
-                  Blog
-                </Link>
-                <span style={{ color: 'var(--color-torn)' }}>/</span>
-                <span className="label-stamped" style={{ color: 'var(--color-ink)' }}>
-                  Article Title
-                </span>
-              </nav>
-            </div>
-
-            {/* Footer Links */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Footer Links</h3>
-              <nav className="flex flex-wrap gap-x-6 gap-y-2">
-                {['Blog', 'About', 'Uses', 'Newsletter', 'RSS'].map((label) => (
-                  <Link
-                    key={label}
-                    href="#"
-                    className="label-stamped hover:text-[var(--color-ghost)] transition-colors"
-                    style={{ color: 'var(--color-smudge)' }}
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            {/* Locale Switcher */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Locale Switcher</h3>
-              <nav className="flex gap-2 items-center">
-                <span className="font-ui text-xs tracking-[0.12em] uppercase" style={{ color: 'var(--color-ink)' }}>
-                  EN
-                </span>
-                <span style={{ color: 'var(--color-torn)' }}>/</span>
-                <Link
-                  href="#"
-                  className="font-ui text-xs tracking-[0.12em] uppercase transition-colors hover:text-[var(--color-ink)]"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  ID
-                </Link>
-              </nav>
-            </div>
-
-            {/* Pill Links (Polaroid style) */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Pill Links (Polaroid)</h3>
-              <div className="flex flex-wrap gap-2">
-                {['Destination', 'Itinerary', 'View Story'].map((label) => (
-                  <a
-                    key={label}
-                    href="#"
-                    className="label-stamped"
-                    style={{
-                      display: 'inline-block',
-                      padding: '4px 10px',
-                      backgroundColor: 'var(--color-ghost)',
-                      border: '1px solid var(--color-torn)',
-                      borderRadius: '12px',
-                      color: 'var(--color-ink)',
-                      textDecoration: 'none',
-                      transition: 'all 200ms ease',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--color-blush)'
-                      e.currentTarget.style.color = '#fff'
-                      e.currentTarget.style.borderColor = 'var(--color-blush)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--color-ghost)'
-                      e.currentTarget.style.color = 'var(--color-ink)'
-                      e.currentTarget.style.borderColor = 'var(--color-torn)'
-                    }}
-                  >
-                    {label}
-                  </a>
-                ))}
-              </div>
-              <p className="text-xs mt-4" style={{ color: 'var(--color-smudge)' }}>Hover to see color change</p>
-            </div>
+            </Bracket>
+            <aside className="tp-sidenote">
+              <span className="tp-hand">sample margin note</span>
+            </aside>
+          </div>
+          <div className="tp-spec__arrow">
+            <Arrow id="spec:arrow" from={[0.95, 0.15]} to={[0.05, 0.85]} className="tp-lead__arrow" />
+            <span className="tp-hand">a single-gesture pointer</span>
           </div>
         </section>
 
-        {/* Buttons Section */}
-        <section className="mb-20">
-          <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-            {config.sections.buttons}
-          </h2>
-
-          <div className="space-y-12">
-            {/* Newsletter Submit Button */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Newsletter Submit</h3>
-              <form className="flex gap-2 max-w-md">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 px-3 py-2 text-sm bg-transparent border outline-none focus:border-[var(--color-ink)]"
-                  style={{
-                    borderColor: 'var(--color-torn)',
-                    borderRadius: 'var(--radius-input)',
-                    fontFamily: 'var(--font-ui)',
-                    color: 'var(--color-ink)',
-                  }}
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs tracking-[0.12em] uppercase transition-opacity hover:opacity-80"
-                  style={{
-                    backgroundColor: 'var(--color-ink)',
-                    color: 'var(--color-paper)',
-                    fontFamily: 'var(--font-ui)',
-                    borderRadius: 0,
-                  }}
-                >
-                  SUBSCRIBE
-                </button>
-              </form>
-            </div>
-
-            {/* Canvas Control Buttons */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Canvas Zoom Controls</h3>
-              <div className="flex gap-2">
-                <button
-                  className="canvas-control"
-                  style={{
-                    width: '2.25rem',
-                    height: '2.25rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '1.1rem',
-                    lineHeight: 1,
-                    color: 'var(--color-ink)',
-                    backgroundColor: 'var(--color-paper)',
-                    border: '1px solid var(--color-torn)',
-                    borderRadius: 'var(--radius-card)',
-                    boxShadow: '0 2px 8px rgba(28, 25, 23, 0.08)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  +
-                </button>
-                <button
-                  className="canvas-control"
-                  style={{
-                    width: '2.25rem',
-                    height: '2.25rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '1.1rem',
-                    lineHeight: 1,
-                    color: 'var(--color-ink)',
-                    backgroundColor: 'var(--color-paper)',
-                    border: '1px solid var(--color-torn)',
-                    borderRadius: 'var(--radius-card)',
-                    boxShadow: '0 2px 8px rgba(28, 25, 23, 0.08)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  −
-                </button>
-                <button
-                  className="canvas-control"
-                  style={{
-                    width: '2.25rem',
-                    height: '2.25rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '0.75rem',
-                    lineHeight: 1,
-                    color: 'var(--color-ink)',
-                    backgroundColor: 'var(--color-paper)',
-                    border: '1px solid var(--color-torn)',
-                    borderRadius: 'var(--radius-card)',
-                    boxShadow: '0 2px 8px rgba(28, 25, 23, 0.08)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ⤢
-                </button>
-              </div>
-              <p className="text-xs mt-4" style={{ color: 'var(--color-smudge)' }}>Hover to see shadow change</p>
-            </div>
-
-            {/* Theme Toggle */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Theme Toggle</h3>
-              <button
-                className="label-stamped transition-colors hover:text-[var(--color-ink)]"
-                style={{
-                  color: 'var(--color-smudge)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  fontSize: '1.5rem',
-                }}
-              >
-                {resolvedTheme === 'dark' ? '○' : '●'}
-              </button>
-            </div>
-
-            {/* Hamburger Menu */}
-            <div className="border p-8" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Hamburger Menu Toggle</h3>
-              <button
-                className="flex flex-col justify-center items-center gap-[5px] w-8 h-8"
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-              >
-                <span
-                  className="block h-[1.5px] w-6"
-                  style={{ backgroundColor: 'var(--color-ink)' }}
-                />
-                <span
-                  className="block h-[1.5px] w-6"
-                  style={{ backgroundColor: 'var(--color-ink)' }}
-                />
-                <span
-                  className="block h-[1.5px] w-6"
-                  style={{ backgroundColor: 'var(--color-ink)' }}
-                />
-              </button>
-              <p className="text-xs mt-4" style={{ color: 'var(--color-smudge)' }}>Transforms to X on mobile menu open</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Card Variants */}
-        <section className="mb-20">
-          <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-            {config.sections.cards}
-          </h2>
-
-          <div className="space-y-8">
-            {/* Ghost Card */}
-            <div
-              className="p-5 block group cursor-pointer transition-all duration-200"
-              style={{
-                backgroundColor: 'var(--color-ghost)',
-                border: '1px solid var(--color-torn)',
-                borderRadius: 'var(--radius-card)',
-                textDecoration: 'none',
-              }}
-            >
-              <span className="label-stamped block mb-2" style={{ color: 'var(--color-blush)' }}>
-                essay
-              </span>
-              <h3 className="text-lg font-bold leading-snug mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-                Example Blog Post Title
-              </h3>
-              <span className="label-stamped" style={{ color: 'var(--color-smudge)' }}>
-                5 min read
-              </span>
-            </div>
-
-            {/* Paper Card */}
-            <div
-              className="p-5"
-              style={{
-               backgroundColor: 'var(--color-paper)',
-                border: '1px solid var(--color-torn)',
-                borderRadius: 'var(--radius-card)',
-              }}
-            >
-              <span className="label-stamped block mb-3" style={{ color: 'var(--color-ink)' }}>
-                Currently
-              </span>
-              <p className="text-sm mb-2" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
-                📖 Reading: The Design of Everyday Things
-              </p>
-              <p className="text-sm" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}>
-                🛠 Working on: Component Gallery
-              </p>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <div>
-                <p className="label-stamped mb-3" style={{ color: 'var(--color-smudge)' }}>
-                  Rough card — vertical
-                </p>
-                <RoughCard
-                  orientation="vertical"
-                  seed={1409}
-                  contentClassName="p-6"
-                >
-                  <div
-                    className="mb-5 aspect-[16/10]"
-                    style={{ backgroundColor: 'var(--color-blush)', opacity: 0.72 }}
-                  />
-                  <h3 className="text-2xl font-bold">Travel journal</h3>
-                  <p className="mt-2 text-sm" style={{ color: 'var(--color-smudge)' }}>
-                    Stacked media and content for galleries, destinations, and stories.
-                  </p>
-                </RoughCard>
-              </div>
-
-              <div>
-                <p className="label-stamped mb-3" style={{ color: 'var(--color-smudge)' }}>
-                  Rough card — horizontal
-                </p>
-                <RoughCard
-                  orientation="horizontal"
-                  seed={1877}
-                  contentClassName="min-h-48"
-                >
-                  <div
-                    className="w-2/5 shrink-0"
-                    style={{ backgroundColor: '#4dabf7', opacity: 0.72 }}
-                  />
-                  <div className="flex flex-1 flex-col justify-center p-6">
-                    <h3 className="text-2xl font-bold">Field notes</h3>
-                    <p className="mt-2 text-sm" style={{ color: 'var(--color-smudge)' }}>
-                      Side-by-side media and copy for wider content rows.
-                    </p>
-                  </div>
-                </RoughCard>
-              </div>
-            </div>
-
-            {/* Newsletter Card */}
-            <div
-              className="p-6"
-              style={{
-                backgroundColor: 'var(--color-ghost)',
-                border: '1px solid var(--color-torn)',
-                borderRadius: 'var(--radius-card)',
-                transform: 'rotate(-0.5deg)',
-              }}
-            >
-              <p className="mb-3 text-sm" style={{ fontFamily: 'var(--font-ui)', color: 'var(--color-ink)' }}>
-                Get new posts in your inbox
-              </p>
-              <form className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 px-3 py-2 text-sm bg-transparent border outline-none focus:border-[var(--color-ink)]"
-                  style={{
-                    borderColor: 'var(--color-torn)',
-                    borderRadius: 'var(--radius-input)',
-                    fontFamily: 'var(--font-ui)',
-                    color: 'var(--color-ink)',
-                  }}
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs tracking-[0.12em] uppercase transition-opacity hover:opacity-80"
-                  style={{
-                    backgroundColor: 'var(--color-ink)',
-                    color: 'var(--color-paper)',
-                    fontFamily: 'var(--font-ui)',
-                    borderRadius: 0,
-                  }}
-                >
-                  SUBSCRIBE
-                </button>
-              </form>
-            </div>
-          </div>
-        </section>
-
-        {/* States */}
-        <section className="mb-20">
-          <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}>
-            {config.sections.states}
-          </h2>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="border p-6" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h4 className="font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Default</h4>
-              <p className="text-sm mb-3" style={{ color: 'var(--color-smudge)' }}>Slight shadow, element pinned to surface</p>
-              <Link
-                href="#"
-                className="label-stamped"
-                style={{ color: 'var(--color-smudge)' }}
-              >
-                Link Example
-              </Link>
-            </div>
-
-            <div className="border p-6" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h4 className="font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Hover</h4>
-              <p className="text-sm mb-3" style={{ color: 'var(--color-smudge)' }}>Shadow deepens, element lifts slightly</p>
-              <Link
-                href="#"
-                className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-                style={{ color: 'var(--color-smudge)' }}
-              >
-                Hover me →
-              </Link>
-            </div>
-
-            <div className="border p-6" style={{ borderColor: 'var(--color-torn)', borderRadius: 'var(--radius-card)' }}>
-              <h4 className="font-semibold mb-4" style={{ color: 'var(--color-ink)' }}>Drag/Active</h4>
-              <p className="text-sm mb-3" style={{ color: 'var(--color-smudge)' }}>Large shadow + scale 1.03–1.04</p>
-              <Link
-                href="#"
-                className="label-stamped"
-                style={{
-                  color: 'var(--color-ink)',
-                  transform: 'scale(1.03)',
-                  display: 'inline-block',
-                }}
-              >
-                Floating ↑
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Back to Home */}
-        <div className="mt-16 pt-8 border-t" style={{ borderColor: 'var(--color-torn)' }}>
-          <Link
-            href={`/${locale}`}
-            className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-            style={{ color: 'var(--color-smudge)' }}
-          >
-            ← Back to Home
-          </Link>
-        </div>
-      </div>
-    </main>
+        {photo && (
+          <section className="tp-section">
+            <h2 className="tp-section-head">Figure</h2>
+            <Figure
+              id="spec:figure"
+              src={photo.url}
+              alt={photo.alt}
+              plate="Sample plate"
+              callouts={[
+                { x: 0.3, y: 0.55, note: 'sample note 1' },
+                { x: 0.7, y: 0.35, note: 'sample note 2' },
+              ]}
+            />
+          </section>
+        )}
+      </article>
+    </SiteFrame>
   )
 }

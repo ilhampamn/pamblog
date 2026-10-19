@@ -50,7 +50,7 @@ export async function SiteFrame({
   children,
 }: {
   locale: Locale
-  current: 'home' | 'stories' | 'explore' | 'gallery' | 'about'
+  current: 'home' | 'stories' | 'gallery' | 'about' | 'none'
   path?: string
   children: ReactNode
 }) {

@@ -5,7 +5,7 @@ import { LOCALES } from '@/lib/i18n'
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://ilhampamungkas.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticRoutes = ['', '/blog', '/about', '/uses', '/newsletter']
+  const staticRoutes = ['', '/blog', '/gallery', '/about', '/uses', '/newsletter']
 
   const staticEntries = LOCALES.flatMap((locale) =>
     staticRoutes.map((route) => ({

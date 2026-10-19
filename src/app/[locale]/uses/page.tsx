@@ -1,23 +1,18 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { t, type Locale } from '@/lib/i18n'
-
-const LOCALES = ['en', 'id', 'zh'] as const
+import { SiteFrame } from '@/components/proof/SiteFrame'
+import { Pilcrow } from '@/components/proof/Proof'
+import { LOCALES, isLocale, t, type Locale } from '@/lib/i18n'
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string }
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  if (!isLocale(params.locale)) return {}
   const isId = params.locale === 'id'
   return {
-    title: isId ? 'Perkakas' : 'Uses — My Setup & Tools',
+    title: t(params.locale).pages.usesTitle,
     description: isId
       ? 'Peralatan, aplikasi, dan langganan yang benar-benar saya gunakan.'
       : 'The gear, software, and subscriptions I actually use — with honest takes.',
@@ -36,7 +31,7 @@ interface UsesCategory {
 }
 
 // en/id authored here; zh (and any future locale) falls back to en until this
-// content moves into the CMS.
+// content moves into the CMS. Product names stay as written.
 const usesData: Partial<Record<Locale, UsesCategory[]>> = {
   en: [
     {
@@ -194,96 +189,47 @@ const usesData: Partial<Record<Locale, UsesCategory[]>> = {
   ],
 }
 
+/**
+ * Uses: a typeset list in one reading column. The affiliate disclosure sits
+ * first, as a muted note with a soft rule (no tinted box); each category opens
+ * with a pilcrow head, and each item is a ruled row with its link at the end.
+ */
 export default function UsesPage({ params }: { params: { locale: string } }) {
-  const locale = params.locale as Locale
-  if (!LOCALES.includes(locale as Locale)) notFound()
-
-  const ui = t(locale)
+  if (!isLocale(params.locale)) notFound()
+  const locale = params.locale
+  const ui = t(locale).pages
   const categories = usesData[locale] ?? usesData.en ?? []
-  const isId = locale === 'id'
 
   return (
-    <div className="page-shell">
-      <Nav locale={locale} ui={ui.nav} />
+    <SiteFrame locale={locale} current="none" path="/uses">
+      <article className="tp-article">
+        <header className="tp-article__head">
+          <h1 className="tp-article__title">{ui.usesTitle}</h1>
+          <p className="tp-aside-note">{ui.usesDisclosure}</p>
+        </header>
 
-      <main
-        className="pt-32 pb-0 px-8 min-h-screen"
-       
-      >
-        <div className="max-w-[var(--prose-width)] mx-auto">
-
-          {/* Page heading */}
-          <h1
-            className="text-5xl md:text-6xl font-black mb-6 leading-none"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-          >
-            {isId ? 'Perkakas' : 'Uses'}
-          </h1>
-
-          {/* Affiliate disclosure */}
-          <div
-            className="mb-12 p-4 border-l-2"
-            style={{ borderColor: 'var(--color-blush)', backgroundColor: 'var(--color-ghost)' }}
-          >
-            <p
-              className="text-sm"
-              style={{ fontFamily: 'var(--font-ui)', color: 'var(--color-smudge)' }}
-            >
-              {isId
-                ? 'Beberapa tautan di halaman ini adalah tautan afiliasi. Jika Anda membeli sesuatu melalui tautan ini, saya mendapatkan komisi kecil tanpa biaya tambahan untuk Anda. Saya hanya mencantumkan hal-hal yang benar-benar saya gunakan.'
-                : 'Some links on this page are affiliate links. If you buy something through them, I earn a small commission at no extra cost to you. I only list things I actually use.'}
-            </p>
-          </div>
-
-          {/* Categories */}
-          <div className="space-y-20">
-            {categories.map((cat) => (
-              <section key={cat.label}>
-                <p
-                  className="label-stamped mb-8"
-                  style={{ color: 'var(--color-smudge)' }}
-                >
-                  {cat.label}
-                </p>
-
-                <ul className="divide-y" style={{ borderColor: 'var(--color-torn)' }}>
-                  {cat.items.map((item) => (
-                    <li key={item.slug} className="py-6">
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-8">
-                        <div className="flex-1">
-                          <h2
-                            className="font-bold text-base mb-2"
-                            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-                          >
-                            {item.name}
-                          </h2>
-                          <p
-                            className="text-sm leading-relaxed"
-                            style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}
-                          >
-                            {item.description}
-                          </p>
-                        </div>
-                        <a
-                          href={`/go/${item.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="label-stamped shrink-0 underline hover:text-[var(--color-ink)] transition-colors mt-1"
-                          style={{ color: 'var(--color-smudge)' }}
-                        >
-                          {isId ? 'Lihat →' : 'See →'}
-                        </a>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </div>
-        </div>
-      </main>
-
-      <Footer locale={locale} />
-    </div>
+        {categories.map((cat, i) => (
+          <section key={cat.label} className="tp-section" aria-labelledby={`uses-${i}`}>
+            <h2 id={`uses-${i}`} className="tp-section-head">
+              <Pilcrow id={`uses:${i}:pilcrow`} />
+              {cat.label}
+            </h2>
+            <ul className="tp-rows">
+              {cat.items.map((item) => (
+                <li key={item.slug} className="tp-row">
+                  <div className="tp-row__text">
+                    <span className="tp-row__title">{item.name}</span>
+                    <span className="tp-row__dek">{item.description}</span>
+                  </div>
+                  <a href={`/go/${item.slug}`} target="_blank" rel="noopener noreferrer sponsored" className="tp-link">
+                    {ui.usesSee}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </article>
+    </SiteFrame>
   )
 }

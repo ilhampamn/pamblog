@@ -1,141 +1,84 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { PostBody } from '@/components/PostBody'
-import { t, type Locale } from '@/lib/i18n'
+import { SiteFrame } from '@/components/proof/SiteFrame'
+import { Pilcrow } from '@/components/proof/Proof'
+import { PenLink } from '@/components/proof/Pen'
+import { ArticleBody } from '@/components/proof/Prose'
 import { getAbout } from '@/lib/about.sanity'
-import { renderPortableText } from '@/lib/portableText'
+import { LOCALES, isLocale, t } from '@/lib/i18n'
 
-const LOCALES = ['en', 'id', 'zh'] as const
+export const revalidate = 300
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string }
-}): Promise<Metadata> {
-  return {
-    title: params.locale === 'id' ? 'Tentang' : 'About',
-    description:
-      params.locale === 'id'
-        ? 'Tentang Ilham Pamungkas — fotografer, penulis, pembangun.'
-        : 'About Ilham Pamungkas — photographer, writer, builder.',
-  }
+export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
+  if (!isLocale(params.locale)) return {}
+  const about = await getAbout(params.locale).catch(() => null)
+  return { title: t(params.locale).proof.about, description: about?.intro || undefined }
 }
 
+/**
+ * About: one reading column, set like the article — title, the intro as the
+ * dek, the body from Sanity, then "Currently" as a ruled list and the contact
+ * line. Pilcrows open the two sections (the proofreader's new paragraph).
+ */
 export default async function AboutPage({ params }: { params: { locale: string } }) {
-  const locale = params.locale as Locale
-  if (!LOCALES.includes(locale as Locale)) notFound()
-
+  if (!isLocale(params.locale)) notFound()
+  const locale = params.locale
   const ui = t(locale)
-  const about = await getAbout(locale)
+  const base = `/${locale}`
 
-  // Fallback if CMS content isn't available yet
+  const about = await getAbout(locale)
   if (!about) notFound()
 
-  const isId = locale === 'id'
-
-  // Body comes back as Portable Text (localized + English fallback in GROQ).
-  const body = renderPortableText(about.body, locale)
-
-  const intro = about.intro
-  const currentlyLabel = about.currentlyLabel
-  const contactLabel = about.contactLabel
-  const contactBody = about.contactBody
-
   return (
-    <div className="page-shell">
-      <Nav locale={locale} ui={ui.nav} />
+    <SiteFrame locale={locale} current="about" path="/about">
+      <article className="tp-article">
+        <header className="tp-article__head">
+          <h1 className="tp-article__title">{ui.proof.about}</h1>
+          {about.intro && <p className="tp-article__dek">{about.intro}</p>}
+        </header>
 
-      <main
-        className="pt-32 pb-0 px-8 min-h-screen"
-       
-      >
-        <div className="max-w-[var(--prose-width)] mx-auto">
+        <ArticleBody blocks={about.body} notes={[]} locale={locale} id="about" />
 
-          {/* Heading */}
-          <h1
-            className="text-5xl md:text-6xl font-black mb-12 leading-none"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-          >
-            {isId ? 'Tentang' : 'About'}
-          </h1>
+        {about.currently.length > 0 && (
+          <section className="tp-section" aria-labelledby="about-currently">
+            <h2 id="about-currently" className="tp-section-head">
+              <Pilcrow id="about:currently:pilcrow" />
+              {about.currentlyLabel || ui.pages.currently}
+            </h2>
+            <dl className="tp-facts">
+              {about.currently.map((item, i) => (
+                <div key={item.label || i}>
+                  <dt className="tp-label">{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
 
-          {/* Intro */}
-          <p
-            className="text-2xl font-bold mb-10 leading-snug"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--color-ink)' }}
-          >
-            {intro}
-          </p>
-
-          {/* Body (Markdoc — editable in CMS) */}
-          <PostBody>{body}</PostBody>
-
-          {/* Divider */}
-          <div className="my-16 h-px" style={{ backgroundColor: 'var(--color-torn)' }} />
-
-          {/* Currently section */}
-          {about.currently.length > 0 && (
-            <section className="mb-16">
-              <p className="label-stamped mb-6">{currentlyLabel}</p>
-              <dl className="space-y-3">
-                {about.currently.map((item, i) => (
-                  <div key={item.label || i} className="flex gap-6">
-                    <dt
-                      className="w-28 shrink-0 label-stamped"
-                      style={{ color: 'var(--color-smudge)' }}
-                    >
-                      {item.label}
-                    </dt>
-                    <dd
-                      style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}
-                    >
-                      {item.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          )}
-
-          {/* Contact */}
-          <section className="mb-16">
-            <p className="label-stamped mb-3">{contactLabel}</p>
-            <p
-              className="mb-4"
-              style={{ fontFamily: 'var(--font-body)', color: 'var(--color-ink)' }}
-            >
-              {contactBody}
-            </p>
-            <a
-              href={`mailto:${about.email}`}
-              className="label-stamped underline hover:text-[var(--color-ink)] transition-colors"
-              style={{ color: 'var(--color-smudge)' }}
-            >
+        <section className="tp-section" aria-labelledby="about-contact">
+          <h2 id="about-contact" className="tp-section-head">
+            <Pilcrow id="about:contact:pilcrow" />
+            {about.contactLabel || ui.pages.contact}
+          </h2>
+          {about.contactBody && <p className="tp-section__text">{about.contactBody}</p>}
+          {about.email && (
+            <a href={`mailto:${about.email}`} className="tp-link tp-section__text">
               {about.email}
             </a>
-          </section>
+          )}
+        </section>
 
-          {/* Uses link */}
-          <div className="mb-16">
-            <Link
-              href={`/${locale}/uses`}
-              className="label-stamped hover:text-[var(--color-ink)] transition-colors"
-              style={{ color: 'var(--color-smudge)' }}
-            >
-              {isId ? 'Lihat perkakas yang saya gunakan →' : 'See the tools I use →'}
-            </Link>
-          </div>
+        <div className="tp-section">
+          <PenLink id="about:uses" href={`${base}/uses`}>
+            {ui.pages.seeUses}
+          </PenLink>
         </div>
-      </main>
-
-      <Footer locale={locale} />
-    </div>
+      </article>
+    </SiteFrame>
   )
 }

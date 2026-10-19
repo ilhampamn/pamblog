@@ -13,7 +13,7 @@ _Last reviewed: 2026-10-18_
 
 Uncommitted in the working tree as of 2026-10-18:
 
-- [ ] **Read-back proof rollout, phase 1** (uncommitted, on main): `DESIGN.md`,
+- [ ] **Read-back proof rollout, phase 1** (live since 2026-10-18, commit 2e8c057): `DESIGN.md`,
   tokens in `globals.css`, `src/components/proof/` (SiteFrame, marks, buttons,
   form), new Home, Stories index and Article pages, pen-note fields in Sanity.
   ⚠️ Run `npm run sanity:deploy` (ask first) so the Studio shows the Pen notes
@@ -21,6 +21,14 @@ Uncommitted in the working tree as of 2026-10-18:
   old widget. Waiting for Ilham's review before phase 2 (Explore, Gallery,
   About, Uses, Newsletter), then retire the old Nav/Footer/HomeExperience and
   legacy fonts. (2026-10-18)
+- [ ] **Read-back proof rollout, phase 2** (uncommitted): Gallery, About, Uses,
+  Newsletter, 404, error and `/components` rebuilt; Explore hidden (404 via
+  `explore/layout.tsx`). Follow-ups: the old components (`Nav`, `Footer`,
+  `NewsletterWidget`, `GalleryCard`, `PostBody`, `HomeExperience`, `Canvas`,
+  `HomeList`, `ProgressBar`, …) are now used only by the hidden Explore pages,
+  so ask the organizer to retire them along with the legacy fonts in
+  `[locale]/layout.tsx` (check experiments 1–3 first). About's "Currently" and
+  contact text are empty in Sanity. (2026-10-18)
 - [ ] **Story chapters in Sanity.** A new `articleChapter` document (season → chapter
   number → title) replaces `article.storySeries` + `article.chapterNumber`
   with a single `storyChapter` reference. Touches `sanity/schemaTypes/*`,

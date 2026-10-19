@@ -91,7 +91,7 @@ export function SiteShell({
   actions: ReactNode
   labels: ShellLabels
   base: string
-  current: 'home' | 'stories' | 'explore' | 'gallery' | 'about'
+  current: 'home' | 'stories' | 'gallery' | 'about' | 'none'
   folders: RailFolder[]
   footer?: ReactNode
   children: ReactNode
@@ -434,7 +434,7 @@ export function SiteShell({
                 ›
               </span>
             </button>
-            {item('explore', `${base}/explore`, labels.explore)}
+            {/* Explore is hidden for now (Ilham, 2026-10-18); see explore/layout.tsx. */}
             {item('gallery', `${base}/gallery`, labels.gallery)}
             {item('about', `${base}/about`, labels.about)}
           </nav>

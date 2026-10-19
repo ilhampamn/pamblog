@@ -88,5 +88,35 @@
     "related": "相关文章",
     "storiesOne": "1 篇故事",
     "chaptersOne": "1 章"
+  },
+  "pages": {
+    "galleryIntro": "旅途与日常的照片。",
+    "galleryEmpty": "图库中还没有照片。",
+    "relatedStory": "阅读相关文章 →",
+    "seeUses": "看看我用的工具 →",
+    "usesTitle": "装备",
+    "usesDisclosure": "本页的部分链接是联盟链接。如果你通过这些链接购买，我会获得少量佣金，你无需多付任何费用。我只列出自己真正在用的东西。",
+    "usesSee": "查看 →",
+    "newsletterSub": "新文章，直接送到你的邮箱。",
+    "newsletterBody": [
+      "每当我发布新内容——随笔、笔记、教程——都会先发到这里。",
+      "没有算法推送，没有通知。只有在值得一读的时候，一封安静的邮件。",
+      "大约每月一到两次。随时可以退订。"
+    ],
+    "newsletterExpect": "你会收到什么",
+    "newsletterItems": [
+      "新文章——随笔、笔记、评测、教程",
+      "偶尔一些没有写进博客的简短观察",
+      "别无其他"
+    ],
+    "notFoundLabel": "404",
+    "notFoundTitle": "这一页不在校样里。",
+    "notFoundBody": "它可能已经移走，或者从未写过。",
+    "backHome": "回到首页 →",
+    "errorLabel": "错误",
+    "errorTitle": "出了点问题。",
+    "tryAgain": "重试",
+    "contact": "联系",
+    "currently": "近况"
   }
 }
