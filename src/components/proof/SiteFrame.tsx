@@ -105,7 +105,7 @@ export async function SiteFrame({
 }
 
 /**
- * The footer (Ilham's references, 2026-10-19): the logo and the Lange line,
+ * The footer (Ilham's references, 2026-10-19): the Lange line,
  * typeset link columns, the copyright line, then a ballpoint drawing of a
  * real place running edge to edge along the bottom — Son-Kul, drawn in the
  * one ink from Ilham's own photograph (`scripts/ink-drawing.py`). Links stay
@@ -129,17 +129,8 @@ function SiteFooter({ locale }: { locale: Locale }) {
   return (
     <footer className="tp-footer">
       <div className="tp-footer__top">
+        {/* No logo here: the top bar already carries it (Ilham, 2026-10-19). */}
         <div className="tp-footer__brand">
-          <Link href={base} className="tp-logo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/travel-pam-logo-480.webp"
-              srcSet="/brand/travel-pam-logo-480.webp 1x, /brand/travel-pam-logo-960.webp 2x"
-              width={480}
-              height={231}
-              alt="Travel Pam"
-            />
-          </Link>
           <p className="tp-footer__quote">
             &ldquo;The camera is an instrument that teaches people how to see without a camera.&rdquo;
             <span className="tp-label"> — Dorothea Lange</span>

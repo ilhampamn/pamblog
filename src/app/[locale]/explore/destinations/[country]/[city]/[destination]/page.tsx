@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { PostBody } from '@/components/PostBody'
-import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { Nav } from '@/components/legacy/Nav'
+import { Footer } from '@/components/legacy/Footer'
+import { PostBody } from '@/components/legacy/PostBody'
+import { Breadcrumbs } from '@/components/legacy/Breadcrumbs'
 import {
   allDestinationPaths,
   resolveDestinationChain,

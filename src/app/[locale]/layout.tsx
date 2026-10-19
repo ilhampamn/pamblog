@@ -10,7 +10,6 @@ import {
   Caveat,
 } from 'next/font/google'
 import { LOCALES, isLocale } from '@/lib/i18n'
-import { ThemeProvider } from '@/components/ThemeProvider'
 import '../globals.css'
 
 /* The read-back proof (DESIGN.md → Type): one serif for everything typeset,
@@ -92,7 +91,7 @@ export default function LocaleLayout({
     >
       {/* No generated noise overlay: the paper's tooth is a real scan, under
           content, never over photographs (DESIGN.md → Layers). */}
-      <ThemeProvider>{children}</ThemeProvider>
+      {children}
     </div>
   )
 }

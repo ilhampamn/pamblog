@@ -91,7 +91,7 @@ No dark mode [decisions 2026-08-11].
 | **Save** | `proof/Pen.tsx` | Typeset "Save". When saved, the pen ticks it (one stroke, 180ms). Platform phase only. |
 | **Marks** | `proof/Mark.tsx`, `proof/Pen.tsx`, `proof/Proof.tsx` | Circle (open, right-handed), underline (rises ≤3px), multi-line underline / strike / dashed, bracket, caret ‸, pilcrow ¶, single-gesture arrow, numbered callout. |
 | **Figure** | `proof/Figure.tsx` | Cover shown whole, with numbered callouts (positions in % of the image). The same notes repeat as text underneath. Hovering pin n marks note n. |
-| **Footer** | `proof/SiteFrame.tsx` | Logo + the Lange line, four typeset columns (Read · More · Follow · Languages), copyright on a soft rule, then the Son-Kul ballpoint drawing edge to edge (`public/brand/footer-sonkul*.webp`, made by `scripts/ink-drawing.py` from Ilham's photo; phones crop the sides to keep the rider). Captioned. |
+| **Footer** | `proof/SiteFrame.tsx` | The Lange line (no logo — the top bar has it), four typeset columns (Read · More · Follow · Languages), copyright on a soft rule, then the Son-Kul ballpoint drawing edge to edge (`public/brand/footer-sonkul*.webp`, made by `scripts/ink-drawing.py` from Ilham's photo; phones crop the sides to keep the rider). Captioned. |
 | **Read-back stamp** | article end | The "Pam." block (−4°), then "read back · place · date" in the hand, underlined. |
 
 **Pen rules:**

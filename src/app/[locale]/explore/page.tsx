@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Nav'
-import { Footer } from '@/components/Footer'
-import { RoughCard } from '@/components/RoughCard'
+import { Nav } from '@/components/legacy/Nav'
+import { Footer } from '@/components/legacy/Footer'
+import { RoughCard } from '@/components/legacy/RoughCard'
 import { t, type Locale } from '@/lib/i18n'
 
 const LOCALES = ['en', 'id', 'zh'] as const

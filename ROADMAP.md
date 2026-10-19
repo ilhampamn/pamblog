@@ -29,6 +29,12 @@ Uncommitted in the working tree as of 2026-10-18:
   so ask the organizer to retire them along with the legacy fonts in
   `[locale]/layout.tsx` (check experiments 1–3 first). About's "Currently" and
   contact text are empty in Sanity. (2026-10-18)
+- [x] **Old components retired** (2026-10-19): 18 scrapbook-era components and
+  their CSS deleted (canvas home, polaroids, sticky notes, pins, progress bar,
+  old newsletter widget, theme provider…). `Nav`, `Footer`, `Breadcrumbs`,
+  `PostBody`, `RoughCard` moved to `src/components/legacy/` for the hidden
+  Explore pages; delete with Explore's rebuild. Legacy fonts in
+  `[locale]/layout.tsx` still to go (experiments 1–3 may use them).
 - [ ] **Story chapters in Sanity.** A new `articleChapter` document (season → chapter
   number → title) replaces `article.storySeries` + `article.chapterNumber`
   with a single `storyChapter` reference. Touches `sanity/schemaTypes/*`,

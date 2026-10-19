@@ -13,7 +13,7 @@ see what is in progress, and keep it current (see "Organization" below).
 | --- | --- |
 | Dev server (port 3000) | `npm run dev` — in the desktop app, use preview `blog-dev` from `.claude/launch.json` |
 | Typecheck | `npm run typecheck` |
-| Lint | `npm run lint` (`<img>` warnings in `HomeList.tsx` are known) |
+| Lint | `npm run lint` |
 | Production build | `npm run build` |
 | Deploy Sanity Studio | `npm run sanity:deploy` — outward-facing, ask first |
 | Redraw the footer landscape | `python3 scripts/ink-drawing.py <photo> public/brand/footer-sonkul.webp --width 2400 --crop-top 0.36 --fade 0.3 --plates` (and `--width 1200` → `footer-sonkul-1200.webp`; needs `numpy pillow opencv-python-headless`) |
@@ -53,7 +53,9 @@ src/app/
   go/[slug]/           affiliate redirects from content/affiliates.json
   og/ rss.xml/ sitemap.ts robots.ts
   studio/              embedded Sanity Studio
-src/components/        shared UI; experiment-only UI in components/experiment{,2,3}/
+src/components/        proof/ = the live design system (DESIGN.md); legacy/ = old UI kept
+                       only for the hidden Explore pages; experiment-only UI in
+                       components/experiment*/
 src/lib/               data access (*.sanity.ts), i18n, cloudinary, date, gsap
 src/sanity/            client, image builder, GROQ queries
 src/middleware.ts      locale redirect (must be in src/ because the app is in src/)
