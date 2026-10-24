@@ -17,10 +17,15 @@ Uncommitted in the working tree as of 2026-10-18:
   tokens in `globals.css`, `src/components/proof/` (SiteFrame, marks, buttons,
   form), new Home, Stories index and Article pages, pen-note fields in Sanity.
   ⚠️ Run `npm run sanity:deploy` (ask first) so the Studio shows the Pen notes
-  fields. ⚠️ The newsletter form (`PrintedForm`) still has no backend, like the
-  old widget. Waiting for Ilham's review before phase 2 (Explore, Gallery,
+  fields. The newsletter form now has a backend (see the next item). Waiting for Ilham's review before phase 2 (Explore, Gallery,
   About, Uses, Newsletter), then retire the old Nav/Footer/HomeExperience and
   legacy fonts. (2026-10-18)
+- [ ] **Newsletter signup → Kit** (uncommitted, tested locally 2026-10-24): `src/app/api/subscribe/route.ts`
+  adds the reader to Kit (API v4, no Kit form) tagged `lang-en` / `lang-id` / `lang-zh`;
+  `PrintedForm` is now a client component with sending / done / error / invalid lines
+  (strings `proof.form*` in all three languages) and a honeypot field. Needs `KIT_API_KEY`
+  in Vercel (set by Ilham). Next: push (ask first), then freebies through Resend. Delete the
+  test subscriber `ilhampamn+kittest@gmail.com` in Kit. (2026-10-24)
 - [ ] **Read-back proof rollout, phase 2** (uncommitted): Gallery, About, Uses,
   Newsletter, 404, error and `/components` rebuilt; Explore hidden (404 via
   `explore/layout.tsx`). Follow-ups: the old components (`Nav`, `Footer`,

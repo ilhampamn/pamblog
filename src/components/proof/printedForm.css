@@ -1,0 +1,34 @@
+/* The printed form's sending states. Kept beside the component (rather than in
+   proof.css) so the signup work stays one change. Uses the block's own cream. */
+
+/* The result line, typeset under the field. Empty until something happens,
+   so an idle form keeps its original height. */
+.tp-printform__status {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  font-style: italic;
+  color: var(--cream);
+}
+.tp-printform__status:empty {
+  display: none;
+}
+
+/* A sent form stays visible but finished: the field and the square dim. */
+.tp-printform input:disabled,
+.tp-printform__send:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.tp-printform__send:disabled:active {
+  transform: none;
+}
+
+/* Honeypot: off-screen, never seen or tabbed to. */
+.tp-printform__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

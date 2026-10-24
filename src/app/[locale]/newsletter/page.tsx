@@ -57,6 +57,8 @@ export default function NewsletterPage({ params }: { params: { locale: string } 
             prompt={ui.proof.newsletterPrompt}
             field={ui.proof.emailField}
             action={ui.proof.send}
+            locale={locale}
+            messages={{ sending: ui.proof.formSending, done: ui.proof.formDone, error: ui.proof.formError, invalid: ui.proof.formInvalid }}
           />
         </div>
       </article>

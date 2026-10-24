@@ -148,7 +148,14 @@ export default async function PostPage({ params }: { params: { locale: string; s
         )}
 
         <div className="tp-article__subscribe">
-          <PrintedForm id={`${id}:newsletter`} prompt={ui.newsletterPrompt} field={ui.emailField} action={ui.send} />
+          <PrintedForm
+            id={`${id}:newsletter`}
+            prompt={ui.newsletterPrompt}
+            field={ui.emailField}
+            action={ui.send}
+            locale={locale}
+            messages={{ sending: ui.formSending, done: ui.formDone, error: ui.formError, invalid: ui.formInvalid }}
+          />
         </div>
 
         {related.length > 0 && (
